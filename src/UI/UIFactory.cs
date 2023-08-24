@@ -13,7 +13,7 @@ namespace UniverseLib.UI
     /// <summary>
     /// Helper class to create Unity uGUI UI objects at runtime, as well as use some custom UniverseLib UI classes such as ScrollPool, InputFieldScroller and AutoSliderScrollbar.
     /// </summary>
-    public static class UIFactory
+    public static partial class UIFactory
     {
         internal static Vector2 largeElementSize = new(100, 30);
         internal static Vector2 smallElementSize = new(25, 25);
