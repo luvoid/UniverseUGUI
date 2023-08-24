@@ -32,9 +32,9 @@ namespace UniverseLib
         }
 
         public const string NAME = "UniverseLib";
-        public const string VERSION = "1.5.1";
-        public const string AUTHOR = "Sinai";
-        public const string GUID = "com.sinai.universelib";
+        public const string VERSION = "1.5.2";
+        public const string AUTHOR = "Sinai; luvoid";
+        public const string GUID = "luvoid.universeugui";
 
         /// <summary>The current runtime context (Mono or IL2CPP).</summary>
         public static RuntimeContext Context { get; } =
