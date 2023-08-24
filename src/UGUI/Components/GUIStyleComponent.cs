@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-namespace UniverseLib.UGUI
+namespace UniverseLib.UGUI.Components
 {
     internal class GUIStyleComponent : MonoBehaviour
     {

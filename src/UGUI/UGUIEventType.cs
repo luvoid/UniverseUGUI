@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace UniverseLib.UGUI
 {
-    public enum UGUIEventType
+    internal enum UGUIEventType
     {
 
         MouseDown = 0,
@@ -29,21 +29,7 @@ namespace UniverseLib.UGUI
         MouseEnterWindow = 20,
         MouseLeaveWindow = 21,
 
-        InitialLayout = 22,
-        InitialRepaint = 23,
-
-        mouseDown = 0,
-        mouseUp = 1,
-        mouseMove = 2,
-        mouseDrag = 3,
-        keyDown = 4,
-        keyUp = 5,
-        scrollWheel = 6,
-        repaint = 7,
-        layout = 8,
-        dragUpdated = 9,
-        dragPerform = 10,
-        ignore = 11,
-        used = 12
+        InitialLayout = int.MaxValue - 2,
+        InitialRepaint = int.MaxValue - 1,
     }
 }

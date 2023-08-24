@@ -808,12 +808,12 @@ namespace UniverseLib.UGUI
         /// </summary>
         public EventType type { get => AsGUIEventType(uRawType); set => uType = (UGUIEventType)(int)value; }
 
-        public UGUIEventType uRawType { get; private set; }
+        internal UGUIEventType uRawType { get; private set; }
 
         /// <summary>
         ///   The type of event.
         /// </summary>
-        public UGUIEventType uType { get; set; }
+        internal UGUIEventType uType { get; set; }
 
         /// <summary>
         ///   Get a filtered event type for a given control ID.

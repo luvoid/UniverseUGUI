@@ -8,6 +8,7 @@ using UniverseLib.UGUI.Models;
 using System.ComponentModel;
 using UniverseLib;
 using UniverseLib.UI;
+using UniverseLib.UGUI.Components;
 
 namespace UniverseLib.UGUI
 {
