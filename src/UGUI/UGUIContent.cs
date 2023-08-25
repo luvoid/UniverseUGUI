@@ -9,7 +9,7 @@ namespace UniverseLib.UGUI
 {
     public class UGUIContent : GUIContent
     {
-        internal static new UGUIContent none;
+        internal static readonly new UGUIContent none;
 
         public UGUIContent()
         { }

@@ -11,16 +11,17 @@ namespace UniverseLib.UGUI.Models
     {
         private readonly ButtonRef buttonRef;
 
-        public override Button Component { get => buttonRef.Component; protected set => throw new System.InvalidOperationException(); }
-        public override Text TextComponent { get => buttonRef.ButtonText; protected set => throw new System.InvalidOperationException(); }
-        public override Graphic BackgroundComponent { get => buttonRef.Component.image; protected set => throw new System.InvalidOperationException(); }
+        public override Button Component => buttonRef.Component;
+        public override Text TextComponent => buttonRef.ButtonText;
+        public override Graphic BackgroundComponent => buttonRef.Component.image;
+		public override RawImage ImageComponent { get; }
 
-        internal ButtonResult(string name, GameObject parent, Rect position, UGUIContent content, GUIStyle style)
+		internal ButtonResult(string name, GameObject parent, Rect position, UGUIContent content, GUIStyle style)
             : base(name, parent, position)
         {
             buttonRef = UIFactory.CreateButton(Container, "Button", content.text);
 
-            TextComponent.transform.parent = Container.transform;
+            TextComponent.transform.SetParent(Container.transform, worldPositionStays: false);
             TextComponent.raycastTarget = false;
 
             ImageComponent = CreateImage(Container, content.image);

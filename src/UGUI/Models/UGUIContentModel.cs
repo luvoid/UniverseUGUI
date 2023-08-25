@@ -8,9 +8,9 @@ namespace UniverseLib.UGUI.Models
 {
     public abstract class UGUIContentModel : UGUIModel
     {
-        public virtual Text TextComponent { get; protected set; }
-        public virtual Graphic BackgroundComponent { get; protected set; }
-        public virtual RawImage ImageComponent { get; protected set; }
+        public virtual Text TextComponent { get; }
+        public virtual Graphic BackgroundComponent { get; }
+        public virtual RawImage ImageComponent { get; }
 
         /// <summary>
         /// The string text assigned to the <see cref="TextComponent"/>.
@@ -22,7 +22,7 @@ namespace UniverseLib.UGUI.Models
         }
 
         /// <summary>
-        /// Creates the <see cref="Container"/>
+        /// Creates the container.
         /// </summary>
         internal UGUIContentModel(in string name, GameObject parent, Rect position)
         {
@@ -109,7 +109,7 @@ namespace UniverseLib.UGUI.Models
         where T : Component
     {
         public override GameObject GameObject => Component.gameObject;
-        public virtual T Component { get; protected set; }
+        public abstract T Component { get; }
 
         /// <inheritdoc/>
         internal UGUIContentModel(string name, GameObject parent, Rect position)

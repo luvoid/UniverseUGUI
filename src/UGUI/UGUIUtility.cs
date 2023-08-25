@@ -15,7 +15,9 @@ using UniverseLib.UI;
 
 namespace UniverseLib.UGUI
 {
-    public static class UGUIUtility
+	[System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles",
+	    Justification = "Unity's naming style must be preserved for backwards compatibility with IMGUI users.")]
+	public static class UGUIUtility
     {
         public readonly static Texture2D BlankTexture;
         static UGUIUtility()
@@ -40,14 +42,13 @@ namespace UniverseLib.UGUI
             rectTransform.offsetMax = new Vector2(rect.max.x, -rect.min.y);
         }
 
-        private static Font s_BuiltinDefaultFont;
         internal static Font GetDefaultFont()
         {
             // First try to get the best skin
             GUISkin skin = null;
             try
             {
-                skin = GUI.skin;
+                skin = UGUI.skin;
             }
             catch
             { }
@@ -70,7 +71,7 @@ namespace UniverseLib.UGUI
         internal static float pixelsPerPoint => GUIUtility.Internal_GetPixelsPerPoint();
 
 
-        private static HashSet<int> s_ControlIDs = new HashSet<int>();
+        private static readonly HashSet<int> s_ControlIDs = new HashSet<int>();
 
         public static int GetControlID(FocusType focus, Rect? position = null)
             => GetControlID(0, focus, position);
@@ -87,10 +88,10 @@ namespace UniverseLib.UGUI
         }
         private static int GetControlID(int hint)
         {
-            int controlId = hint;
-            while (!s_ControlIDs.Add(controlId++)) ;
+            int controlID = hint;
+            while (!s_ControlIDs.Add(controlID++)) ;
 
-            return controlId;
+            return controlID;
         }
 
 
@@ -251,11 +252,11 @@ namespace UniverseLib.UGUI
 
 
 
-        internal static T GetControlModel<T>(out int controlId, int hint = 0)
+        internal static T GetControlModel<T>(out int controlID, int hint = 0)
             where T : UGUIModel
         {
-            controlId = GetControlID<T>(hint);
-            return GetControlModel<T>(controlId);
+            controlID = GetControlID<T>(hint);
+            return GetControlModel<T>(controlID);
         }
         internal static T GetControlModel<T>(int controlID)
             where T : UGUIModel
@@ -263,11 +264,11 @@ namespace UniverseLib.UGUI
             return s_ActiveUGUI.Models[controlID] as T;
         }
 
-        internal static bool TryGetControlModel<T>(out T model, out int controlId, int hint = 0)
+        internal static bool TryGetControlModel<T>(out T model, out int controlID, int hint = 0)
             where T : UGUIModel
         {
-            controlId = GetControlID<T>(hint);
-            return TryGetControlModel(out model, controlId);
+            controlID = GetControlID<T>(hint);
+            return TryGetControlModel(out model, controlID);
         }
         internal static bool TryGetControlModel<T>(out T model, int controlID)
             where T : UGUIModel
@@ -284,11 +285,11 @@ namespace UniverseLib.UGUI
             }
         }
 
-        //internal static void AddControlModel<T>(T model, out int controlId, int hint = 0)
+        //internal static void AddControlModel<T>(T model, out int controlID, int hint = 0)
         //	where T : UGUIModel
         //{
-        //	controlId = GetControlID<T>(hint);
-        //	SetControlModel(model, controlId);
+        //	controlID = GetControlID<T>(hint);
+        //	SetControlModel(model, controlID);
         //}
 
         internal static void SetControlModel(UGUIModel model, int controlID)

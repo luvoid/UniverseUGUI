@@ -71,13 +71,13 @@ namespace UniverseLib
         protected internal abstract string Internal_LayerToName(int layer);
 
         /// <summary>
-        /// Helper to invoke Unity's <see cref="Resources.FindObjectsOfTypeAll"/> method.
+        /// Helper to invoke Unity's <see cref="Resources.FindObjectsOfTypeAll{T}"/> method.
         /// </summary>
         public static T[] FindObjectsOfTypeAll<T>() where T : UnityEngine.Object
             => Instance.Internal_FindObjectsOfTypeAll<T>();
 
         /// <summary>
-        /// Helper to invoke Unity's <see cref="Resources.FindObjectsOfTypeAll}"/> method.
+        /// Helper to invoke Unity's <see cref="Resources.FindObjectsOfTypeAll"/> method.
         /// </summary>
         public static UnityEngine.Object[] FindObjectsOfTypeAll(Type type)
             => Instance.Internal_FindObjectsOfTypeAll(type);

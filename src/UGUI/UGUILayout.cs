@@ -127,14 +127,14 @@ namespace UniverseLib.UGUI
           bool multiline = false,
           int maxLength = -1)
         {
-            int controlId = UGUIUtility.GetControlID(FocusType.Keyboard);
+            int controlID = UGUIUtility.GetControlID(FocusType.Keyboard);
             //UGUIContent.Temp(text);
-            //UGUIContent content = UGUIUtility.keyboardControl == controlId ? UGUIContent.Temp(text + Input.compositionString) : UGUIContent.Temp(text);
+            //UGUIContent content = UGUIUtility.keyboardControl == controlID ? UGUIContent.Temp(text + Input.compositionString) : UGUIContent.Temp(text);
             Rect rect = UGUILayoutUtility.GetRect(GUIContent.Temp(text), style, options);
-            //if (UGUIUtility.keyboardControl == controlId)
+            //if (UGUIUtility.keyboardControl == controlID)
             //    content = UGUIContent.Temp(text);
 
-            return UGUI.DoTextField(rect, controlId, text, style, multiline, maxLength);
+            return UGUI.DoTextField(rect, controlID, text, style, multiline, maxLength);
         }
 
 
@@ -657,6 +657,9 @@ namespace UniverseLib.UGUI
             return UGUI.Window(id, screenRect, new UGUI.WindowFunction(layoutedWindow.DoWindow), content, style);
         }
         */
+        
+
+
         public static GUILayoutOption Width(float width) => new GUILayoutOption(GUILayoutOption.Type.fixedWidth, width);
 
         public static GUILayoutOption MinWidth(float minWidth) => new GUILayoutOption(GUILayoutOption.Type.minWidth, minWidth);
@@ -672,6 +675,8 @@ namespace UniverseLib.UGUI
         public static GUILayoutOption ExpandWidth(bool expand) => new GUILayoutOption(GUILayoutOption.Type.stretchWidth, !expand ? 0 : 1);
 
         public static GUILayoutOption ExpandHeight(bool expand) => new GUILayoutOption(GUILayoutOption.Type.stretchHeight, !expand ? 0 : 1);
+
+
 
         /*
         private sealed class LayoutedWindow

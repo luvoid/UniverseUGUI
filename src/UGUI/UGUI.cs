@@ -6,7 +6,9 @@ using UniverseLib.UGUI.Models;
 
 namespace UniverseLib.UGUI
 {
-    public class UGUI
+	[System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles",
+        Justification = "Unity's naming style must be preserved for backwards compatibility with IMGUI users.")]
+	public class UGUI
     {
         private static IUniversalUGUIObject s_ActiveUGUI => UGUIUtility.s_ActiveUGUI;
         private static GameObject s_ActiveParent => UGUIUtility.s_ActiveParent;
@@ -32,7 +34,7 @@ namespace UniverseLib.UGUI
 
         internal static DateTime nextScrollStepTime { get; set; }
 
-        public static GUISkin skin
+		public static GUISkin skin
         {
             set
             {
@@ -83,10 +85,10 @@ namespace UniverseLib.UGUI
             style ??= s_Skin.label;
             UGUIUtility.CheckOnUGUI();
 
-            if (!UGUIUtility.TryGetControlModel(out LabelResult label, out int controlId))
+            if (!UGUIUtility.TryGetControlModel(out LabelResult label, out int controlID))
             {
                 label = new("Label", s_ActiveParent, position, content, style);
-                UGUIUtility.SetControlModel(label, controlId);
+                UGUIUtility.SetControlModel(label, controlID);
             }
             label.SetState(position, content, style);
 
@@ -224,10 +226,10 @@ namespace UniverseLib.UGUI
             style ??= s_Skin.box;
             UGUIUtility.CheckOnUGUI();
 
-            if (!UGUIUtility.TryGetControlModel(out BoxResult box, out int controlId))
+            if (!UGUIUtility.TryGetControlModel(out BoxResult box, out int controlID))
             {
                 box = new("Box", s_ActiveParent, position, content, style);
-                UGUIUtility.SetControlModel(box, controlId);
+                UGUIUtility.SetControlModel(box, controlID);
             }
             box.SetState(position, content, style);
             return box;
@@ -249,10 +251,10 @@ namespace UniverseLib.UGUI
 
             //if (UGUIEvent.current.type != EventType.Repaint) return null;
 
-            if (!UGUIUtility.TryGetControlModel(out ButtonResult button, out int controlId))
+            if (!UGUIUtility.TryGetControlModel(out ButtonResult button, out int controlID))
             {
                 button = new("Button", s_ActiveParent, position, content, style);
-                UGUIUtility.SetControlModel(button, controlId);
+                UGUIUtility.SetControlModel(button, controlID);
             }
 
             return button;
@@ -272,25 +274,25 @@ namespace UniverseLib.UGUI
           FocusType focusType)
         {
             UGUIUtility.CheckOnUGUI();
-            int controlId = UGUIUtility.GetControlID(s_RepeatButtonHash, focusType, position);
-            switch (Event.current.GetTypeForControl(controlId))
+            int controlID = UGUIUtility.GetControlID(s_RepeatButtonHash, focusType, position);
+            switch (Event.current.GetTypeForControl(controlID))
             {
                 case EventType.MouseDown:
                     if (position.Contains(Event.current.mousePosition))
                     {
-                        UGUIUtility.hotControl = controlId;
+                        UGUIUtility.hotControl = controlID;
                         Event.current.Use();
                     }
                     return false;
                 case EventType.MouseUp:
-                    if (UGUIUtility.hotControl != controlId)
+                    if (UGUIUtility.hotControl != controlID)
                         return false;
                     UGUIUtility.hotControl = 0;
                     Event.current.Use();
                     return position.Contains(Event.current.mousePosition);
                 case EventType.Repaint:
-                    style.Draw(position, content, controlId);
-                    return controlId == UGUIUtility.hotControl && position.Contains(Event.current.mousePosition);
+                    style.Draw(position, content, controlID);
+                    return controlID == UGUIUtility.hotControl && position.Contains(Event.current.mousePosition);
                 default:
                     return false;
             }
@@ -424,10 +426,10 @@ namespace UniverseLib.UGUI
                 content.text = content.text.Substring(0, maxLength);
 
             //if (UGUIEvent.current.type != EventType.Repaint) return null;
-            if (!UGUIUtility.TryGetControlModel(out TextFieldResult textField, out int controlId, id))
+            if (!UGUIUtility.TryGetControlModel(out TextFieldResult textField, out int controlID, id))
             {
                 textField = new("TextField", s_ActiveParent, position, content, style);
-                UGUIUtility.SetControlModel(textField, controlId);
+                UGUIUtility.SetControlModel(textField, controlID);
             }
             textField.SetState(position, content, style);
             return textField;
@@ -624,14 +626,14 @@ namespace UniverseLib.UGUI
 
         public static ToggleResult Toggle(
           Rect position,
-          int controlId,
+          int controlID,
           bool value,
           UGUIContent content,
           GUIStyle style = null)
         {
             style ??= s_Skin.toggle;
             UGUIUtility.CheckOnUGUI();
-            return DoToggle(position, controlId, value, content, style);
+            return DoToggle(position, controlID, value, content, style);
         }
 
 
@@ -753,7 +755,7 @@ namespace UniverseLib.UGUI
                 Debug.LogWarning((object)"You are trying to create a SelectionGrid with zero or less elements to be displayed in the horizontal direction. Set xCount to a positive value.");
                 return selected;
             }
-            int controlId = UGUIUtility.GetControlID(s_ButtonGridHash, FocusType.Passive, position);
+            int controlID = UGUIUtility.GetControlID(s_ButtonGridHash, FocusType.Passive, position);
             int num1 = length / xCount;
             if (length % xCount != 0)
                 ++num1;
@@ -765,18 +767,18 @@ namespace UniverseLib.UGUI
                 elemWidth = style.fixedWidth;
             if ((double)style.fixedHeight != 0.0)
                 elemHeight = style.fixedHeight;
-            switch (Event.current.GetTypeForControl(controlId))
+            switch (Event.current.GetTypeForControl(controlID))
             {
                 case EventType.MouseDown:
                     if (position.Contains(Event.current.mousePosition) && GetButtonGridMouseSelection(CalcMouseRects(position, length, xCount, elemWidth, elemHeight, style, firstStyle, midStyle, lastStyle, false), Event.current.mousePosition, true) != -1)
                     {
-                        UGUIUtility.hotControl = controlId;
+                        UGUIUtility.hotControl = controlID;
                         Event.current.Use();
                         break;
                     }
                     break;
                 case EventType.MouseUp:
-                    if (UGUIUtility.hotControl == controlId)
+                    if (UGUIUtility.hotControl == controlID)
                     {
                         UGUIUtility.hotControl = 0;
                         Event.current.Use();
@@ -786,7 +788,7 @@ namespace UniverseLib.UGUI
                     }
                     break;
                 case EventType.MouseDrag:
-                    if (UGUIUtility.hotControl == controlId)
+                    if (UGUIUtility.hotControl == controlID)
                     {
                         Event.current.Use();
                         break;
@@ -797,7 +799,7 @@ namespace UniverseLib.UGUI
                     GUIClip.Push(position, Vector2.zero, Vector2.zero, false);
                     position = new Rect(0.0f, 0.0f, position.width, position.height);
                     Rect[] buttonRects = CalcMouseRects(position, length, xCount, elemWidth, elemHeight, style, firstStyle, midStyle, lastStyle, false);
-                    int gridMouseSelection1 = GetButtonGridMouseSelection(buttonRects, Event.current.mousePosition, controlId == UGUIUtility.hotControl);
+                    int gridMouseSelection1 = GetButtonGridMouseSelection(buttonRects, Event.current.mousePosition, controlID == UGUIUtility.hotControl);
                     UGUIUtility.mouseUsed |= position.Contains(Event.current.mousePosition);
                     for (int index = 0; index < length; ++index)
                     {
@@ -807,12 +809,12 @@ namespace UniverseLib.UGUI
                         if (length == 1)
                             guiStyle2 = style;
                         if (index != selected)
-                            guiStyle2.Draw(buttonRects[index], contents[index], index == gridMouseSelection1 && (enabled || controlId == UGUIUtility.hotControl) && (controlId == UGUIUtility.hotControl || UGUIUtility.hotControl == 0), controlId == UGUIUtility.hotControl && enabled, false, false);
+                            guiStyle2.Draw(buttonRects[index], contents[index], index == gridMouseSelection1 && (enabled || controlID == UGUIUtility.hotControl) && (controlID == UGUIUtility.hotControl || UGUIUtility.hotControl == 0), controlID == UGUIUtility.hotControl && enabled, false, false);
                         else
                             guiStyle1 = guiStyle2;
                     }
                     if (selected < length && selected > -1)
-                        guiStyle1.Draw(buttonRects[selected], contents[selected], selected == gridMouseSelection1 && (enabled || controlId == UGUIUtility.hotControl) && (controlId == UGUIUtility.hotControl || UGUIUtility.hotControl == 0), controlId == UGUIUtility.hotControl, true, false);
+                        guiStyle1.Draw(buttonRects[selected], contents[selected], selected == gridMouseSelection1 && (enabled || controlID == UGUIUtility.hotControl) && (controlID == UGUIUtility.hotControl || UGUIUtility.hotControl == 0), controlID == UGUIUtility.hotControl, true, false);
                     if (gridMouseSelection1 >= 0)
                         tooltip = contents[gridMouseSelection1].tooltip;
                     GUIClip.Pop();
@@ -1025,7 +1027,7 @@ namespace UniverseLib.UGUI
           bool horiz)
         {
             UGUIUtility.CheckOnUGUI();
-            int controlId = UGUIUtility.GetControlID(s_SliderHash, FocusType.Passive, position);
+            int controlID = UGUIUtility.GetControlID(s_SliderHash, FocusType.Passive, position);
             Rect position1;
             Rect rect1;
             Rect rect2;
@@ -1041,13 +1043,13 @@ namespace UniverseLib.UGUI
                 rect1 = new Rect(position.x, position.y, position.width, leftButton.fixedHeight);
                 rect2 = new Rect(position.x, position.yMax - rightButton.fixedHeight, position.width, rightButton.fixedHeight);
             }
-            value = Slider(position1, value, size, leftValue, rightValue, slider, thumb, horiz, controlId);
+            value = Slider(position1, value, size, leftValue, rightValue, slider, thumb, horiz, controlID);
             bool flag = false;
             if (Event.current.type == EventType.MouseUp)
                 flag = true;
-            if (ScrollerRepeatButton(controlId, rect1, leftButton))
+            if (ScrollerRepeatButton(controlID, rect1, leftButton))
                 value -= s_ScrollStepSize * ((double)leftValue >= (double)rightValue ? -1f : 1f);
-            if (ScrollerRepeatButton(controlId, rect2, rightButton))
+            if (ScrollerRepeatButton(controlID, rect2, rightButton))
                 value += s_ScrollStepSize * ((double)leftValue >= (double)rightValue ? -1f : 1f);
             if (flag && Event.current.type == EventType.Used)
                 s_ScrollControlId = 0;
@@ -1074,11 +1076,11 @@ namespace UniverseLib.UGUI
         public static void BeginGroup(Rect position, UGUIContent content, GUIStyle style)
         {
             UGUIUtility.CheckOnUGUI();
-            int controlId = UGUIUtility.GetControlID(s_BeginGroupHash, FocusType.Passive);
+            int controlID = UGUIUtility.GetControlID(s_BeginGroupHash, FocusType.Passive);
             if (content != UGUIContent.none || style != GUIStyle.none)
             {
                 if (Event.current.type == EventType.Repaint)
-                    style.Draw(position, content, controlId);
+                    style.Draw(position, content, controlID);
                 else if (position.Contains(Event.current.mousePosition))
                     UGUIUtility.mouseUsed = true;
             }
@@ -1294,7 +1296,7 @@ namespace UniverseLib.UGUI
             int controlID = UGUIUtility.GetControlID<WindowResult>(id);
             if (!UGUIUtility.TryGetControlModel(out WindowResult window, controlID))
             {
-                window = new("Window", s_ActiveUGUI.Owner, clientRect, id, func, content, style);
+                window = new("Window", s_ActiveUGUI.Owner, clientRect, id, func, forceRect: true, content, style);
                 UGUIUtility.SetControlModel(window, controlID);
             }
 
@@ -1304,7 +1306,43 @@ namespace UniverseLib.UGUI
         }
 
 
-        /*
+		internal static void CallWindowDelegate(WindowFunction func, int windowID, int instanceID, GUISkin skin, bool forceRect, Rect contentRect, GUIStyle style)
+		{
+			UGUILayoutUtility.SelectIDList(instanceID, isWindow: true);
+			GUISkin preCallSkin = UGUI.skin;
+			if (UGUIEvent.current.type == EventType.Layout)
+			{
+				if (forceRect)
+				{
+					GUILayoutOption[] options = new GUILayoutOption[2]
+					{
+						UGUILayout.Width(contentRect.size.x),
+						UGUILayout.Height(contentRect.size.y)
+					};
+					UGUILayoutUtility.BeginWindow(windowID, instanceID, contentRect, style, options);
+				}
+				else
+				{
+					UGUILayoutUtility.BeginWindow(windowID, instanceID, contentRect, style, null);
+				}
+			}
+			else
+			{
+				UGUILayoutUtility.BeginWindow(windowID, instanceID, contentRect, GUIStyle.none, null);
+			}
+
+			UGUI.skin = skin;
+			func(windowID);
+			if (UGUIEvent.current.type == EventType.Layout)
+			{
+				UGUILayoutUtility.Layout();
+			}
+
+			UGUI.skin = preCallSkin;
+		}
+
+
+		/*
         public static IObservable<Rect> ModalWindow(
           int id,
           Rect clientRect,
@@ -1436,19 +1474,19 @@ namespace UniverseLib.UGUI
 
 
 
-        internal static ToggleResult DoToggle(
+		internal static ToggleResult DoToggle(
           Rect position,
-          int controlId,
+          int controlID,
           bool value,
           UGUIContent content,
           GUIStyle style)
         {
             //if (UGUIEvent.current.type != EventType.Repaint) return null;
 
-            if (!UGUIUtility.TryGetControlModel(out ToggleResult toggle, controlId))
+            if (!UGUIUtility.TryGetControlModel(out ToggleResult toggle, controlID))
             {
                 toggle = new("Toggle", s_ActiveParent, position, value, content, style);
-                UGUIUtility.SetControlModel(toggle, controlId);
+                UGUIUtility.SetControlModel(toggle, controlID);
             }
             toggle.SetState(position, content, style);
             return toggle;

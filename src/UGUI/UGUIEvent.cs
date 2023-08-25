@@ -5,10 +5,12 @@ using UnityEngine;
 
 namespace UniverseLib.UGUI
 {
-    /// <summary>
-    ///   A LuVoid.UniverseLib UGUI event.
-    /// </summary>
-    public sealed class UGUIEvent
+	/// <summary>
+	/// The UniverseUGUI equivalent of <see cref="UnityEngine.Event"/>.
+	/// </summary>
+	[System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles",
+	    Justification = "Unity's naming style must be preserved for backwards compatibility with IMGUI users.")]
+	public sealed class UGUIEvent
     {
         internal IntPtr m_Ptr;
         private static UGUIEvent s_Current;

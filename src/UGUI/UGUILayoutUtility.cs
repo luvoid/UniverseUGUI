@@ -8,7 +8,9 @@ using UnityEngine;
 
 namespace UniverseLib.UGUI
 {
-    public class UGUILayoutUtility
+	[System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles",
+		Justification = "Unity's naming style must be preserved for backwards compatibility with IMGUI users.")]
+	public class UGUILayoutUtility
     {
         private static Dictionary<int, LayoutCache> s_StoredLayouts = new Dictionary<int, LayoutCache>();
         private static Dictionary<int, LayoutCache> s_StoredWindows = new Dictionary<int, LayoutCache>();
@@ -38,10 +40,10 @@ namespace UniverseLib.UGUI
             LayoutCache layoutCache = SelectIDList(uGUI.GetInstanceID(), false);
             if (UGUIEvent.current.type == EventType.Layout)
             {
-                current.topLevel = layoutCache.topLevel = new GUILayoutGroup();
+                current.topLevel = layoutCache.topLevel = new UGUILayoutGroup();
                 current.layoutGroups.Clear();
                 current.layoutGroups.Push(current.topLevel);
-                current.windows = layoutCache.windows = new GUILayoutGroup();
+                current.windows = layoutCache.windows = new UGUILayoutGroup();
             }
             else
             {
@@ -55,10 +57,10 @@ namespace UniverseLib.UGUI
         {
             if (UGUIEvent.current.type == EventType.Layout)
             {
-                current.topLevel = cache.topLevel = new GUILayoutGroup();
+                current.topLevel = cache.topLevel = new UGUILayoutGroup();
                 current.layoutGroups.Clear();
                 current.layoutGroups.Push(current.topLevel);
-                current.windows = cache.windows = new GUILayoutGroup();
+                current.windows = cache.windows = new UGUILayoutGroup();
             }
             else
             {
@@ -68,19 +70,20 @@ namespace UniverseLib.UGUI
             }
         }
 
-        internal static void BeginWindow(int windowID, GUIStyle style, GUILayoutOption[] options)
+		internal static void BeginWindow(int windowID, int instanceID, Rect contentRect, GUIStyle style, GUILayoutOption[] options)
         {
-            LayoutCache layoutCache = SelectIDList(windowID, true);
+            LayoutCache layoutCache = SelectIDList(instanceID, true);
             if (UGUIEvent.current.type == EventType.Layout)
             {
-                current.topLevel = layoutCache.topLevel = new GUILayoutGroup();
-                current.topLevel.style = style;
+                current.topLevel = layoutCache.topLevel = new UGUILayoutGroup();
+                current.topLevel.style = GUIStyle.none;
                 current.topLevel.windowID = windowID;
-                if (options != null)
+                current.topLevel.contentRect = contentRect;
+				if (options != null)
                     current.topLevel.ApplyOptions(options);
                 current.layoutGroups.Clear();
                 current.layoutGroups.Push(current.topLevel);
-                current.windows = layoutCache.windows = new GUILayoutGroup();
+                current.windows = layoutCache.windows = new UGUILayoutGroup();
             }
             else
             {
@@ -152,14 +155,14 @@ namespace UniverseLib.UGUI
             return 0.0f;
         }
 
-        internal static void LayoutFreeGroup(GUILayoutGroup toplevel)
+        internal static void LayoutFreeGroup(UGUILayoutGroup toplevel)
         {
-            foreach (GUILayoutGroup entry in toplevel.entries)
+            foreach (UGUILayoutGroup entry in toplevel.entries)
                 LayoutSingleGroup(entry);
             toplevel.ResetCursor();
         }
 
-        private static void LayoutSingleGroup(GUILayoutGroup i)
+        private static void LayoutSingleGroup(UGUILayoutGroup i)
         {
             if (!i.isWindow)
             {
@@ -175,7 +178,7 @@ namespace UniverseLib.UGUI
             else
             {
                 i.CalcWidth();
-                Rect windowRect = Internal_GetWindowRect(i.windowID);
+                Rect windowRect = i.contentRect;
                 i.SetHorizontal(windowRect.x, Mathf.Clamp(windowRect.width, i.minWidth, i.maxWidth));
                 i.CalcHeight();
                 i.SetVertical(windowRect.y, Mathf.Clamp(windowRect.height, i.minHeight, i.maxHeight));
@@ -184,14 +187,15 @@ namespace UniverseLib.UGUI
         }
 
         [SecuritySafeCritical]
-        private static GUILayoutGroup CreateGUILayoutGroupInstanceOfType(Type LayoutType) => typeof(GUILayoutGroup).IsAssignableFrom(LayoutType) ? (GUILayoutGroup)Activator.CreateInstance(LayoutType) : throw new ArgumentException("LayoutType needs to be of type GUILayoutGroup");
+        private static UGUILayoutGroup CreateGUILayoutGroupInstanceOfType(Type LayoutType) 
+            => typeof(UGUILayoutGroup).IsAssignableFrom(LayoutType) ? (UGUILayoutGroup)Activator.CreateInstance(LayoutType) : throw new ArgumentException("LayoutType needs to be of type UGUILayoutGroup");
 
-        internal static GUILayoutGroup BeginLayoutGroup(
+        internal static UGUILayoutGroup BeginLayoutGroup(
           GUIStyle style,
           GUILayoutOption[] options,
           Type layoutType)
         {
-            GUILayoutGroup guiLayoutGroup = null;
+            UGUILayoutGroup guiLayoutGroup = null;
             switch (UGUIEvent.current.type)
             {
                 case EventType.Layout:
@@ -203,7 +207,7 @@ namespace UniverseLib.UGUI
                     current.topLevel.Add(guiLayoutGroup);
                     break;
                 default:
-                    if (!(current.topLevel.GetNext() is GUILayoutGroup castGuiLayoutGroup))
+                    if (!(current.topLevel.GetNext() is UGUILayoutGroup castGuiLayoutGroup))
                         throw new ArgumentException("GUILayout: Mismatched LayoutGroup." + UGUIEvent.current.type);
                     guiLayoutGroup = castGuiLayoutGroup;
                     guiLayoutGroup.ResetCursor();
@@ -218,12 +222,12 @@ namespace UniverseLib.UGUI
         {
             int type = (int)UGUIEvent.current.type;
             current.layoutGroups.Pop();
-            current.topLevel = 0 >= current.layoutGroups.Count ? null : (GUILayoutGroup)current.layoutGroups.Peek();
+            current.topLevel = 0 >= current.layoutGroups.Count ? null : (UGUILayoutGroup)current.layoutGroups.Peek();
         }
 
-        internal static GUILayoutGroup BeginLayoutArea(GUIStyle style, Type layoutType)
+        internal static UGUILayoutGroup BeginLayoutArea(GUIStyle style, Type layoutType)
         {
-            GUILayoutGroup guiLayoutGroup = null;
+            UGUILayoutGroup guiLayoutGroup = null;
             switch (UGUIEvent.current.type)
             {
                 case EventType.Layout:
@@ -233,7 +237,7 @@ namespace UniverseLib.UGUI
                     current.windows.Add(guiLayoutGroup);
                     break;
                 default:
-                    if (!(current.windows.GetNext() is GUILayoutGroup castGuiLayoutGroup))
+                    if (!(current.windows.GetNext() is UGUILayoutGroup castGuiLayoutGroup))
                         throw new ArgumentException("GUILayout: Mismatched LayoutGroup." + UGUIEvent.current.type);
                     guiLayoutGroup = castGuiLayoutGroup;
                     guiLayoutGroup.ResetCursor();
@@ -244,11 +248,12 @@ namespace UniverseLib.UGUI
             return guiLayoutGroup;
         }
 
-        internal static GUILayoutGroup DoBeginLayoutArea(GUIStyle style, Type layoutType) => BeginLayoutArea(style, layoutType);
+        internal static UGUILayoutGroup DoBeginLayoutArea(GUIStyle style, Type layoutType) => BeginLayoutArea(style, layoutType);
 
-        internal static GUILayoutGroup topLevel => current.topLevel;
+        internal static UGUILayoutGroup topLevel => current.topLevel;
 
-        public static Rect GetRect(GUIContent content, GUIStyle style) => DoGetRect(content, style, null);
+        public static Rect GetRect(GUIContent content, GUIStyle style) 
+            => DoGetRect(content, style, null);
 
         public static Rect GetRect(
           GUIContent content,
@@ -430,12 +435,6 @@ namespace UniverseLib.UGUI
             }
         }
 
-        private static Rect Internal_GetWindowRect(int windowID)
-        {
-            Rect rect = default;
-            return rect;
-        }
-
         private static void Internal_MoveWindow(int windowID, Rect r)
         { }
 
@@ -447,9 +446,9 @@ namespace UniverseLib.UGUI
 
         internal sealed class LayoutCache
         {
-            internal GUILayoutGroup topLevel = new GUILayoutGroup();
+            internal UGUILayoutGroup topLevel = new UGUILayoutGroup();
             internal GenericStack layoutGroups = new GenericStack();
-            internal GUILayoutGroup windows = new GUILayoutGroup();
+            internal UGUILayoutGroup windows = new UGUILayoutGroup();
 
             internal LayoutCache() => layoutGroups.Push(topLevel);
 

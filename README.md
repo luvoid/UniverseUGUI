@@ -1,9 +1,10 @@
 # UniverseUGUI
 
-UniverseLib is a library for making plugins which target IL2CPP and Mono Unity games, with a focus on UI-driven plugins.
-
 UniverseUGUI is a fork of UniverseLib which provides an additional framework similar to IMGUI. 
 The goal is to allow easy porting of IMGUI plugins to UGUI.
+
+UniverseLib is a library for making plugins which target IL2CPP and Mono Unity games, with a focus on UI-driven plugins.
+
 
 ## NuGet
 

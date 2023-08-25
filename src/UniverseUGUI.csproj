@@ -1,162 +1,200 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-    <PropertyGroup>
-        <Configuration Condition=" '$(Configuration)' == '' ">Release_IL2CPP</Configuration>
-        <OutputType>Library</OutputType>
-        <LangVersion>10.0</LangVersion>
-        <DefineConstants>
-        </DefineConstants>
-        <DebugSymbols>false</DebugSymbols>
-        <DebugType>none</DebugType>
-        <PlatformTarget>AnyCPU</PlatformTarget>
-        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-        <AllowedReferenceRelatedFileExtensions>none</AllowedReferenceRelatedFileExtensions>
-        <CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
-        <Configurations>Release_Mono;Release_IL2CPP_Unhollower;Release_IL2CPP_Interop</Configurations>
-        <RootNamespace>UniverseLib</RootNamespace>
-    </PropertyGroup>
-    <!-- Configurations -->
-    <PropertyGroup Condition=" '$(Configuration)' == 'Release_IL2CPP_Unhollower' ">
-        <TargetFramework>net472</TargetFramework>
-        <OutputPath>..\Release\UniverseLib.Il2Cpp.Unhollower\</OutputPath>
-        <DefineConstants>CPP,UNHOLLOWER</DefineConstants>
-        <AssemblyName>UniverseLib.IL2CPP.Unhollower</AssemblyName>
-        <DocumentationFile>..\Release\UniverseLib.Il2Cpp.Unhollower\UniverseLib.IL2CPP.Unhollower.xml</DocumentationFile>
-    </PropertyGroup>
-    <PropertyGroup Condition=" '$(Configuration)' == 'Release_IL2CPP_Interop' ">
-        <TargetFramework>net6</TargetFramework>
-        <OutputPath>..\Release\UniverseLib.Il2Cpp.Interop\</OutputPath>
-        <DefineConstants>CPP,INTEROP</DefineConstants>
-        <AssemblyName>UniverseLib.IL2CPP.Interop</AssemblyName>
-        <DocumentationFile>..\Release\UniverseLib.Il2Cpp.Interop\UniverseLib.IL2CPP.Interop.xml</DocumentationFile>
-    </PropertyGroup>
-    <PropertyGroup Condition=" '$(Configuration)' == 'Release_Mono' ">
-        <TargetFramework>net35</TargetFramework>
-        <OutputPath>..\Release\UniverseLib.Mono\</OutputPath>
-        <DefineConstants>MONO</DefineConstants>
-        <AssemblyName>UniverseLib.Mono</AssemblyName>
-        <DocumentationFile>..\Release\UniverseLib.Mono\UniverseLib.Mono.xml</DocumentationFile>
-    </PropertyGroup>
-    <!-- NuGet -->
-    <ItemGroup>
-        <PackageReference Include="HarmonyX" Version="2.5.2" IncludeAssets="compile" />
-        <PackageReference Include="UniverseLib.Analyzers" Version="1.0.4" IncludeAssets="compile" />
-    </ItemGroup>
-    <ItemGroup Condition="'$(Configuration)' == 'Release_IL2CPP_Unhollower'">
-        <PackageReference Include="Il2CppAssemblyUnhollower.BaseLib" Version="0.4.22" IncludeAssets="compile" />
-    </ItemGroup>
-    <ItemGroup Condition="'$(Configuration)' == 'Release_IL2CPP_Interop'">
-        <PackageReference Include="Il2CppInterop.Common" Version="1.0.0" />
-        <PackageReference Include="Il2CppInterop.Runtime" Version="1.0.0" />
-    </ItemGroup>
-    <!-- Assembly References -->
-    <ItemGroup Condition="'$(Configuration)' == 'Release_Mono'">
-        <Reference Include="UnityEngine">
-            <HintPath>..\lib\mono\UnityEngine_publicized.dll</HintPath>
-            <Private>False</Private>
-        </Reference>
-        <Reference Include="UnityEngine.UI">
-            <HintPath>..\lib\mono\UnityEngine.UI_publicized.dll</HintPath>
-            <Private>False</Private>
-        </Reference>
-    </ItemGroup>
-    <ItemGroup Condition="'$(Configuration)' == 'Release_IL2CPP_Unhollower'">
-        <Reference Include="Il2Cppmscorlib">
-            <HintPath>..\lib\unhollowed\Il2Cppmscorlib.dll</HintPath>
-            <Private>False</Private>
-        </Reference>
-        <Reference Include="Il2CppSystem.Core">
-            <HintPath>..\lib\unhollowed\Il2CppSystem.Core.dll</HintPath>
-            <Private>False</Private>
-        </Reference>
-        <Reference Include="UnityEngine">
-            <HintPath>..\lib\unhollowed\UnityEngine.dll</HintPath>
-            <Private>False</Private>
-        </Reference>
-        <Reference Include="UnityEngine.CoreModule">
-            <HintPath>..\lib\unhollowed\UnityEngine.CoreModule.dll</HintPath>
-            <Private>False</Private>
-        </Reference>
-        <Reference Include="UnityEngine.PhysicsModule">
-            <HintPath>..\lib\unhollowed\UnityEngine.PhysicsModule.dll</HintPath>
-            <Private>False</Private>
-        </Reference>
-        <Reference Include="UnityEngine.TextRenderingModule">
-            <HintPath>..\lib\unhollowed\UnityEngine.TextRenderingModule.dll</HintPath>
-            <Private>False</Private>
-        </Reference>
-        <Reference Include="UnityEngine.UI">
-            <HintPath>..\lib\unhollowed\UnityEngine.UI.dll</HintPath>
-            <Private>False</Private>
-        </Reference>
-        <Reference Include="UnityEngine.UIModule">
-            <HintPath>..\lib\unhollowed\UnityEngine.UIModule.dll</HintPath>
-            <Private>False</Private>
-        </Reference>
-        <Reference Include="UnityEngine.IMGUIModule">
-            <HintPath>..\lib\unhollowed\UnityEngine.IMGUIModule.dll</HintPath>
-            <Private>False</Private>
-        </Reference>
-    </ItemGroup>
-    <ItemGroup Condition="'$(Configuration)' == 'Release_IL2CPP_Interop'">
-        <Reference Include="Il2Cppmscorlib">
-            <HintPath>..\lib\interop\Il2Cppmscorlib.dll</HintPath>
-            <Private>False</Private>
-        </Reference>
-        <Reference Include="Il2CppSystem.Core">
-            <HintPath>..\lib\interop\Il2CppSystem.Core.dll</HintPath>
-            <Private>False</Private>
-        </Reference>
-        <Reference Include="UnityEngine">
-            <HintPath>..\lib\interop\UnityEngine.dll</HintPath>
-            <Private>False</Private>
-        </Reference>
-        <Reference Include="UnityEngine.CoreModule">
-            <HintPath>..\lib\interop\UnityEngine.CoreModule.dll</HintPath>
-            <Private>False</Private>
-        </Reference>
-        <Reference Include="UnityEngine.PhysicsModule">
-            <HintPath>..\lib\interop\UnityEngine.PhysicsModule.dll</HintPath>
-            <Private>False</Private>
-        </Reference>
-        <Reference Include="UnityEngine.TextRenderingModule">
-            <HintPath>..\lib\interop\UnityEngine.TextRenderingModule.dll</HintPath>
-            <Private>False</Private>
-        </Reference>
-        <Reference Include="UnityEngine.UI">
-            <HintPath>..\lib\interop\UnityEngine.UI.dll</HintPath>
-            <Private>False</Private>
-        </Reference>
-        <Reference Include="UnityEngine.UIModule">
-            <HintPath>..\lib\interop\UnityEngine.UIModule.dll</HintPath>
-            <Private>False</Private>
-        </Reference>
-        <Reference Include="UnityEngine.IMGUIModule">
-            <HintPath>..\lib\interop\UnityEngine.IMGUIModule.dll</HintPath>
-            <Private>False</Private>
-        </Reference>
-    </ItemGroup>
-    <ItemGroup>
-        <EmbeddedResource Include="Resources\*" />
-    </ItemGroup>
-    <Target Name="CopyNuget" AfterTargets="build">
-        <!-- if IL2CPP Unhollower -->
-        <Message Text="Copying IL2CPP Unhollower files..." Importance="high" Condition="'$(Configuration)' == 'Release_IL2CPP_Unhollower'" />
-        <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll" DestinationFolder="$(OutputPath)..\NuGet_IL2CPP_Unhollower\lib\net472" Condition="'$(Configuration)' == 'Release_IL2CPP_Unhollower'" />
-        <Copy SourceFiles="$(OutputPath)$(AssemblyName).xml" DestinationFolder="$(OutputPath)..\NuGet_IL2CPP_Unhollower\lib\net472" Condition="'$(Configuration)' == 'Release_IL2CPP_Unhollower'" />
-        <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll" DestinationFolder="$(OutputPath)..\NuGet_IL2CPP_Unhollower\lib\net6.0" Condition="'$(Configuration)' == 'Release_IL2CPP_Unhollower'" />
-        <Copy SourceFiles="$(OutputPath)$(AssemblyName).xml" DestinationFolder="$(OutputPath)..\NuGet_IL2CPP_Unhollower\lib\net6.0" Condition="'$(Configuration)' == 'Release_IL2CPP_Unhollower'" />
-        <!-- if IL2CPP Interop -->
-        <Message Text="Copying IL2CPP Interop files..." Importance="high" Condition="'$(Configuration)' == 'Release_IL2CPP_Interop'" />
-        <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll" DestinationFolder="$(OutputPath)..\NuGet_IL2CPP_Interop\lib\net472" Condition="'$(Configuration)' == 'Release_IL2CPP_Interop'" />
-        <Copy SourceFiles="$(OutputPath)$(AssemblyName).xml" DestinationFolder="$(OutputPath)..\NuGet_IL2CPP_Interop\lib\net472" Condition="'$(Configuration)' == 'Release_IL2CPP_Interop'" />
-        <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll" DestinationFolder="$(OutputPath)..\NuGet_IL2CPP_Interop\lib\net6.0" Condition="'$(Configuration)' == 'Release_IL2CPP_Interop'" />
-        <Copy SourceFiles="$(OutputPath)$(AssemblyName).xml" DestinationFolder="$(OutputPath)..\NuGet_IL2CPP_Interop\lib\net6.0" Condition="'$(Configuration)' == 'Release_IL2CPP_Interop'" />
-        <!-- if Mono -->
-        <Message Text="Copying Mono files..." Importance="high" Condition="'$(Configuration)' == 'Release_Mono'" />
-        <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll" DestinationFolder="$(OutputPath)..\NuGet_Mono\lib\net35" Condition="'$(Configuration)' == 'Release_Mono'" />
-        <Copy SourceFiles="$(OutputPath)$(AssemblyName).xml" DestinationFolder="$(OutputPath)..\NuGet_Mono\lib\net35" Condition="'$(Configuration)' == 'Release_Mono'" />
-    </Target>
+		<PropertyGroup>
+				<Configuration Condition=" '$(Configuration)' == '' ">Release_IL2CPP</Configuration>
+				<OutputType>Library</OutputType>
+				<LangVersion>10.0</LangVersion>
+				<DefineConstants>
+				</DefineConstants>
+				<DebugSymbols>false</DebugSymbols>
+				<DebugType>none</DebugType>
+				<PlatformTarget>AnyCPU</PlatformTarget>
+				<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+				<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+				<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+				<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+				<AllowedReferenceRelatedFileExtensions>none</AllowedReferenceRelatedFileExtensions>
+				<CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
+				<Configurations>Release_Mono;Release_IL2CPP_Unhollower;Release_IL2CPP_Interop</Configurations>
+				<RootNamespace>UniverseLib</RootNamespace>
+				<Title>UniverseUGUI</Title>
+				<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+		</PropertyGroup>
+		<!-- Configurations -->
+		<PropertyGroup Condition=" '$(Configuration)' == 'Release_IL2CPP_Unhollower' ">
+			<TargetConfigurationSuffix>IL2CPP.Unhollower</TargetConfigurationSuffix>
+			<TargetFramework>net472</TargetFramework>
+			<DefineConstants>CPP,UNHOLLOWER</DefineConstants>
+		</PropertyGroup>
+		<PropertyGroup Condition=" '$(Configuration)' == 'Release_IL2CPP_Interop' ">
+			<TargetConfigurationSuffix>IL2CPP.Interop</TargetConfigurationSuffix>
+			<TargetFramework>net6</TargetFramework>
+			<DefineConstants>CPP,INTEROP</DefineConstants>
+		</PropertyGroup>
+		<PropertyGroup Condition=" '$(Configuration)' == 'Release_Mono' ">
+			<TargetConfigurationSuffix>Mono</TargetConfigurationSuffix>
+				<TargetFramework>net35</TargetFramework>
+				<DefineConstants>MONO</DefineConstants>
+		</PropertyGroup>
+		<PropertyGroup>
+				<OutputPath>..\Release\UniverseLib.$(TargetConfigurationSuffix)\</OutputPath>
+				<AssemblyName>UniverseLib.$(TargetConfigurationSuffix)</AssemblyName>
+				<DocumentationFile>..\Release\UniverseLib.$(TargetConfigurationSuffix)\UniverseLib.$(TargetConfigurationSuffix).xml</DocumentationFile>
+				<PackageId>LuVoid.UniverseUGUI.$(TargetConfigurationSuffix)</PackageId>
+				<PackageReadmeFile>README.md</PackageReadmeFile>
+				<RepositoryUrl>https://github.com/luvoid/UniverseUGUI</RepositoryUrl>
+				<PackageTags>UniverseLib; Unity; $(TargetConfigurationSuffix)</PackageTags>
+				<PackageLicenseFile>LICENSE</PackageLicenseFile>
+				<Description>UniverseUGUI is a fork of UniverseLib which provides an additional framework similar to IMGUI. 
+The goal is to allow easy porting of IMGUI plugins to UGUI.
+
+UniverseLib is a library for making plugins which target IL2CPP and Mono Unity games, with a focus on UI-driven plugins.</Description>
+		</PropertyGroup>
+		<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_Mono|AnyCPU'" />
+		<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_IL2CPP_Unhollower|AnyCPU'" />
+		<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_IL2CPP_Interop|AnyCPU'" />
+		<!-- NuGet -->
+		<ItemGroup>
+				<PackageReference Include="HarmonyX" Version="2.5.2" IncludeAssets="compile" />
+				<PackageReference Include="UniverseLib.Analyzers" Version="1.0.4" IncludeAssets="compile" />
+		</ItemGroup>
+		<ItemGroup Condition="'$(Configuration)' == 'Release_IL2CPP_Unhollower'">
+				<PackageReference Include="Il2CppAssemblyUnhollower.BaseLib" Version="0.4.22" IncludeAssets="compile" />
+		</ItemGroup>
+		<ItemGroup Condition="'$(Configuration)' == 'Release_IL2CPP_Interop'">
+				<PackageReference Include="Il2CppInterop.Common" Version="1.0.0" />
+				<PackageReference Include="Il2CppInterop.Runtime" Version="1.0.0" />
+		</ItemGroup>
+		<!-- Assembly References -->
+		<ItemGroup Condition="'$(Configuration)' == 'Release_Mono'">
+				<Reference Include="UnityEngine">
+						<HintPath>..\lib\mono\UnityEngine_publicized.dll</HintPath>
+						<Private>False</Private>
+				</Reference>
+				<Reference Include="UnityEngine.UI">
+						<HintPath>..\lib\mono\UnityEngine.UI_publicized.dll</HintPath>
+						<Private>False</Private>
+				</Reference>
+		</ItemGroup>
+		<ItemGroup Condition="'$(Configuration)' == 'Release_IL2CPP_Unhollower'">
+				<Reference Include="Il2Cppmscorlib">
+						<HintPath>..\lib\unhollowed\Il2Cppmscorlib.dll</HintPath>
+						<Private>False</Private>
+				</Reference>
+				<Reference Include="Il2CppSystem.Core">
+						<HintPath>..\lib\unhollowed\Il2CppSystem.Core.dll</HintPath>
+						<Private>False</Private>
+				</Reference>
+				<Reference Include="UnityEngine">
+						<HintPath>..\lib\unhollowed\UnityEngine.dll</HintPath>
+						<Private>False</Private>
+				</Reference>
+				<Reference Include="UnityEngine.CoreModule">
+						<HintPath>..\lib\unhollowed\UnityEngine.CoreModule.dll</HintPath>
+						<Private>False</Private>
+				</Reference>
+				<Reference Include="UnityEngine.PhysicsModule">
+						<HintPath>..\lib\unhollowed\UnityEngine.PhysicsModule.dll</HintPath>
+						<Private>False</Private>
+				</Reference>
+				<Reference Include="UnityEngine.TextRenderingModule">
+						<HintPath>..\lib\unhollowed\UnityEngine.TextRenderingModule.dll</HintPath>
+						<Private>False</Private>
+				</Reference>
+				<Reference Include="UnityEngine.UI">
+						<HintPath>..\lib\unhollowed\UnityEngine.UI.dll</HintPath>
+						<Private>False</Private>
+				</Reference>
+				<Reference Include="UnityEngine.UIModule">
+						<HintPath>..\lib\unhollowed\UnityEngine.UIModule.dll</HintPath>
+						<Private>False</Private>
+				</Reference>
+				<Reference Include="UnityEngine.IMGUIModule">
+						<HintPath>..\lib\unhollowed\UnityEngine.IMGUIModule.dll</HintPath>
+						<Private>False</Private>
+				</Reference>
+		</ItemGroup>
+		<ItemGroup Condition="'$(Configuration)' == 'Release_IL2CPP_Interop'">
+				<Reference Include="Il2Cppmscorlib">
+						<HintPath>..\lib\interop\Il2Cppmscorlib.dll</HintPath>
+						<Private>False</Private>
+				</Reference>
+				<Reference Include="Il2CppSystem.Core">
+						<HintPath>..\lib\interop\Il2CppSystem.Core.dll</HintPath>
+						<Private>False</Private>
+				</Reference>
+				<Reference Include="UnityEngine">
+						<HintPath>..\lib\interop\UnityEngine.dll</HintPath>
+						<Private>False</Private>
+				</Reference>
+				<Reference Include="UnityEngine.CoreModule">
+						<HintPath>..\lib\interop\UnityEngine.CoreModule.dll</HintPath>
+						<Private>False</Private>
+				</Reference>
+				<Reference Include="UnityEngine.PhysicsModule">
+						<HintPath>..\lib\interop\UnityEngine.PhysicsModule.dll</HintPath>
+						<Private>False</Private>
+				</Reference>
+				<Reference Include="UnityEngine.TextRenderingModule">
+						<HintPath>..\lib\interop\UnityEngine.TextRenderingModule.dll</HintPath>
+						<Private>False</Private>
+				</Reference>
+				<Reference Include="UnityEngine.UI">
+						<HintPath>..\lib\interop\UnityEngine.UI.dll</HintPath>
+						<Private>False</Private>
+				</Reference>
+				<Reference Include="UnityEngine.UIModule">
+						<HintPath>..\lib\interop\UnityEngine.UIModule.dll</HintPath>
+						<Private>False</Private>
+				</Reference>
+				<Reference Include="UnityEngine.IMGUIModule">
+						<HintPath>..\lib\interop\UnityEngine.IMGUIModule.dll</HintPath>
+						<Private>False</Private>
+				</Reference>
+		</ItemGroup>
+		<ItemGroup>
+				<EmbeddedResource Include="Resources\*" />
+		</ItemGroup>
+		<ItemGroup>
+			<None Include="..\LICENSE">
+			  <Pack>True</Pack>
+			  <PackagePath>\</PackagePath>
+			</None>
+			<None Include="..\README.md">
+				<Pack>True</Pack>
+				<PackagePath>\</PackagePath>
+			</None>
+		</ItemGroup>
+		<Target Name="_GetAssemblyBuildVersion" AfterTargets="build">
+				<GetAssemblyIdentity AssemblyFiles="$(TargetPath)">
+						<Output TaskParameter="Assemblies" ItemName="Targets" />
+				</GetAssemblyIdentity>
+				<ItemGroup>
+						<AssemblyBuildVersion Include="@(Targets->'%(Version)')" />
+				</ItemGroup>
+				<Message Text="AssemblyBuildVersion: @(AssemblyBuildVersion)" Importance="high" />
+				<CreateProperty Value="@(AssemblyBuildVersion)">
+						<Output TaskParameter="Value" PropertyName="AssemblyBuildVersion" />
+				</CreateProperty>
+				<CreateProperty Value="@(AssemblyBuildVersion)">
+						<Output TaskParameter="Value" PropertyName="PackageVersion" />
+				</CreateProperty>
+		</Target>
+		<Target Name="CopyNuget" AfterTargets="build">
+				<!-- if IL2CPP Unhollower -->
+				<Message Text="Copying IL2CPP Unhollower files..." Importance="high" Condition="'$(Configuration)' == 'Release_IL2CPP_Unhollower'" />
+				<Copy SourceFiles="$(OutputPath)$(AssemblyName).dll" DestinationFolder="$(OutputPath)..\NuGet_IL2CPP_Unhollower\lib\net472" Condition="'$(Configuration)' == 'Release_IL2CPP_Unhollower'" />
+				<Copy SourceFiles="$(OutputPath)$(AssemblyName).xml" DestinationFolder="$(OutputPath)..\NuGet_IL2CPP_Unhollower\lib\net472" Condition="'$(Configuration)' == 'Release_IL2CPP_Unhollower'" />
+				<Copy SourceFiles="$(OutputPath)$(AssemblyName).dll" DestinationFolder="$(OutputPath)..\NuGet_IL2CPP_Unhollower\lib\net6.0" Condition="'$(Configuration)' == 'Release_IL2CPP_Unhollower'" />
+				<Copy SourceFiles="$(OutputPath)$(AssemblyName).xml" DestinationFolder="$(OutputPath)..\NuGet_IL2CPP_Unhollower\lib\net6.0" Condition="'$(Configuration)' == 'Release_IL2CPP_Unhollower'" />
+				<!-- if IL2CPP Interop -->
+				<Message Text="Copying IL2CPP Interop files..." Importance="high" Condition="'$(Configuration)' == 'Release_IL2CPP_Interop'" />
+				<Copy SourceFiles="$(OutputPath)$(AssemblyName).dll" DestinationFolder="$(OutputPath)..\NuGet_IL2CPP_Interop\lib\net472" Condition="'$(Configuration)' == 'Release_IL2CPP_Interop'" />
+				<Copy SourceFiles="$(OutputPath)$(AssemblyName).xml" DestinationFolder="$(OutputPath)..\NuGet_IL2CPP_Interop\lib\net472" Condition="'$(Configuration)' == 'Release_IL2CPP_Interop'" />
+				<Copy SourceFiles="$(OutputPath)$(AssemblyName).dll" DestinationFolder="$(OutputPath)..\NuGet_IL2CPP_Interop\lib\net6.0" Condition="'$(Configuration)' == 'Release_IL2CPP_Interop'" />
+				<Copy SourceFiles="$(OutputPath)$(AssemblyName).xml" DestinationFolder="$(OutputPath)..\NuGet_IL2CPP_Interop\lib\net6.0" Condition="'$(Configuration)' == 'Release_IL2CPP_Interop'" />
+				<!-- if Mono -->
+				<Message Text="Copying Mono files..." Importance="high" Condition="'$(Configuration)' == 'Release_Mono'" />
+				<Copy SourceFiles="$(OutputPath)$(AssemblyName).dll" DestinationFolder="$(OutputPath)..\NuGet_Mono\lib\net35" Condition="'$(Configuration)' == 'Release_Mono'" />
+				<Copy SourceFiles="$(OutputPath)$(AssemblyName).xml" DestinationFolder="$(OutputPath)..\NuGet_Mono\lib\net35" Condition="'$(Configuration)' == 'Release_Mono'" />
+		</Target>
 </Project>

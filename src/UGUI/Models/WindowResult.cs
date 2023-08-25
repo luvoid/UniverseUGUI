@@ -11,7 +11,7 @@ namespace UniverseLib.UGUI.Models
 {
     public class WindowResult : UGUIContentModel, IUniversalUGUIObject
     {
-        public override GameObject GameObject { get => Container; }
+        public override GameObject GameObject => Container;
 
         private bool useUGUILayout;
         private readonly UGUIBase owner;
@@ -20,12 +20,15 @@ namespace UniverseLib.UGUI.Models
 
         private readonly UGUI.WindowFunction onUGUIStart = null;
         private readonly UGUI.WindowFunction onUGUI = null;
+        private readonly bool forceRect;
+        private readonly GUISkin skin;
 
-        internal WindowResult(string name, UGUIBase owner, Rect position, int id, UGUI.WindowFunction func, UGUIContent titleContent, GUIStyle style)
+        internal WindowResult(string name, UGUIBase owner, Rect position, int id, UGUI.WindowFunction func, bool forceRect, UGUIContent titleContent, GUIStyle style)
             : base(name, owner.Panels.PanelHolder, position, titleContent, style)
         {
             this.owner = owner;
-            windowID = id;
+            this.windowID = id;
+            this.forceRect = forceRect;
             contentRoot = UIFactory.CreateUIObject("ContentRoot", Container);
             useUGUILayout = UGUIUtility.s_ActiveUGUI.UseUGUILayout;
 
@@ -42,6 +45,7 @@ namespace UniverseLib.UGUI.Models
             owner.AddObject(this);
 
             _rect = contentRoot.GetComponent<RectTransform>().rect;
+            skin = UGUI.skin;
 
             ApplyStyle(style);
         }
@@ -54,6 +58,8 @@ namespace UniverseLib.UGUI.Models
             {
                 SetOffsets(contentRoot, style.padding);
             }
+
+            style.AddStyleComponentTo(GameObject);
         }
 
         internal override void SetState(in Rect position, UGUIContent content, GUIStyle style)
@@ -78,16 +84,39 @@ namespace UniverseLib.UGUI.Models
         int IUniversalUGUIObject.GetInstanceID()
             => GameObject.GetInstanceID();
         void IUniversalUGUIObject.OnUGUIStart()
-            => onUGUIStart?.Invoke(windowID);
+        {
+            if (onUGUIStart == null) return;
+            UGUI.CallWindowDelegate(
+                onUGUIStart,
+                windowID,
+                GameObject.GetInstanceID(),
+                skin,
+                forceRect,
+                contentRoot.GetComponent<RectTransform>().rect,
+                Style
+            );
+        }
         void IUniversalUGUIObject.OnUGUI()
-            => onUGUI?.Invoke(windowID);
+		{
+			if (onUGUI == null) return;
+			UGUI.CallWindowDelegate(
+				onUGUI,
+				windowID,
+				GameObject.GetInstanceID(),
+				skin,
+				forceRect,
+				contentRoot.GetComponent<RectTransform>().rect,
+				Style
+			);
+		}
 
 
 
 
-        #region Rect Implementation
+		#region Rect Implementation
+#pragma warning disable IDE1006 // Naming Styles
 
-        private Rect _rect;
+		private Rect _rect;
         public Vector2 min => _rect.min;
         public Vector2 max => _rect.max;
         public Vector2 position { get => _rect.position; set => _rect.position = value; }
@@ -108,6 +137,7 @@ namespace UniverseLib.UGUI.Models
 
         public static implicit operator Rect(WindowResult windowResult) => windowResult._rect;
 
+#pragma warning restore IDE1006 // Naming Styles
         #endregion
     }
 }

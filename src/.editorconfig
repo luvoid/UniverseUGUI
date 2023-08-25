@@ -2,6 +2,7 @@
 tab_width = 4
 indent_size = 4
 end_of_line = crlf
+insert_final_newline = true
 
 [*.cs]
 
@@ -12,7 +13,10 @@ dotnet_diagnostic.CS1591.severity = none
 dotnet_diagnostic.CS0419.severity = none
 
 # CS1584: XML comment has syntactically incorrect cref attribute
-dotnet_diagnostic.CS1584.severity = none
+dotnet_diagnostic.CS1584.severity = warning
 
 # CS1573: Parameter has no matching param tag in the XML comment (but other parameters do)
 dotnet_diagnostic.CS1573.severity = none
+
+# IDE0090: Use 'new(...)'
+dotnet_diagnostic.IDE0090.severity = none

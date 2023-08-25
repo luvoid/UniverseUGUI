@@ -11,9 +11,10 @@ namespace UniverseLib.UGUI.Models
         private InputFieldRef inputFieldRef;
 
         public override string Text { get => inputFieldRef.Text; set => inputFieldRef.Text = value; }
-        public override InputField Component { get => inputFieldRef.Component; protected set => throw new System.InvalidOperationException(); }
-        public override Text TextComponent { get => inputFieldRef.Component.textComponent; protected set => throw new System.InvalidOperationException(); }
-        public override Graphic BackgroundComponent { get => inputFieldRef.Component.image; protected set => throw new System.InvalidOperationException(); }
+        public override InputField Component => inputFieldRef.Component;
+        public override Text TextComponent => inputFieldRef.Component.textComponent;
+        public override Graphic BackgroundComponent => inputFieldRef.Component.image;
+		public override RawImage ImageComponent { get; }
 
         internal TextFieldResult(string name, GameObject parent, Rect position, UGUIContent content, GUIStyle style)
             : base(name, parent, position)
@@ -21,15 +22,16 @@ namespace UniverseLib.UGUI.Models
             inputFieldRef = UIFactory.CreateInputField(Container, "InputField", string.Empty);
             inputFieldRef.Component.placeholder.raycastTarget = false;
 
-            TextComponent.transform.parent.parent = Container.transform;
+            TextComponent.transform.parent.SetParent(Container.transform, worldPositionStays: false);
             TextComponent.raycastTarget = false;
-            TextComponent.text = content.text;
-            Text = content.text;
 
             ImageComponent = CreateImage(Container, content.image);
             ImageComponent.raycastTarget = false;
 
             Style = style;
-        }
-    }
+
+			SetContent(content);
+            TextComponent.text = content.text; // It won't show until it's interacted with otherwise.
+		}
+	}
 }

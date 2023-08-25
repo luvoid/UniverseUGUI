@@ -10,7 +10,12 @@ namespace UniverseLib.UGUI.Models
 {
     public sealed class ToggleResult : UGUISelectableModel<Toggle>
     {
-        public Image BackgroundImage => BackgroundComponent as Image;
+		public override Toggle Component { get; }
+		public override Text TextComponent { get; }
+		public override Graphic BackgroundComponent { get; }
+		public override RawImage ImageComponent { get; }
+
+		public Image BackgroundImage => BackgroundComponent as Image;
         public Image CheckmarkImage => Component.graphic as Image;
 
         internal ToggleResult(string name, GameObject parent, Rect position, bool value, UGUIContent content, GUIStyle style)

@@ -39,12 +39,12 @@ namespace UniverseLib.UGUI
             Action callback = () =>
             {
                 var @this = UniversalUI.registeredUIs[id] as UGUIBase;
-                @this.Update();
+                @this.OnUpdate();
             };
             return callback;
         }
 
-        private void Update()
+        private void OnUpdate()
         {
             while (newUGUIObjects.Count > 0)
             {
