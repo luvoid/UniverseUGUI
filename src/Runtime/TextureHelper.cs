@@ -70,7 +70,7 @@ namespace UniverseLib.Runtime
         /// <summary>
         /// Helper for creating a <see cref="Sprite" /> from the provided <paramref name="texture"/>.
         /// </summary>
-        public static void CreateSprite(Texture2D texture, Rect rect, Vector2 pivot, float pixelsPerUnit, uint extrude, Vector4 border)
+        public static Sprite CreateSprite(Texture2D texture, Rect rect, Vector2 pivot, float pixelsPerUnit, uint extrude, Vector4 border)
             => Instance.Internal_CreateSprite(texture, rect, pivot, pixelsPerUnit, extrude, border);
         
         protected internal abstract Sprite Internal_CreateSprite(Texture2D texture, Rect rect, Vector2 pivot, float pixelsPerUnit, 
