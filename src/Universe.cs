@@ -32,7 +32,7 @@ namespace UniverseLib
         }
 
         public const string NAME = "UniverseUGUI";
-        public const string VERSION = "1.6.0";
+        public const string VERSION = "1.6.1";
         public const string AUTHOR = "luvoid";
         public const string GUID = "luvoid.universeugui";
 
@@ -98,9 +98,6 @@ namespace UniverseLib
                 Log($"{NAME} {VERSION} initializing...");
 
                 // Run immediate setups which don't require any delay
-                UniversalBehaviour.Setup();
-                ReflectionUtility.Init();
-                RuntimeHelper.Init();
 
                 // Begin the startup delay coroutine
                 RuntimeHelper.Instance.Internal_StartCoroutine(SetupCoroutine());
@@ -108,6 +105,22 @@ namespace UniverseLib
                 Log($"Finished UniverseLib initial setup.");
             }
         }
+
+		private static bool _didInitSetup = false;
+		/// <summary>
+		/// Run immediate setups which don't require any delays.
+		/// This will not fully initialize until <see cref="Init"/> is called.
+		/// </summary>
+		internal static void InitSetup()
+		{
+            if (_didInitSetup) return;
+
+			UniversalBehaviour.Setup();
+			ReflectionUtility.Init();
+			RuntimeHelper.Init();
+
+			_didInitSetup = true;
+		}
 
         internal static void Update()
         {

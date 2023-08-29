@@ -12,7 +12,8 @@ namespace UniverseLib.UGUI.Panels
 {
     public abstract class UGUIPanelBase : PanelBase, IUniversalUGUIObject
     {
-        public virtual GUISkin Skin { get; set; } = UGUIUtility.GetDefaultSkin();
+        private UGUISkin _skin = null;
+        public UGUISkin Skin { get => _skin ?? Owner.Skin ?? UGUIUtility.GetDefaultSkin(); set => _skin = value; }
         public new UGUIBase Owner => base.Owner as UGUIBase;
         public virtual bool UseUGUILayout { get; set; } = true;
         public GameObject UGUIContentRoot { get; protected set; }
@@ -31,7 +32,7 @@ namespace UniverseLib.UGUI.Panels
         {
             if (Skin != null)
             {
-                Skin.window.ApplyToBackground(UIRoot.GetComponent<Graphic>());
+                Skin.Window?.ApplyToBackground(UIRoot.GetComponent<Graphic>());
 
                 if (ContentRoot != null)
                 {
@@ -42,21 +43,21 @@ namespace UniverseLib.UGUI.Panels
 
                 if (TitleBar != null)
                 {
-                    Skin.box.ApplyToBackground(TitleBar.GetComponent<Graphic>());
+                    Skin.Box?.ApplyToBackground(TitleBar.GetComponent<Graphic>());
 
                     var titleText = TitleBar.GetComponentInChildren<Text>();
                     if (titleText != null)
-                        Skin.label.ApplyToText(titleText, Skin.font);
+                        Skin.Label?.ApplyToText(titleText, Skin);
 
                     var closeButton = TitleBar.GetComponentInChildren<Button>();
                     if (closeButton != null)
                     {
-                        Skin.button.ApplyToBackground(closeButton.targetGraphic);
-                        Skin.button.ApplyToSelectable(closeButton);
+                        Skin.Button?.ApplyToBackground(closeButton.targetGraphic);
+                        Skin.Button?.ApplyToSelectable(closeButton);
 
                         var closeText = closeButton.GetComponentInChildren<Text>();
                         if (closeText != null)
-                            Skin.button.ApplyToText(closeText, Skin.font);
+                            Skin.Button?.ApplyToText(closeText, Skin);
                     }
                 }
             }
@@ -71,11 +72,13 @@ namespace UniverseLib.UGUI.Panels
 
         void IUniversalUGUIObject.OnUGUIStart()
         {
+            UGUI.skin = Skin;
             OnUGUIStart();
             OnUGUIContentRootLayout();
         }
         void IUniversalUGUIObject.OnUGUI()
         {
+            UGUI.skin = Skin;
             OnUGUI();
             OnUGUIContentRootLayout();
         }
@@ -85,15 +88,12 @@ namespace UniverseLib.UGUI.Panels
         protected virtual void OnUGUIContentRootLayout()
         {
             if (!UseUGUILayout) return;
-            if (UseUGUILayout)
-            {
-                UIFactory.SetLayoutElement(UGUIContentRoot,
-                    minWidth: (int)UGUILayoutUtility.topLevel.minWidth,
-                    minHeight: (int)UGUILayoutUtility.topLevel.minHeight,
-                    preferredWidth: (int)UGUILayoutUtility.topLevel.maxWidth,
-                    preferredHeight: (int)UGUILayoutUtility.topLevel.maxHeight
-                );
-            }
+            UIFactory.SetLayoutElement(UGUIContentRoot,
+                minWidth: (int)UGUILayoutUtility.topLevel.minWidth,
+                minHeight: (int)UGUILayoutUtility.topLevel.minHeight,
+                preferredWidth: (int)UGUILayoutUtility.topLevel.maxWidth,
+                preferredHeight: (int)UGUILayoutUtility.topLevel.maxHeight
+            );
         }
     }
 }

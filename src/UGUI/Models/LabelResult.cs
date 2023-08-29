@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using UniverseLib.UGUI.ImplicitTypes;
 using UniverseLib.UI;
 using UniverseLib.UI.Models;
 
@@ -12,7 +13,7 @@ namespace UniverseLib.UGUI.Models
         /// </summary>
         public override Text Component => TextComponent;
 
-        internal LabelResult(string name, GameObject parent, Rect position, UGUIContent content, GUIStyle style)
+        internal LabelResult(string name, GameObject parent, Rect position, UGUIContent content, UGUIStyle style)
             : base(name, parent, position, content, style)
         { }
     }

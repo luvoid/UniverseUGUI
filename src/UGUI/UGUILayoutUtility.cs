@@ -5,12 +5,13 @@ using System.Security;
 using UnityEngine.Scripting;
 using UnityEngineInternal;
 using UnityEngine;
+using UniverseLib.UGUI.ImplicitTypes;
 
 namespace UniverseLib.UGUI
 {
-	[System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles",
-		Justification = "Unity's naming style must be preserved for backwards compatibility with IMGUI users.")]
-	public class UGUILayoutUtility
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles",
+        Justification = "Unity's naming style must be preserved for backwards compatibility with IMGUI users.")]
+    public class UGUILayoutUtility
     {
         private static Dictionary<int, LayoutCache> s_StoredLayouts = new Dictionary<int, LayoutCache>();
         private static Dictionary<int, LayoutCache> s_StoredWindows = new Dictionary<int, LayoutCache>();
@@ -70,7 +71,7 @@ namespace UniverseLib.UGUI
             }
         }
 
-		internal static void BeginWindow(int windowID, int instanceID, Rect contentRect, GUIStyle style, GUILayoutOption[] options)
+        internal static void BeginWindow(int windowID, int instanceID, Rect contentRect, UGUIStyle style, GUILayoutOption[] options)
         {
             LayoutCache layoutCache = SelectIDList(instanceID, true);
             if (UGUIEvent.current.type == EventType.Layout)
@@ -79,7 +80,7 @@ namespace UniverseLib.UGUI
                 current.topLevel.style = GUIStyle.none;
                 current.topLevel.windowID = windowID;
                 current.topLevel.contentRect = contentRect;
-				if (options != null)
+                if (options != null)
                     current.topLevel.ApplyOptions(options);
                 current.layoutGroups.Clear();
                 current.layoutGroups.Push(current.topLevel);
@@ -252,12 +253,12 @@ namespace UniverseLib.UGUI
 
         internal static UGUILayoutGroup topLevel => current.topLevel;
 
-        public static Rect GetRect(GUIContent content, GUIStyle style) 
+        public static Rect GetRect(GUIContent content, UGUIStyle style) 
             => DoGetRect(content, style, null);
 
         public static Rect GetRect(
           GUIContent content,
-          GUIStyle style,
+          UGUIStyle style,
           params GUILayoutOption[] options)
         {
             return DoGetRect(content, style, options);
@@ -265,7 +266,7 @@ namespace UniverseLib.UGUI
 
         private static Rect DoGetRect(
           GUIContent content,
-          GUIStyle style,
+          UGUIStyle style,
           GUILayoutOption[] options)
         {
             UGUIUtility.CheckOnUGUI();
@@ -274,7 +275,7 @@ namespace UniverseLib.UGUI
                 case EventType.Layout:
                     if (style.isHeightDependantOnWidth)
                     {
-                        current.topLevel.Add(new GUIWordWrapSizer(style, content, options));
+                        current.topLevel.Add(new GUIWordWrapSizer(style.InternalGUIStyle, content, options));
                     }
                     else
                     {
@@ -294,8 +295,8 @@ namespace UniverseLib.UGUI
                                 }
                             }
                         }
-                        Vector2 vector2 = style.CalcSizeWithConstraints(content, constraints);
-                        current.topLevel.Add(new GUILayoutEntry(vector2.x, vector2.x, vector2.y, vector2.y, style, options));
+                        Vector2 size = style.CalcSizeWithConstraints(content, constraints);
+                        current.topLevel.Add(new GUILayoutEntry(size.x, size.x, size.y, size.y, style.InternalGUIStyle, options));
                     }
                     return kDummyRect;
                 case EventType.Used:
@@ -307,14 +308,14 @@ namespace UniverseLib.UGUI
 
         public static Rect GetRect(float width, float height) => DoGetRect(width, width, height, height, GUIStyle.none, null);
 
-        public static Rect GetRect(float width, float height, GUIStyle style) => DoGetRect(width, width, height, height, style, null);
+        public static Rect GetRect(float width, float height, UGUIStyle style) => DoGetRect(width, width, height, height, style, null);
 
         public static Rect GetRect(float width, float height, params GUILayoutOption[] options) => DoGetRect(width, width, height, height, GUIStyle.none, options);
 
         public static Rect GetRect(
           float width,
           float height,
-          GUIStyle style,
+          UGUIStyle style,
           params GUILayoutOption[] options)
         {
             return DoGetRect(width, width, height, height, style, options);
@@ -334,7 +335,7 @@ namespace UniverseLib.UGUI
           float maxWidth,
           float minHeight,
           float maxHeight,
-          GUIStyle style)
+          UGUIStyle style)
         {
             return DoGetRect(minWidth, maxWidth, minHeight, maxHeight, style, null);
         }
@@ -354,7 +355,7 @@ namespace UniverseLib.UGUI
           float maxWidth,
           float minHeight,
           float maxHeight,
-          GUIStyle style,
+          UGUIStyle style,
           params GUILayoutOption[] options)
         {
             return DoGetRect(minWidth, maxWidth, minHeight, maxHeight, style, options);
@@ -365,13 +366,13 @@ namespace UniverseLib.UGUI
           float maxWidth,
           float minHeight,
           float maxHeight,
-          GUIStyle style,
+          UGUIStyle style,
           GUILayoutOption[] options)
         {
             switch (UGUIEvent.current.type)
             {
                 case EventType.Layout:
-                    current.topLevel.Add(new GUILayoutEntry(minWidth, maxWidth, minHeight, maxHeight, style, options));
+                    current.topLevel.Add(new GUILayoutEntry(minWidth, maxWidth, minHeight, maxHeight, style.InternalGUIStyle, options));
                     return kDummyRect;
                 case EventType.Used:
                     return kDummyRect;
@@ -395,13 +396,13 @@ namespace UniverseLib.UGUI
 
         public static Rect GetAspectRect(float aspect) => DoGetAspectRect(aspect, GUIStyle.none, null);
 
-        public static Rect GetAspectRect(float aspect, GUIStyle style) => DoGetAspectRect(aspect, style, null);
+        public static Rect GetAspectRect(float aspect, UGUIStyle style) => DoGetAspectRect(aspect, style, null);
 
         public static Rect GetAspectRect(float aspect, params GUILayoutOption[] options) => DoGetAspectRect(aspect, GUIStyle.none, options);
 
         public static Rect GetAspectRect(
           float aspect,
-          GUIStyle style,
+          UGUIStyle style,
           params GUILayoutOption[] options)
         {
             return DoGetAspectRect(aspect, GUIStyle.none, options);
@@ -409,7 +410,7 @@ namespace UniverseLib.UGUI
 
         private static Rect DoGetAspectRect(
           float aspect,
-          GUIStyle style,
+          UGUIStyle style,
           GUILayoutOption[] options)
         {
             switch (UGUIEvent.current.type)
@@ -424,7 +425,7 @@ namespace UniverseLib.UGUI
             }
         }
 
-        internal static GUIStyle spaceStyle
+        internal static UGUIStyle spaceStyle
         {
             get
             {

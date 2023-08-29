@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UniverseLib.Runtime;
 
 namespace UniverseLib
 {
@@ -16,6 +17,11 @@ namespace UniverseLib
     public abstract class RuntimeHelper
     {
         internal static RuntimeHelper Instance { get; private set; }
+
+        static RuntimeHelper()
+        {
+			Universe.InitSetup(); // Required before using RuntimeHelper
+		}
 
         internal static void Init()
         {
@@ -54,13 +60,19 @@ namespace UniverseLib
 
         protected internal abstract T Internal_AddComponent<T>(GameObject obj, Type type) where T : Component;
 
-        /// <summary>
-        /// Helper to create an instance of the ScriptableObject of Type <paramref name="type"/>.
-        /// </summary>
-        public static ScriptableObject CreateScriptable(Type type)
+		/// <summary>
+		/// Helper to create an instance of a <see cref="ScriptableObject"/> of type <paramref name="type"/>.
+		/// </summary>
+		public static ScriptableObject CreateScriptable(Type type)
             => Instance.Internal_CreateScriptable(type);
-        
-        protected internal abstract ScriptableObject Internal_CreateScriptable(Type type);
+
+		/// <summary>
+		/// Helper to create an instance of a <see cref="ScriptableObject"/> of type <typeparamref name="T"/>.
+		/// </summary>
+		public static T CreateScriptable<T>() where T : ScriptableObject
+			=> Instance.Internal_CreateScriptable(typeof(T)) as T;
+
+		protected internal abstract ScriptableObject Internal_CreateScriptable(Type type);
 
         /// <summary>
         /// Helper to invoke Unity's <see cref="LayerMask.LayerToName"/> method.

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UniverseLib.UGUI.ImplicitTypes;
 using UniverseLib.UI;
 using UniverseLib.UI.Models;
 using UniverseLib.UI.Panels;
@@ -21,9 +22,9 @@ namespace UniverseLib.UGUI.Models
         private readonly UGUI.WindowFunction onUGUIStart = null;
         private readonly UGUI.WindowFunction onUGUI = null;
         private readonly bool forceRect;
-        private readonly GUISkin skin;
+        private readonly UGUISkin skin;
 
-        internal WindowResult(string name, UGUIBase owner, Rect position, int id, UGUI.WindowFunction func, bool forceRect, UGUIContent titleContent, GUIStyle style)
+        internal WindowResult(string name, UGUIBase owner, Rect position, int id, UGUI.WindowFunction func, bool forceRect, UGUIContent titleContent, UGUIStyle style)
             : base(name, owner.Panels.PanelHolder, position, titleContent, style)
         {
             this.owner = owner;
@@ -50,7 +51,7 @@ namespace UniverseLib.UGUI.Models
             ApplyStyle(style);
         }
 
-        protected override void ApplyStyle(GUIStyle style)
+        protected override void ApplyStyle(UGUIStyle style)
         {
             base.ApplyStyle(style);
 
@@ -59,10 +60,10 @@ namespace UniverseLib.UGUI.Models
                 SetOffsets(contentRoot, style.padding);
             }
 
-            style.AddStyleComponentTo(GameObject);
+            //style.AddStyleComponentTo(GameObject);
         }
 
-        internal override void SetState(in Rect position, UGUIContent content, GUIStyle style)
+        internal override void SetState(in Rect position, UGUIContent content, UGUIStyle style)
         {
             base.SetState(position, content, style);
 
@@ -75,7 +76,7 @@ namespace UniverseLib.UGUI.Models
 
 
 
-
+        string IUniversalUGUIObject.Name => Container.name;
         bool IUniversalUGUIObject.ActiveInHierarchy => GameObject.activeInHierarchy;
         bool IUniversalUGUIObject.UseUGUILayout => useUGUILayout;
         UGUIBase IUniversalUGUIObject.Owner => owner;
@@ -97,26 +98,27 @@ namespace UniverseLib.UGUI.Models
             );
         }
         void IUniversalUGUIObject.OnUGUI()
-		{
-			if (onUGUI == null) return;
-			UGUI.CallWindowDelegate(
-				onUGUI,
-				windowID,
-				GameObject.GetInstanceID(),
-				skin,
-				forceRect,
-				contentRoot.GetComponent<RectTransform>().rect,
-				Style
-			);
-		}
+        {
+            if (onUGUI == null) return;
+            UGUI.CallWindowDelegate(
+                onUGUI,
+                windowID,
+                GameObject.GetInstanceID(),
+                skin,
+                forceRect,
+                contentRoot.GetComponent<RectTransform>().rect,
+                Style
+            );
+        }
 
 
 
 
-		#region Rect Implementation
+        #region Rect Implementation
 #pragma warning disable IDE1006 // Naming Styles
+        private Rect _rect;
 
-		private Rect _rect;
+        /*
         public Vector2 min => _rect.min;
         public Vector2 max => _rect.max;
         public Vector2 position { get => _rect.position; set => _rect.position = value; }
@@ -134,6 +136,7 @@ namespace UniverseLib.UGUI.Models
         [Obsolete] public float right => _rect.right;
         [Obsolete] public float top => _rect.top;
         [Obsolete] public float bottom => _rect.bottom;
+        */
 
         public static implicit operator Rect(WindowResult windowResult) => windowResult._rect;
 

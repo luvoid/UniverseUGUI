@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace UniverseLib.UGUI
+namespace UniverseLib.UGUI.ImplicitTypes
 {
     public static class ObservableExtensions
     {

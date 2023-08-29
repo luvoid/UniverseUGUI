@@ -11,13 +11,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UniverseLib.UGUI.Models;
 using UniverseLib.UI;
+using UniverseLib.UGUI.ImplicitTypes;
 //using static UnityEngine.GUIUtility;
 
 namespace UniverseLib.UGUI
 {
-	[System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles",
-	    Justification = "Unity's naming style must be preserved for backwards compatibility with IMGUI users.")]
-	public static class UGUIUtility
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles",
+        Justification = "Unity's naming style must be preserved for backwards compatibility with IMGUI users.")]
+    public static class UGUIUtility
     {
         public readonly static Texture2D BlankTexture;
         static UGUIUtility()
@@ -45,7 +46,7 @@ namespace UniverseLib.UGUI
         internal static Font GetDefaultFont()
         {
             // First try to get the best skin
-            GUISkin skin = null;
+            UGUISkin skin = null;
             try
             {
                 skin = UGUI.skin;
@@ -56,7 +57,7 @@ namespace UniverseLib.UGUI
             if (skin != null)
             {
                 // Then try to get the skin font
-                var skinFont = skin.font;
+                var skinFont = skin.Font;
                 if (skinFont != null) return skinFont;
             }
 
@@ -120,9 +121,9 @@ namespace UniverseLib.UGUI
             throw new ExitGUIException();
         }
 
-        internal static GUISkin GetDefaultSkin() => GUIUtility.Internal_GetDefaultSkin(s_SkinMode);
+        public static UGUISkin GetDefaultSkin() => (UGUISkin)GUIUtility.Internal_GetDefaultSkin(s_SkinMode);
 
-        internal static GUISkin GetBuiltinSkin(int skin) => GUIUtility.Internal_GetBuiltinSkin(skin) as GUISkin;
+        internal static UGUISkin GetBuiltinSkin(int skin) => (UGUISkin)(GUIUtility.Internal_GetBuiltinSkin(skin) as GUISkin);
 
         internal static void BeginUGUI(in IUniversalUGUIObject uGUI, in UGUIEventType eventType, int skinMode = 0, bool useGUILayout = true)
         {

@@ -2,6 +2,7 @@
 using System.Xml.Linq;
 using UnityEngine;
 using UnityEngine.UI;
+using UniverseLib.UGUI.ImplicitTypes;
 using UniverseLib.UI;
 using UniverseLib.UI.Models;
 
@@ -14,12 +15,12 @@ namespace UniverseLib.UGUI.Models
         public override Button Component => buttonRef.Component;
         public override Text TextComponent => buttonRef.ButtonText;
         public override Graphic BackgroundComponent => buttonRef.Component.image;
-		public override RawImage ImageComponent { get; }
+        public override RawImage ImageComponent { get; }
 
-		internal ButtonResult(string name, GameObject parent, Rect position, UGUIContent content, GUIStyle style)
+        internal ButtonResult(string name, GameObject parent, Rect position, UGUIContent content, UGUIStyle style)
             : base(name, parent, position)
         {
-            buttonRef = UIFactory.CreateButton(Container, "Button", content.text);
+            buttonRef = UIFactory.CreateButton(Container, "Button", content.text, Color.white);
 
             TextComponent.transform.SetParent(Container.transform, worldPositionStays: false);
             TextComponent.raycastTarget = false;
@@ -28,6 +29,11 @@ namespace UniverseLib.UGUI.Models
             ImageComponent.raycastTarget = false;
 
             Style = style;
+        }
+
+        public static implicit operator bool(ButtonResult buttonResult)
+        {
+            return buttonResult.Component.IsPressed();
         }
     }
 }

@@ -3,12 +3,13 @@ using UnityEngineInternal;
 using UnityEngine;
 using UniverseLib.UI;
 using UniverseLib.UGUI.Models;
+using UniverseLib.UGUI.ImplicitTypes;
 
 namespace UniverseLib.UGUI
 {
-	[System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles",
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles",
         Justification = "Unity's naming style must be preserved for backwards compatibility with IMGUI users.")]
-	public class UGUI
+    public class UGUI
     {
         private static IUniversalUGUIObject s_ActiveUGUI => UGUIUtility.s_ActiveUGUI;
         private static GameObject s_ActiveParent => UGUIUtility.s_ActiveParent;
@@ -23,7 +24,7 @@ namespace UniverseLib.UGUI
         private static readonly int s_SliderHash = "Slider".GetHashCode();
         private static readonly int s_BeginGroupHash = "BeginGroup".GetHashCode();
         private static readonly int s_ScrollviewHash = "scrollView".GetHashCode();
-        private static GUISkin s_Skin = UGUIUtility.GetDefaultSkin();
+        private static UGUISkin s_Skin = UGUIUtility.GetDefaultSkin();
         internal static Rect s_ToolTipRect;
         private static GenericStack s_ScrollViewStates = new GenericStack();
         internal static bool changed;
@@ -34,7 +35,7 @@ namespace UniverseLib.UGUI
 
         internal static DateTime nextScrollStepTime { get; set; }
 
-		public static GUISkin skin
+        public static UGUISkin skin
         {
             set
             {
@@ -52,12 +53,11 @@ namespace UniverseLib.UGUI
         public static Color backgroundColor = Color.white;
         public static Color contentColor = Color.white;
 
-        internal static void DoSetSkin(GUISkin newSkin)
+        internal static void DoSetSkin(UGUISkin newSkin)
         {
-            if (!(bool)newSkin)
-                newSkin = UGUIUtility.GetDefaultSkin();
+            newSkin ??= UGUIUtility.GetDefaultSkin();
             s_Skin = newSkin;
-            newSkin.MakeCurrent();
+            //newSkin.InternalGUISkin.MakeCurrent();
         }
 
         public static Matrix4x4 matrix
@@ -80,9 +80,9 @@ namespace UniverseLib.UGUI
             set => s_ToolTipRect = value;
         }
 
-        public static LabelResult Label(Rect position, UGUIContent content, GUIStyle style = null)
+        public static LabelResult Label(Rect position, UGUIContent content, UGUIStyle style = null)
         {
-            style ??= s_Skin.label;
+            style ??= s_Skin.Label;
             UGUIUtility.CheckOnUGUI();
 
             if (!UGUIUtility.TryGetControlModel(out LabelResult label, out int controlID))
@@ -221,9 +221,9 @@ namespace UniverseLib.UGUI
 
 
 
-        public static BoxResult Box(Rect position, UGUIContent content, GUIStyle style = null)
+        public static BoxResult Box(Rect position, UGUIContent content, UGUIStyle style = null)
         {
-            style ??= s_Skin.box;
+            style ??= s_Skin.Box;
             UGUIUtility.CheckOnUGUI();
 
             if (!UGUIUtility.TryGetControlModel(out BoxResult box, out int controlID))
@@ -237,16 +237,16 @@ namespace UniverseLib.UGUI
 
 
 
-        public static ButtonResult Button(Rect position, UGUIContent content, GUIStyle style = null)
+        public static ButtonResult Button(Rect position, UGUIContent content, UGUIStyle style = null)
         {
             var button = DoButton(position, content, style);
             button.SetState(position, content, style);
             return button;
         }
 
-        private static ButtonResult DoButton(Rect position, UGUIContent content, GUIStyle style = null)
+        private static ButtonResult DoButton(Rect position, UGUIContent content, UGUIStyle style = null)
         {
-            style ??= s_Skin.button;
+            style ??= s_Skin.Button;
             UGUIUtility.CheckOnUGUI();
 
             //if (UGUIEvent.current.type != EventType.Repaint) return null;
@@ -265,12 +265,12 @@ namespace UniverseLib.UGUI
         /*
         public static IObservable<bool> RepeatButton(Rect position, UGUIContent content) => DoRepeatButton(position, content, s_Skin.button, FocusType.Passive);
 
-        public static IObservable<bool> RepeatButton(Rect position, UGUIContent content, GUIStyle style) => DoRepeatButton(position, content, style, FocusType.Passive);
+        public static IObservable<bool> RepeatButton(Rect position, UGUIContent content, UGUIStyle style) => DoRepeatButton(position, content, style, FocusType.Passive);
 
         private static IObservable<bool> DoRepeatButton(
           Rect position,
           UGUIContent content,
-          GUIStyle style,
+          UGUIStyle style,
           FocusType focusType)
         {
             UGUIUtility.CheckOnUGUI();
@@ -301,12 +301,12 @@ namespace UniverseLib.UGUI
 
 
 
-        public static TextFieldResult TextField(Rect position, string text, GUIStyle style)
+        public static TextFieldResult TextField(Rect position, string text, UGUIStyle style)
             => TextField(position, text, style: style);
 
-        public static TextFieldResult TextField(Rect position, string text, int maxLength = -1, GUIStyle style = null)
+        public static TextFieldResult TextField(Rect position, string text, int maxLength = -1, UGUIStyle style = null)
         {
-            style ??= skin.textField;
+            style ??= skin.TextField;
             UGUIUtility.CheckOnUGUI();
             UGUIContent content = text;
             return DoTextField(position, UGUIUtility.GetControlID(FocusType.Keyboard, position), content, style);
@@ -331,7 +331,7 @@ namespace UniverseLib.UGUI
           Rect position,
           string password,
           char maskChar,
-          GUIStyle style)
+          UGUIStyle style)
         {
             return PasswordField(position, password, maskChar, -1, style);
         }
@@ -341,7 +341,7 @@ namespace UniverseLib.UGUI
           string password,
           char maskChar,
           int maxLength,
-          GUIStyle style)
+          UGUIStyle style)
         {
             UGUIUtility.CheckOnUGUI();
             UGUIContent content = PasswordFieldGetStrToShow(password, maskChar);
@@ -372,14 +372,14 @@ namespace UniverseLib.UGUI
             return content.text;
         }
 
-        public static IObservable<string> TextArea(Rect position, string text, GUIStyle style)
+        public static IObservable<string> TextArea(Rect position, string text, UGUIStyle style)
         {
             UGUIContent content = text;
             DoTextField(position, UGUIUtility.GetControlID(FocusType.Keyboard, position), content, true, -1, style);
             return content.text;
         }
 
-        public static IObservable<string> TextArea(Rect position, string text, int maxLength, GUIStyle style)
+        public static IObservable<string> TextArea(Rect position, string text, int maxLength, UGUIStyle style)
         {
             UGUIContent content = text;
             DoTextField(position, UGUIUtility.GetControlID(FocusType.Keyboard, position), content, false, maxLength, style);
@@ -390,7 +390,7 @@ namespace UniverseLib.UGUI
           Rect position,
           UGUIContent content,
           int maxLength,
-          GUIStyle style)
+          UGUIStyle style)
         {
             UGUIContent content1 = new(content);
             DoTextField(position, UGUIUtility.GetControlID(FocusType.Keyboard, position), content1, false, maxLength, style);
@@ -406,7 +406,7 @@ namespace UniverseLib.UGUI
           UGUIContent content,
           bool multiline,
           int maxLength,
-          GUIStyle style,
+          UGUIStyle style,
           string secureText = null,
           char maskChar = char.MinValue)
             => DoTextField(position, id, content, style, multiline, maxLength, secureText, maskChar);
@@ -416,7 +416,7 @@ namespace UniverseLib.UGUI
           Rect position,
           int id,
           UGUIContent content,
-          GUIStyle style,
+          UGUIStyle style,
           bool multiline = false,
           int maxLength = -1,
           string secureText = null,
@@ -461,7 +461,7 @@ namespace UniverseLib.UGUI
           UGUIContent content,
           bool multiline,
           int maxLength,
-          GUIStyle style,
+          UGUIStyle style,
           string secureText,
           char maskChar,
           TextEditor editor)
@@ -508,7 +508,7 @@ namespace UniverseLib.UGUI
           UGUIContent content,
           bool multiline,
           int maxLength,
-          GUIStyle style,
+          UGUIStyle style,
           TextEditor editor)
         {
             Event current = Event.current;
@@ -621,7 +621,7 @@ namespace UniverseLib.UGUI
 
 
 
-        public static ToggleResult Toggle(Rect position, bool value, UGUIContent content, GUIStyle style = null)
+        public static ToggleResult Toggle(Rect position, bool value, UGUIContent content, UGUIStyle style = null)
             => Toggle(position, UGUIUtility.GetControlID(s_ToggleHash, FocusType.Passive, position), value, content, style);
 
         public static ToggleResult Toggle(
@@ -629,9 +629,9 @@ namespace UniverseLib.UGUI
           int controlID,
           bool value,
           UGUIContent content,
-          GUIStyle style = null)
+          UGUIStyle style = null)
         {
-            style ??= s_Skin.toggle;
+            style ??= s_Skin.Toggle;
             UGUIUtility.CheckOnUGUI();
             return DoToggle(position, controlID, value, content, style);
         }
@@ -645,32 +645,32 @@ namespace UniverseLib.UGUI
 
         public static IObservable<int> Toolbar(Rect position, int selected, UGUIContent[] content) => Toolbar(position, selected, content, s_Skin.button);
 
-        public static IObservable<int> Toolbar(Rect position, int selected, string[] texts, GUIStyle style) => Toolbar(position, selected, UGUIContent.Temp(texts), style);
+        public static IObservable<int> Toolbar(Rect position, int selected, string[] texts, UGUIStyle style) => Toolbar(position, selected, UGUIContent.Temp(texts), style);
 
-        public static IObservable<int> Toolbar(Rect position, int selected, Texture[] images, GUIStyle style) => Toolbar(position, selected, UGUIContent.Temp(images), style);
+        public static IObservable<int> Toolbar(Rect position, int selected, Texture[] images, UGUIStyle style) => Toolbar(position, selected, UGUIContent.Temp(images), style);
 
-        public static IObservable<int> Toolbar(Rect position, int selected, UGUIContent[] contents, GUIStyle style)
+        public static IObservable<int> Toolbar(Rect position, int selected, UGUIContent[] contents, UGUIStyle style)
         {
             UGUIUtility.CheckOnUGUI();
-            GUIStyle firstStyle;
-            GUIStyle midStyle;
-            GUIStyle lastStyle;
+            UGUIStyle firstStyle;
+            UGUIStyle midStyle;
+            UGUIStyle lastStyle;
             FindStyles(ref style, out firstStyle, out midStyle, out lastStyle, "left", "mid", "right");
             return DoButtonGrid(position, selected, contents, contents.Length, style, firstStyle, midStyle, lastStyle);
         }
 
-        public static IObservable<int> SelectionGrid(Rect position, int selected, string[] texts, int xCount) => SelectionGrid(position, selected, UGUIContent.Temp(texts), xCount, (GUIStyle)null);
+        public static IObservable<int> SelectionGrid(Rect position, int selected, string[] texts, int xCount) => SelectionGrid(position, selected, UGUIContent.Temp(texts), xCount, (UGUIStyle)null);
 
-        public static IObservable<int> SelectionGrid(Rect position, int selected, Texture[] images, int xCount) => SelectionGrid(position, selected, UGUIContent.Temp(images), xCount, (GUIStyle)null);
+        public static IObservable<int> SelectionGrid(Rect position, int selected, Texture[] images, int xCount) => SelectionGrid(position, selected, UGUIContent.Temp(images), xCount, (UGUIStyle)null);
 
-        public static IObservable<int> SelectionGrid(Rect position, int selected, UGUIContent[] content, int xCount) => SelectionGrid(position, selected, content, xCount, (GUIStyle)null);
+        public static IObservable<int> SelectionGrid(Rect position, int selected, UGUIContent[] content, int xCount) => SelectionGrid(position, selected, content, xCount, (UGUIStyle)null);
 
         public static IObservable<int> SelectionGrid(
           Rect position,
           int selected,
           string[] texts,
           int xCount,
-          GUIStyle style)
+          UGUIStyle style)
         {
             return SelectionGrid(position, selected, UGUIContent.Temp(texts), xCount, style);
         }
@@ -680,7 +680,7 @@ namespace UniverseLib.UGUI
           int selected,
           Texture[] images,
           int xCount,
-          GUIStyle style)
+          UGUIStyle style)
         {
             return SelectionGrid(position, selected, UGUIContent.Temp(images), xCount, style);
         }
@@ -690,7 +690,7 @@ namespace UniverseLib.UGUI
           int selected,
           UGUIContent[] contents,
           int xCount,
-          GUIStyle style)
+          UGUIStyle style)
         {
             if (style == null)
                 style = s_Skin.button;
@@ -698,10 +698,10 @@ namespace UniverseLib.UGUI
         }
 
         internal static void FindStyles(
-          ref GUIStyle style,
-          out GUIStyle firstStyle,
-          out GUIStyle midStyle,
-          out GUIStyle lastStyle,
+          ref UGUIStyle style,
+          out UGUIStyle firstStyle,
+          out UGUIStyle midStyle,
+          out UGUIStyle lastStyle,
           string first,
           string mid,
           string last)
@@ -723,10 +723,10 @@ namespace UniverseLib.UGUI
 
         internal static int CalcTotalHorizSpacing(
           int xCount,
-          GUIStyle style,
-          GUIStyle firstStyle,
-          GUIStyle midStyle,
-          GUIStyle lastStyle)
+          UGUIStyle style,
+          UGUIStyle firstStyle,
+          UGUIStyle midStyle,
+          UGUIStyle lastStyle)
         {
             if (xCount < 2)
                 return 0;
@@ -741,10 +741,10 @@ namespace UniverseLib.UGUI
           int selected,
           UGUIContent[] contents,
           int xCount,
-          GUIStyle style,
-          GUIStyle firstStyle,
-          GUIStyle midStyle,
-          GUIStyle lastStyle)
+          UGUIStyle style,
+          UGUIStyle firstStyle,
+          UGUIStyle midStyle,
+          UGUIStyle lastStyle)
         {
             UGUIUtility.CheckOnUGUI();
             int length = contents.Length;
@@ -795,7 +795,7 @@ namespace UniverseLib.UGUI
                     }
                     break;
                 case EventType.Repaint:
-                    GUIStyle guiStyle1 = (GUIStyle)null;
+                    UGUIStyle guiStyle1 = (UGUIStyle)null;
                     GUIClip.Push(position, Vector2.zero, Vector2.zero, false);
                     position = new Rect(0.0f, 0.0f, position.width, position.height);
                     Rect[] buttonRects = CalcMouseRects(position, length, xCount, elemWidth, elemHeight, style, firstStyle, midStyle, lastStyle, false);
@@ -803,7 +803,7 @@ namespace UniverseLib.UGUI
                     UGUIUtility.mouseUsed |= position.Contains(Event.current.mousePosition);
                     for (int index = 0; index < length; ++index)
                     {
-                        GUIStyle guiStyle2 = index == 0 ? firstStyle : midStyle;
+                        UGUIStyle guiStyle2 = index == 0 ? firstStyle : midStyle;
                         if (index == length - 1)
                             guiStyle2 = lastStyle;
                         if (length == 1)
@@ -829,17 +829,17 @@ namespace UniverseLib.UGUI
           int xCount,
           float elemWidth,
           float elemHeight,
-          GUIStyle style,
-          GUIStyle firstStyle,
-          GUIStyle midStyle,
-          GUIStyle lastStyle,
+          UGUIStyle style,
+          UGUIStyle firstStyle,
+          UGUIStyle midStyle,
+          UGUIStyle lastStyle,
           bool addBorders)
         {
             int num1 = 0;
             int num2 = 0;
             float xMin = position.xMin;
             float yMin = position.yMin;
-            GUIStyle guiStyle1 = style;
+            UGUIStyle guiStyle1 = style;
             Rect[] rectArray = new Rect[count];
             if (count > 1)
                 guiStyle1 = firstStyle;
@@ -848,7 +848,7 @@ namespace UniverseLib.UGUI
                 rectArray[index] = addBorders ? guiStyle1.margin.Add(new Rect(xMin, yMin, elemWidth, elemHeight)) : new Rect(xMin, yMin, elemWidth, elemHeight);
                 rectArray[index].width = Mathf.Round(rectArray[index].xMax) - Mathf.Round(rectArray[index].x);
                 rectArray[index].x = Mathf.Round(rectArray[index].x);
-                GUIStyle guiStyle2 = midStyle;
+                UGUIStyle guiStyle2 = midStyle;
                 if (index == count - 2)
                     guiStyle2 = lastStyle;
                 xMin += elemWidth + (float)Mathf.Max(guiStyle1.margin.right, guiStyle2.margin.left);
@@ -906,8 +906,8 @@ namespace UniverseLib.UGUI
           float value,
           float leftValue,
           float rightValue,
-          GUIStyle slider,
-          GUIStyle thumb)
+          UGUIStyle slider,
+          UGUIStyle thumb)
         {
             return Slider(position, value, 0.0f, leftValue, rightValue, slider, thumb, true, 0);
         }
@@ -926,8 +926,8 @@ namespace UniverseLib.UGUI
           float value,
           float topValue,
           float bottomValue,
-          GUIStyle slider,
-          GUIStyle thumb)
+          UGUIStyle slider,
+          UGUIStyle thumb)
         {
             return Slider(position, value, 0.0f, topValue, bottomValue, slider, thumb, false, 0);
         }
@@ -938,8 +938,8 @@ namespace UniverseLib.UGUI
           float size,
           float start,
           float end,
-          GUIStyle slider,
-          GUIStyle thumb,
+          UGUIStyle slider,
+          UGUIStyle thumb,
           bool horiz,
           int id)
         {
@@ -965,12 +965,12 @@ namespace UniverseLib.UGUI
           float size,
           float leftValue,
           float rightValue,
-          GUIStyle style)
+          UGUIStyle style)
         {
             return Scroller(position, value, size, leftValue, rightValue, style, skin.GetStyle(style.name + "thumb"), skin.GetStyle(style.name + "leftbutton"), skin.GetStyle(style.name + "rightbutton"), true);
         }
 
-        internal static IObservable<bool> ScrollerRepeatButton(int scrollerID, Rect rect, GUIStyle style)
+        internal static IObservable<bool> ScrollerRepeatButton(int scrollerID, Rect rect, UGUIStyle style)
         {
             bool flag1 = false;
             if (DoRepeatButton(rect, UGUIContent.none, style, FocusType.Passive))
@@ -1009,7 +1009,7 @@ namespace UniverseLib.UGUI
           float size,
           float topValue,
           float bottomValue,
-          GUIStyle style)
+          UGUIStyle style)
         {
             return Scroller(position, value, size, topValue, bottomValue, style, skin.GetStyle(style.name + "thumb"), skin.GetStyle(style.name + "upbutton"), skin.GetStyle(style.name + "downbutton"), false);
         }
@@ -1020,10 +1020,10 @@ namespace UniverseLib.UGUI
           float size,
           float leftValue,
           float rightValue,
-          GUIStyle slider,
-          GUIStyle thumb,
-          GUIStyle leftButton,
-          GUIStyle rightButton,
+          UGUIStyle slider,
+          UGUIStyle thumb,
+          UGUIStyle leftButton,
+          UGUIStyle rightButton,
           bool horiz)
         {
             UGUIUtility.CheckOnUGUI();
@@ -1067,17 +1067,17 @@ namespace UniverseLib.UGUI
             GUIClip.Push(position, scrollOffset, renderOffset, resetOffset);
         }
 
-        public static void BeginGroup(Rect position) => BeginGroup(position, UGUIContent.none, GUIStyle.none);
+        public static void BeginGroup(Rect position) => BeginGroup(position, UGUIContent.none, UGUIStyle.none);
 
-        public static void BeginGroup(Rect position, UGUIContent content) => BeginGroup(position, content, GUIStyle.none);
+        public static void BeginGroup(Rect position, UGUIContent content) => BeginGroup(position, content, UGUIStyle.none);
 
-        public static void BeginGroup(Rect position, GUIStyle style) => BeginGroup(position, UGUIContent.none, style);
+        public static void BeginGroup(Rect position, UGUIStyle style) => BeginGroup(position, UGUIContent.none, style);
         
-        public static void BeginGroup(Rect position, UGUIContent content, GUIStyle style)
+        public static void BeginGroup(Rect position, UGUIContent content, UGUIStyle style)
         {
             UGUIUtility.CheckOnUGUI();
             int controlID = UGUIUtility.GetControlID(s_BeginGroupHash, FocusType.Passive);
-            if (content != UGUIContent.none || style != GUIStyle.none)
+            if (content != UGUIContent.none || style != UGUIStyle.none)
             {
                 if (Event.current.type == EventType.Repaint)
                     style.Draw(position, content, controlID);
@@ -1127,8 +1127,8 @@ namespace UniverseLib.UGUI
           Rect position,
           Vector2 scrollPosition,
           Rect viewRect,
-          GUIStyle horizontalScrollbar,
-          GUIStyle verticalScrollbar)
+          UGUIStyle horizontalScrollbar,
+          UGUIStyle verticalScrollbar)
         {
             return BeginScrollView(position, scrollPosition, viewRect, false, false, horizontalScrollbar, verticalScrollbar, skin.scrollView);
         }
@@ -1139,8 +1139,8 @@ namespace UniverseLib.UGUI
           Rect viewRect,
           bool alwaysShowHorizontal,
           bool alwaysShowVertical,
-          GUIStyle horizontalScrollbar,
-          GUIStyle verticalScrollbar)
+          UGUIStyle horizontalScrollbar,
+          UGUIStyle verticalScrollbar)
         {
             return BeginScrollView(position, scrollPosition, viewRect, alwaysShowHorizontal, alwaysShowVertical, horizontalScrollbar, verticalScrollbar, skin.scrollView);
         }
@@ -1151,9 +1151,9 @@ namespace UniverseLib.UGUI
           Rect viewRect,
           bool alwaysShowHorizontal,
           bool alwaysShowVertical,
-          GUIStyle horizontalScrollbar,
-          GUIStyle verticalScrollbar,
-          GUIStyle background)
+          UGUIStyle horizontalScrollbar,
+          UGUIStyle verticalScrollbar,
+          UGUIStyle background)
         {
             return BeginScrollView(position, scrollPosition, viewRect, alwaysShowHorizontal, alwaysShowVertical, horizontalScrollbar, verticalScrollbar, background);
         }
@@ -1164,9 +1164,9 @@ namespace UniverseLib.UGUI
           Rect viewRect,
           bool alwaysShowHorizontal,
           bool alwaysShowVertical,
-          GUIStyle horizontalScrollbar,
-          GUIStyle verticalScrollbar,
-          GUIStyle background)
+          UGUIStyle horizontalScrollbar,
+          UGUIStyle verticalScrollbar,
+          UGUIStyle background)
         {
             UGUIUtility.CheckOnUGUI();
             ScrollViewState stateObject = (ScrollViewState)UGUIUtility.GetStateObject(typeof(ScrollViewState), UGUIUtility.GetControlID(s_ScrollviewHash, FocusType.Passive));
@@ -1216,9 +1216,9 @@ namespace UniverseLib.UGUI
                             flag2 = true;
                         }
                     }
-                    if (Event.current.type == EventType.Repaint && background != GUIStyle.none)
+                    if (Event.current.type == EventType.Repaint && background != UGUIStyle.none)
                         background.Draw(position, position.Contains(Event.current.mousePosition), false, flag2 && flag1, false);
-                    if (flag2 && horizontalScrollbar != GUIStyle.none)
+                    if (flag2 && horizontalScrollbar != UGUIStyle.none)
                     {
                         scrollPosition.x = HorizontalScrollbar(new Rect(position.x, position.yMax - horizontalScrollbar.fixedHeight, screenRect.width, horizontalScrollbar.fixedHeight), scrollPosition.x, Mathf.Min(screenRect.width, viewRect.width), 0.0f, viewRect.width, horizontalScrollbar);
                     }
@@ -1227,9 +1227,9 @@ namespace UniverseLib.UGUI
                         UGUIUtility.GetControlID(s_SliderHash, FocusType.Passive);
                         UGUIUtility.GetControlID(s_RepeatButtonHash, FocusType.Passive);
                         UGUIUtility.GetControlID(s_RepeatButtonHash, FocusType.Passive);
-                        scrollPosition.x = horizontalScrollbar == GUIStyle.none ? Mathf.Clamp(scrollPosition.x, 0.0f, Mathf.Max(viewRect.width - position.width, 0.0f)) : 0.0f;
+                        scrollPosition.x = horizontalScrollbar == UGUIStyle.none ? Mathf.Clamp(scrollPosition.x, 0.0f, Mathf.Max(viewRect.width - position.width, 0.0f)) : 0.0f;
                     }
-                    if (flag1 && verticalScrollbar != GUIStyle.none)
+                    if (flag1 && verticalScrollbar != UGUIStyle.none)
                     {
                         scrollPosition.y = VerticalScrollbar(new Rect(screenRect.xMax + (float)verticalScrollbar.margin.left, screenRect.y, verticalScrollbar.fixedWidth, screenRect.height), scrollPosition.y, Mathf.Min(screenRect.height, viewRect.height), 0.0f, viewRect.height, verticalScrollbar);
                         goto case EventType.Used;
@@ -1239,7 +1239,7 @@ namespace UniverseLib.UGUI
                         UGUIUtility.GetControlID(s_SliderHash, FocusType.Passive);
                         UGUIUtility.GetControlID(s_RepeatButtonHash, FocusType.Passive);
                         UGUIUtility.GetControlID(s_RepeatButtonHash, FocusType.Passive);
-                        scrollPosition.y = verticalScrollbar == GUIStyle.none ? Mathf.Clamp(scrollPosition.y, 0.0f, Mathf.Max(viewRect.height - position.height, 0.0f)) : 0.0f;
+                        scrollPosition.y = verticalScrollbar == UGUIStyle.none ? Mathf.Clamp(scrollPosition.y, 0.0f, Mathf.Max(viewRect.height - position.height, 0.0f)) : 0.0f;
                         goto case EventType.Used;
                     }
             }
@@ -1277,7 +1277,7 @@ namespace UniverseLib.UGUI
         //  Getter<Rect> clientRect,
         //  WindowFunction func,
         //  UGUIContent content,
-        //  GUIStyle style = null)
+        //  UGUIStyle style = null)
         //	=> Window(id, (ReadOnlyRef<Rect>)clientRect, func, content, style);
 
         public static WindowResult Window(
@@ -1285,18 +1285,18 @@ namespace UniverseLib.UGUI
           Rect clientRect,
           WindowFunction func,
           UGUIContent content,
-          GUIStyle style = null)
+          UGUIStyle style = null)
         {
             //return DoWindow(id, clientRect, func, content, style, skin, true);
 
             UGUIUtility.CheckOnUGUI();
-            style ??= s_Skin.window;
+            style ??= s_Skin.Window;
 
 
             int controlID = UGUIUtility.GetControlID<WindowResult>(id);
             if (!UGUIUtility.TryGetControlModel(out WindowResult window, controlID))
             {
-                window = new("Window", s_ActiveUGUI.Owner, clientRect, id, func, forceRect: true, content, style);
+                window = new($"Window_{id}", s_ActiveUGUI.Owner, clientRect, id, func, forceRect: true, content, style);
                 UGUIUtility.SetControlModel(window, controlID);
             }
 
@@ -1306,43 +1306,43 @@ namespace UniverseLib.UGUI
         }
 
 
-		internal static void CallWindowDelegate(WindowFunction func, int windowID, int instanceID, GUISkin skin, bool forceRect, Rect contentRect, GUIStyle style)
-		{
-			UGUILayoutUtility.SelectIDList(instanceID, isWindow: true);
-			GUISkin preCallSkin = UGUI.skin;
-			if (UGUIEvent.current.type == EventType.Layout)
-			{
-				if (forceRect)
-				{
-					GUILayoutOption[] options = new GUILayoutOption[2]
-					{
-						UGUILayout.Width(contentRect.size.x),
-						UGUILayout.Height(contentRect.size.y)
-					};
-					UGUILayoutUtility.BeginWindow(windowID, instanceID, contentRect, style, options);
-				}
-				else
-				{
-					UGUILayoutUtility.BeginWindow(windowID, instanceID, contentRect, style, null);
-				}
-			}
-			else
-			{
-				UGUILayoutUtility.BeginWindow(windowID, instanceID, contentRect, GUIStyle.none, null);
-			}
+        internal static void CallWindowDelegate(WindowFunction func, int windowID, int instanceID, UGUISkin skin, bool forceRect, Rect contentRect, UGUIStyle style)
+        {
+            UGUILayoutUtility.SelectIDList(instanceID, isWindow: true);
+            UGUISkin preCallSkin = UGUI.skin;
+            if (UGUIEvent.current.type == EventType.Layout)
+            {
+                if (forceRect)
+                {
+                    GUILayoutOption[] options = new GUILayoutOption[2]
+                    {
+                        UGUILayout.Width(contentRect.size.x),
+                        UGUILayout.Height(contentRect.size.y)
+                    };
+                    UGUILayoutUtility.BeginWindow(windowID, instanceID, contentRect, style, options);
+                }
+                else
+                {
+                    UGUILayoutUtility.BeginWindow(windowID, instanceID, contentRect, style, null);
+                }
+            }
+            else
+            {
+                UGUILayoutUtility.BeginWindow(windowID, instanceID, contentRect, GUIStyle.none, null);
+            }
 
-			UGUI.skin = skin;
-			func(windowID);
-			if (UGUIEvent.current.type == EventType.Layout)
-			{
-				UGUILayoutUtility.Layout();
-			}
+            UGUI.skin = skin;
+            func(windowID);
+            if (UGUIEvent.current.type == EventType.Layout)
+            {
+                UGUILayoutUtility.Layout();
+            }
 
-			UGUI.skin = preCallSkin;
-		}
+            UGUI.skin = preCallSkin;
+        }
 
 
-		/*
+        /*
         public static IObservable<Rect> ModalWindow(
           int id,
           Rect clientRect,
@@ -1358,7 +1358,7 @@ namespace UniverseLib.UGUI
           Rect clientRect,
           WindowFunction func,
           UGUIContent content,
-          GUIStyle style)
+          UGUIStyle style)
         {
             UGUIUtility.CheckOnUGUI();
             return DoModalWindow(id, clientRect, func, content, style, skin);
@@ -1369,7 +1369,7 @@ namespace UniverseLib.UGUI
           Rect clientRect,
           WindowFunction func,
           UGUIContent content,
-          GUIStyle style,
+          UGUIStyle style,
           GUISkin skin)
         {
             return Internal_DoModalWindow(id, UGUIUtility.s_OriginalID, clientRect, func, content, style, skin);
@@ -1384,7 +1384,7 @@ namespace UniverseLib.UGUI
           int forceRect,
           float width,
           float height,
-          GUIStyle style)
+          UGUIStyle style)
         {
             UILayoutUtility.SelectIDList(id, true);
             GUISkin skin = UI.skin;
@@ -1403,7 +1403,7 @@ namespace UniverseLib.UGUI
                     UILayoutUtility.BeginWindow(id, style, (GUILayoutOption[])null);
             }
             else
-                UILayoutUtility.BeginWindow(id, GUIStyle.none, (GUILayoutOption[])null);
+                UILayoutUtility.BeginWindow(id, UGUIStyle.none, (GUILayoutOption[])null);
             skin = _skin;
             func(id);
             if (Event.current.type == EventType.Layout)
@@ -1474,12 +1474,12 @@ namespace UniverseLib.UGUI
 
 
 
-		internal static ToggleResult DoToggle(
+        internal static ToggleResult DoToggle(
           Rect position,
           int controlID,
           bool value,
           UGUIContent content,
-          GUIStyle style)
+          UGUIStyle style)
         {
             //if (UGUIEvent.current.type != EventType.Repaint) return null;
 
@@ -1501,7 +1501,7 @@ namespace UniverseLib.UGUI
           Rect clientRect,
           WindowFunction func,
           UGUIContent content,
-          GUIStyle style,
+          UGUIStyle style,
           GUISkin skin)
         {
             Rect rect;
@@ -1551,11 +1551,11 @@ namespace UniverseLib.UGUI
 
             public GroupScope(Rect position, UGUIContent content) => BeginGroup(position, content);
 
-            public GroupScope(Rect position, GUIStyle style) => BeginGroup(position, style);
+            public GroupScope(Rect position, UGUIStyle style) => BeginGroup(position, style);
 
-            public GroupScope(Rect position, string text, GUIStyle style) => BeginGroup(position, text, style);
+            public GroupScope(Rect position, string text, UGUIStyle style) => BeginGroup(position, text, style);
 
-            public GroupScope(Rect position, Texture image, GUIStyle style) => BeginGroup(position, image, style);
+            public GroupScope(Rect position, Texture image, UGUIStyle style) => BeginGroup(position, image, style);
 
             protected override void CloseScope() => EndGroup();
         }
@@ -1583,8 +1583,8 @@ namespace UniverseLib.UGUI
               Rect position,
               Vector2 scrollPosition,
               Rect viewRect,
-              GUIStyle horizontalScrollbar,
-              GUIStyle verticalScrollbar)
+              UGUIStyle horizontalScrollbar,
+              UGUIStyle verticalScrollbar)
             {
                 this.handleScrollWheel = true;
                 this.scrollPosition = BeginScrollView(position, scrollPosition, viewRect, horizontalScrollbar, verticalScrollbar);
@@ -1596,8 +1596,8 @@ namespace UniverseLib.UGUI
               Rect viewRect,
               bool alwaysShowHorizontal,
               bool alwaysShowVertical,
-              GUIStyle horizontalScrollbar,
-              GUIStyle verticalScrollbar)
+              UGUIStyle horizontalScrollbar,
+              UGUIStyle verticalScrollbar)
             {
                 this.handleScrollWheel = true;
                 this.scrollPosition = BeginScrollView(position, scrollPosition, viewRect, alwaysShowHorizontal, alwaysShowVertical, horizontalScrollbar, verticalScrollbar);
@@ -1609,9 +1609,9 @@ namespace UniverseLib.UGUI
               Rect viewRect,
               bool alwaysShowHorizontal,
               bool alwaysShowVertical,
-              GUIStyle horizontalScrollbar,
-              GUIStyle verticalScrollbar,
-              GUIStyle background)
+              UGUIStyle horizontalScrollbar,
+              UGUIStyle verticalScrollbar,
+              UGUIStyle background)
             {
                 this.handleScrollWheel = true;
                 this.scrollPosition = BeginScrollView(position, scrollPosition, viewRect, alwaysShowHorizontal, alwaysShowVertical, horizontalScrollbar, verticalScrollbar, background);

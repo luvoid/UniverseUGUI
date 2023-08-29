@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using UniverseLib;
 using UniverseLib.UGUI;
+using UniverseLib.UGUI.ImplicitTypes;
 using UniverseLib.UI;
 
 namespace UniverseLib.UGUI.Models
@@ -34,7 +35,7 @@ namespace UniverseLib.UGUI.Models
             UGUIUtility.SetRect(Transform, position);
         }
 
-        internal UGUIContentModel(in string name, GameObject parent, Rect position, UGUIContent content, GUIStyle style)
+        internal UGUIContentModel(in string name, GameObject parent, Rect position, UGUIContent content, UGUIStyle style)
             : this(name, parent, position)
         {
             var background = UIFactory.CreateUIObject("Background", Container).AddComponent<Image>();
@@ -56,32 +57,32 @@ namespace UniverseLib.UGUI.Models
             return image;
         }
 
-        protected override void ApplyStyle(GUIStyle style)
+        protected override void ApplyStyle(UGUIStyle style)
         {
             ApplyTextStyle(style);
             ApplyBackgroundStyle(style);
             ApplyImageStyle(style);
         }
 
-        protected virtual void ApplyTextStyle(GUIStyle style)
+        protected virtual void ApplyTextStyle(UGUIStyle style)
         {
             style.ApplyToText(TextComponent);
             SetOffsets(TextComponent.gameObject, style.padding, style.contentOffset);
         }
 
-        protected virtual void ApplyBackgroundStyle(GUIStyle style)
+        protected virtual void ApplyBackgroundStyle(UGUIStyle style)
         {
             style.ApplyToBackground(BackgroundComponent);
             BackgroundComponent.enabled = BackgroundComponent is not Image image || image.sprite != null;
             SetOffsets(BackgroundComponent.gameObject, style.overflow.Negative());
         }
 
-        protected virtual void ApplyImageStyle(GUIStyle style)
+        protected virtual void ApplyImageStyle(UGUIStyle style)
         {
             SetOffsets(ImageComponent.gameObject, style.padding, style.contentOffset);
         }
 
-        internal virtual void SetState(in Rect position, UGUIContent content, GUIStyle style)
+        internal virtual void SetState(in Rect position, UGUIContent content, UGUIStyle style)
         {
             base.SetState(position, style);
             SetContentIfChanged(content);
@@ -117,7 +118,7 @@ namespace UniverseLib.UGUI.Models
         { }
 
         /// <inheritdoc/>
-        internal UGUIContentModel(string name, GameObject parent, Rect position, UGUIContent content, GUIStyle style)
+        internal UGUIContentModel(string name, GameObject parent, Rect position, UGUIContent content, UGUIStyle style)
             : base(name, parent, position, content, style)
         { }
     }

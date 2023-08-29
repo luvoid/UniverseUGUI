@@ -6,6 +6,7 @@ namespace UniverseLib.UGUI
 {
     internal interface IUniversalUGUIObject
     {
+        public string Name { get; }
         public bool ActiveInHierarchy { get; }
         public bool UseUGUILayout { get; }
         public UGUIBase Owner { get; }

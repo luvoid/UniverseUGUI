@@ -2,15 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine.Scripting;
 using UnityEngine;
+using UniverseLib.UGUI.ImplicitTypes;
 
 namespace UniverseLib.UGUI
 {
-	/// <summary>
-	/// The UniverseUGUI equivalent of <see cref="UnityEngine.Event"/>.
-	/// </summary>
-	[System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles",
-	    Justification = "Unity's naming style must be preserved for backwards compatibility with IMGUI users.")]
-	public sealed class UGUIEvent
+    /// <summary>
+    /// The UniverseUGUI equivalent of <see cref="UnityEngine.Event"/>.
+    /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles",
+        Justification = "Unity's naming style must be preserved for backwards compatibility with IMGUI users.")]
+    public sealed class UGUIEvent
     {
         internal IntPtr m_Ptr;
         private static UGUIEvent s_Current;

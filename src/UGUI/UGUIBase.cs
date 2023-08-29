@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 using UniverseLib;
+using UniverseLib.UGUI.ImplicitTypes;
 using UniverseLib.UGUI.Models;
 using UniverseLib.UI;
 
@@ -11,11 +12,17 @@ namespace UniverseLib.UGUI
 {
     public class UGUIBase : UIBase
     {
+        /// <summary>
+        /// The default skin used by <see cref="IUniversalUGUIBehaviour"/>s assigned to this <see cref="UGUIBase"/>.
+        /// </summary>
+        public UGUISkin Skin = null;
+
         private bool isConstructed = false;
         private readonly Queue<IUniversalUGUIObject> newUGUIObjects = new Queue<IUniversalUGUIObject>();
         private readonly List<IUniversalUGUIObject> uGUIObjects = new List<IUniversalUGUIObject>();
+        private readonly Action earlyUpdateMethod = null;
 
-        protected internal UGUIBase(string id, IUniversalUGUIBehaviour[] behaviours)
+        protected internal UGUIBase(string id, Action earlyUpdateMethod, IUniversalUGUIBehaviour[] behaviours)
             : base(id, CreateUpdateCallback(id))
         {
             foreach (var behaviour in behaviours)
@@ -31,7 +38,7 @@ namespace UniverseLib.UGUI
 
         public void AddBehavior(IUniversalUGUIBehaviour behaviour)
         {
-            newUGUIObjects.Enqueue(new BehaviourWrapper(this, behaviour));
+            newUGUIObjects.Enqueue(new UGUIWrapperObject(this, behaviour, RootObject));
         }
 
         private static Action CreateUpdateCallback(string id)
@@ -46,6 +53,15 @@ namespace UniverseLib.UGUI
 
         private void OnUpdate()
         {
+            try
+            {
+                earlyUpdateMethod?.Invoke();
+            }
+            catch (Exception ex)
+            {
+                Universe.LogError($"Exception invoking early update method for {ID}: {ex}");
+            }
+
             while (newUGUIObjects.Count > 0)
             {
                 var obj = newUGUIObjects.Dequeue();
@@ -81,13 +97,14 @@ namespace UniverseLib.UGUI
             //UGUIUtility.EndUGUI();
         }
 
-        private static void InvokeUGUIMethodWithEvents(IUniversalUGUIObject uGUIObject, Action method, params UGUIEventType[] eventTypes)
+        private void InvokeUGUIMethodWithEvents(IUniversalUGUIObject uGUIObject, Action method, params UGUIEventType[] eventTypes)
         {
             try
             {
                 foreach (var type in eventTypes)
                 {
                     UGUIUtility.BeginUGUI(uGUIObject, type);
+                    UGUI.skin = Skin;
                     method.Invoke();
                     UGUIUtility.EndUGUI();
                 }
@@ -95,38 +112,8 @@ namespace UniverseLib.UGUI
             catch (Exception ex)
             {
                 if (!UGUIUtility.EndUGUIFromException(ex))
-                    Universe.LogError(ex);
+                    Universe.LogError($"Exception invoking OnUGUI / OnUGUIStart for {ID} {uGUIObject}: {ex}");
             }
-        }
-
-
-        private class BehaviourWrapper : IUniversalUGUIObject
-        {
-            private readonly UGUIBase owner;
-            private readonly IUniversalUGUIBehaviour behaviour;
-
-            public BehaviourWrapper(UGUIBase owner, IUniversalUGUIBehaviour behaviour)
-            {
-                if (owner == null) throw new ArgumentNullException(nameof(owner));
-                if (behaviour == null) throw new ArgumentNullException(nameof(behaviour));
-
-                this.owner = owner;
-                this.behaviour = behaviour;
-            }
-
-            bool IUniversalUGUIObject.ActiveInHierarchy => behaviour.isActiveAndEnabled;
-            bool IUniversalUGUIObject.UseUGUILayout => behaviour.useGUILayout;
-            UGUIBase IUniversalUGUIObject.Owner => owner;
-            GameObject IUniversalUGUIObject.ContentRoot => owner.RootObject;
-            Dictionary<int, UGUIModel> IUniversalUGUIObject.Models { get; } = new();
-
-            int IUniversalUGUIObject.GetInstanceID()
-                => behaviour.GetInstanceID();
-            void IUniversalUGUIObject.OnUGUI()
-                => behaviour.OnUGUI();
-            void IUniversalUGUIObject.OnUGUIStart()
-                => behaviour.OnUGUIStart();
         }
     }
-
 }

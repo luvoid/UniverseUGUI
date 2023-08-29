@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using UniverseLib.UGUI;
+using UniverseLib.UGUI.ImplicitTypes;
 using UniverseLib.UI;
 using UniverseLib.UI.Models;
 using BaseUniverseLib = UniverseLib;
@@ -14,7 +14,7 @@ namespace UniverseLib.UGUI.Models
         /// </summary>
         public override GameObject GameObject => Container;
 
-        internal BoxResult(string name, GameObject parent, Rect position, UGUIContent content, GUIStyle style)
+        internal BoxResult(string name, GameObject parent, Rect position, UGUIContent content, UGUIStyle style)
             : base(name, parent, position, content, style)
         { }
     }

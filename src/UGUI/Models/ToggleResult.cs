@@ -1,24 +1,25 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using UniverseLib;
-using UniverseLib.UGUI;
+using UniverseLib.UGUI.ImplicitTypes;
 using UniverseLib.UI;
 using UniverseLib.UI.Models;
+using UniverseLib.UI.Styles;
 using BaseUniverseLib = UniverseLib;
 
 namespace UniverseLib.UGUI.Models
 {
     public sealed class ToggleResult : UGUISelectableModel<Toggle>
     {
-		public override Toggle Component { get; }
-		public override Text TextComponent { get; }
-		public override Graphic BackgroundComponent { get; }
-		public override RawImage ImageComponent { get; }
+        public override Toggle Component { get; }
+        public override Text TextComponent { get; }
+        public override Graphic BackgroundComponent { get; }
+        public override RawImage ImageComponent { get; }
 
-		public Image BackgroundImage => BackgroundComponent as Image;
+        public Image BackgroundImage => BackgroundComponent as Image;
         public Image CheckmarkImage => Component.graphic as Image;
 
-        internal ToggleResult(string name, GameObject parent, Rect position, bool value, UGUIContent content, GUIStyle style)
+        internal ToggleResult(string name, GameObject parent, Rect position, bool value, UGUIContent content, UGUIStyle style)
             : base(name, parent, position)
         {
             UIFactory.CreateToggle(Container, "ToggleControl", out Toggle toggle, out Text text);
@@ -39,43 +40,66 @@ namespace UniverseLib.UGUI.Models
             Style = style;
         }
 
-        protected override void ApplyStyle(GUIStyle style)
+        protected override void ApplyStyle(UGUIStyle style)
         {
             ApplyTextStyle(style);
 
             SetOffsets(Component.gameObject, new RectOffset());
 
-            // TODO : Add support for using the sprites.
-            Sprite bgSprite = null; //style.GetBackgroundSprite(BackgroundImage.sprite);
-            if (bgSprite != null)
-            {
-                BackgroundImage.color = Color.white;
-                CheckmarkImage.color = Color.white;
+            var bgTransform = BackgroundComponent.GetComponent<RectTransform>();
 
+            if (style.InternalStyle is IReadOnlyToggleStyle toggleStyle)
+            {
                 ApplyBackgroundStyle(style);
                 ApplySelectableStyle(style);
+                toggleStyle.Checkmark.ApplyTo(CheckmarkImage);
+                if (toggleStyle.CheckboxSize != Vector2.zero)
+                {
+                    bgTransform.anchorMin = new Vector2(0, 1);
+                    bgTransform.anchorMax = new Vector2(0, 1);
+                    bgTransform.pivot = new Vector2(0, 1);
+                    bgTransform.anchoredPosition = new Vector2(-style.overflow.left, style.overflow.top);
+                    bgTransform.sizeDelta = toggleStyle.CheckboxSize;
+                }
+                bgTransform.GetComponent<LayoutGroup>().padding.Set(toggleStyle.CheckboxPadding);
+            }
+            else if (style.InternalStyle is GUIStyle guiStyle)
+            {
+                // TODO : Add support for using the sprites.
+                Sprite bgSprite = null; //style.GetBackgroundSprite(BackgroundImage.sprite);
+                if (bgSprite != null)
+                {
+                    BackgroundImage.color = Color.white;
+                    CheckmarkImage.color = Color.white;
+
+                    ApplyBackgroundStyle(style);
+                    ApplySelectableStyle(style);
+                }
+                else
+                {
+                    BackgroundImage.sprite = null;
+                    BackgroundImage.overrideSprite = null;
+                    BackgroundImage.color = new Color32(0x0A, 0x0A, 0x0A, 0xBF);
+
+                    CheckmarkImage.sprite = null;
+                    CheckmarkImage.overrideSprite = null;
+                    CheckmarkImage.color = style.textColor;
+
+                    bgTransform.anchorMin = new Vector2(0, 1);
+                    bgTransform.anchorMax = new Vector2(0, 1);
+                    bgTransform.pivot = new Vector2(0, 1);
+                    bgTransform.anchoredPosition = new Vector2(-style.overflow.left, style.overflow.top);
+                    bgTransform.sizeDelta = new Vector2(guiStyle.border.left, guiStyle.border.top);
+
+                    style.ApplyToSelectable(Component, useSprites: false);
+                }
             }
             else
             {
-                BackgroundImage.sprite = null;
-                BackgroundImage.overrideSprite = null;
-                BackgroundImage.color = new Color32(0x0A, 0x0A, 0x0A, 0xBF);
-
-                CheckmarkImage.sprite = null;
-                CheckmarkImage.overrideSprite = null;
-                CheckmarkImage.color = style.normal.textColor;
-
-                var bgTransform = BackgroundComponent.GetComponent<RectTransform>();
-                bgTransform.anchorMin = new Vector2(0, 1);
-                bgTransform.anchorMax = new Vector2(0, 1);
-                bgTransform.pivot = new Vector2(0, 1);
-                bgTransform.anchoredPosition = new Vector2(-style.overflow.left, style.overflow.top);
-                bgTransform.sizeDelta = new Vector2(style.border.left, style.border.top);
-
-                style.ApplyToSelectable(Component, useSprites: false);
+                throw new System.ArgumentException($"The {nameof(UGUIStyle)}'s {nameof(style.InternalStyle)} was an unexpected type: ({style.InternalStyle?.GetType()})");
             }
 
-            style.AddStyleComponentTo(Container);
+            //style.AddStyleComponentTo(Container);
         }
 
 

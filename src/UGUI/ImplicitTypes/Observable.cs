@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine.Events;
 
-namespace UniverseLib.UGUI
+namespace UniverseLib.UGUI.ImplicitTypes
 {
     internal static class Observable
     {

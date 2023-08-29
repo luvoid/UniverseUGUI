@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UniverseLib.UGUI.ImplicitTypes;
 using UniverseLib.UI;
 using UniverseLib.UI.Models;
 
@@ -20,8 +21,8 @@ namespace UniverseLib.UGUI.Models
         /// </summary>
         public RectTransform Transform => Container.GetComponent<RectTransform>();
 
-        private GUIStyle _style;
-        public GUIStyle Style
+        private UGUIStyle _style;
+        public UGUIStyle Style
         {
             get => _style;
             set
@@ -44,7 +45,7 @@ namespace UniverseLib.UGUI.Models
             throw new System.InvalidOperationException("Not implemented.");
         }
 
-        protected abstract void ApplyStyle(GUIStyle style);
+        protected abstract void ApplyStyle(UGUIStyle style);
 
         protected void SetOffsets(GameObject gameObject, RectOffset rectOffset, Vector2 positionOffset = default)
         {
@@ -52,11 +53,11 @@ namespace UniverseLib.UGUI.Models
             var rectTransform = gameObject.GetComponent<RectTransform>();
             rectTransform.anchorMin = new Vector2(0, 0);
             rectTransform.anchorMax = new Vector2(1, 1);
-            rectTransform.offsetMin = new Vector2(rectOffset.left, rectOffset.bottom) + positionOffset;
-            rectTransform.offsetMax = new Vector2(-rectOffset.right, -rectOffset.top) + positionOffset;
+            rectTransform.offsetMin = new Vector2( rectOffset.left , rectOffset.bottom) + positionOffset;
+            rectTransform.offsetMax = new Vector2(-rectOffset.right, -rectOffset.top  ) + positionOffset;
         }
 
-        protected virtual void SetState(in Rect position, GUIStyle style)
+        protected virtual void SetState(in Rect position, UGUIStyle style)
         {
             SetPosition(position);
             SetStyle(style);
@@ -67,7 +68,7 @@ namespace UniverseLib.UGUI.Models
             UGUIUtility.SetRect(Transform, position);
         }
 
-        protected virtual void SetStyle(GUIStyle style)
+        protected virtual void SetStyle(UGUIStyle style)
         {
             ApplyStyle(style);
         }

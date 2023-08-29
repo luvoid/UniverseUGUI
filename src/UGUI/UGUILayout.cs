@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using UnityEngine;
+using UniverseLib.UGUI.ImplicitTypes;
 using UniverseLib.UGUI.Models;
 
 namespace UniverseLib.UGUI
@@ -18,21 +19,21 @@ namespace UniverseLib.UGUI
         // private UGUILayout()
         // { }
 
-        public static void Label(UGUIContent content, GUIStyle style = null, params GUILayoutOption[] options)
+        public static void Label(UGUIContent content, UGUIStyle style = null, params GUILayoutOption[] options)
         {
-            style ??= UGUI.skin.label;
+            style ??= UGUI.skin.Label;
             UGUI.Label(UGUILayoutUtility.GetRect(content, style, options), content, style);
         }
 
-        public static void Box(UGUIContent content, GUIStyle style = null, params GUILayoutOption[] options)
+        public static void Box(UGUIContent content, UGUIStyle style = null, params GUILayoutOption[] options)
         {
-            style ??= UGUI.skin.box;
+            style ??= UGUI.skin.Box;
             UGUI.Box(UGUILayoutUtility.GetRect(content, style, options), content, style);
         }
 
-        public static ButtonResult Button(UGUIContent content, GUIStyle style = null, params GUILayoutOption[] options)
+        public static ButtonResult Button(UGUIContent content, UGUIStyle style = null, params GUILayoutOption[] options)
         {
-            style ??= UGUI.skin.button;
+            style ??= UGUI.skin.Button;
             return UGUI.Button(UGUILayoutUtility.GetRect(content, style, options), content, style);
         }
 
@@ -53,16 +54,16 @@ namespace UniverseLib.UGUI
 
 
 
-        public static TextFieldResult TextField(string text, GUIStyle style, params GUILayoutOption[] options)
+        public static TextFieldResult TextField(string text, UGUIStyle style, params GUILayoutOption[] options)
             => DoTextField(text, style: style, options: options);
 
         public static TextFieldResult TextField(
           string text,
           int maxLength = -1,
-          GUIStyle style = null,
+          UGUIStyle style = null,
           params GUILayoutOption[] options)
         {
-            style ??= UGUI.skin.textField;
+            style ??= UGUI.skin.TextField;
             return DoTextField(text, style, options, false, maxLength);
         }
 
@@ -122,7 +123,7 @@ namespace UniverseLib.UGUI
 
         private static TextFieldResult DoTextField(
           string text,
-          GUIStyle style,
+          UGUIStyle style,
           GUILayoutOption[] options,
           bool multiline = false,
           int maxLength = -1)
@@ -143,10 +144,10 @@ namespace UniverseLib.UGUI
         public static ToggleResult Toggle(
           bool value,
           UGUIContent content,
-          GUIStyle style = null,
+          UGUIStyle style = null,
           params GUILayoutOption[] options)
         {
-            style ??= UGUI.skin.toggle;
+            style ??= UGUI.skin.Toggle;
             return UGUI.Toggle(UGUILayoutUtility.GetRect(content, style, options), value, content, style);
         }
 

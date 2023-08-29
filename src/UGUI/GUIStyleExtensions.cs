@@ -1,19 +1,89 @@
-﻿using HarmonyLib;
-using System.Reflection;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using UniverseLib.Runtime;
-using UniverseLib.UI.Models;
-using UniverseLib.UGUI.Models;
-using System.ComponentModel;
-using UniverseLib;
 using UniverseLib.UI;
 using UniverseLib.UGUI.Components;
+using System.Collections;
+using System;
+using System.Collections.Generic;
 
 namespace UniverseLib.UGUI
 {
     internal static class GUIStyleExtensions
     {
+        private static readonly Dictionary<GUIStyleState, Sprite> s_StyleStateSprites = new();
+        private static readonly Dictionary<int, Sprite> s_SpriteCache = new();
+        private struct SpriteCacheKey
+        {
+            public Texture2D Texture;
+            public Vector4 Border;
+            public SpriteCacheKey(Texture2D texture, Vector4 border)
+            {
+                Texture = texture;
+                Border = new Vector4((int)border.x, (int)border.y, (int)border.z, (int)border.w);
+            }
+        }
+
+        public static void SetBorder(this GUIStyle style, Vector4 border)
+        {
+            style.border.right  = (int)border.x;
+            style.border.left   = (int)border.y;
+            style.border.bottom = (int)border.z;
+            style.border.top    = (int)border.w;
+        }
+
+        public static void SetBackgroundSprite(this GUIStyle style, Sprite sprite, StyleState state)
+        {
+            Rect rect = new(0f, 0f, sprite.texture.width, sprite.texture.height);
+            if (sprite.rect != rect)
+            {
+                Universe.LogWarning("Attempting to set a multi-sprite texture to a GUIStyle. It may not display correctly in IMGUI.");
+            }
+
+            int key = new SpriteCacheKey(sprite.texture, sprite.border).GetHashCode();
+            if (s_SpriteCache.ContainsKey(key) && !s_SpriteCache.ContainsValue(sprite))
+            {
+                Universe.LogWarning("Attempt to set sprite to style that has the same texture and border as a different sprite that was previously set. This leades to undefined behavior.");
+            }
+
+            s_SpriteCache[key] = sprite;
+
+            GUIStyleState styleState;
+
+            switch (state)
+            {
+                case StyleState.Normal:
+                    styleState = style.normal;
+                    break;
+                case StyleState.Hover:
+                    styleState = style.hover;
+                    break;
+                case StyleState.Active:
+                    styleState = style.active;
+                    break;
+                case StyleState.Focused:
+                    styleState = style.focused;
+                    break;
+                case StyleState.OnNormal:
+                    styleState = style.onNormal;
+                    break;
+                case StyleState.OnHover:
+                    styleState = style.onHover;
+                    break;
+                case StyleState.OnActive:
+                    styleState = style.onActive;
+                    break;
+                case StyleState.OnFocused:
+                    styleState = style.onFocused;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(state));
+            }
+            styleState.background = sprite.texture;
+            style.SetBorder(sprite.border);
+            s_StyleStateSprites[styleState] = sprite;
+        }
+
         public static void ApplyToText(this GUIStyle style, Text text, Font defaultFont = null, GUIStyleState styleState = null)
         {
             if (style == null) throw new System.ArgumentNullException(nameof(style));
@@ -102,36 +172,6 @@ namespace UniverseLib.UGUI
             return default;
         }
 
-
-        /*
-        internal static void DrawUGUI(this GUIStyle style, Rect position, UGUIContent content, bool on = false)
-        {
-            if (content != null)
-                Internal_DrawUGUI(style, position, content, on);
-            else
-                Universe.LogError($"GUIStyle.{nameof(DrawUGUI)} may not be called with {nameof(UGUIContent)} that is null.");
-        }
-
-        internal static void DrawUGUI(this GUIStyle style, Rect position, UGUIContent content, int controlID, bool on = false)
-        {
-            if (content != null)
-                Internal_DrawUGUI(style, position, content, controlID, on);
-            else
-                Universe.LogError($"GUIStyle.{nameof(DrawUGUI)} may not be called with {nameof(UGUIContent)} that is null.");
-        }
-
-        internal static void DrawUGUI(this GUIStyle style, Rect position, bool isHover, bool isActive, bool on, bool hasKeyboardFocus)
-        {
-            Internal_DrawUGUI(style, position, UGUIContent.none, isHover, isActive, on, hasKeyboardFocus);
-        }
-
-        internal static void DrawUGUI(this GUIStyle style, Rect position, UGUIContent content, bool isHover, bool isActive, bool on, bool hasKeyboardFocus)
-        {
-            Internal_DrawUGUI(style, position, content, isHover, isActive, on, hasKeyboardFocus);
-        }
-        */
-
-
         internal static GUIStyleComponent AddStyleComponentTo(this GUIStyle style, GameObject gameObject)
         {
             var styleComponent = gameObject.GetComponent<GUIStyleComponent>();
@@ -143,60 +183,11 @@ namespace UniverseLib.UGUI
             return styleComponent;
         }
 
-        /*
-        private static void Internal_DrawUGUI(GUIStyle style, Rect position, UGUIContent content, bool isHover, bool isActive, bool on, bool hasKeyboardFocus)
-        {
-            Internal_DrawUGUI(style, position, content, on);
-        }
-
-        private static void Internal_DrawUGUI(GUIStyle style, Rect position, UGUIContent content, int controlID, bool on)
-        {
-            Internal_DrawUGUI(style, position, content, on);
-        }
-
-        private static void Internal_DrawUGUI(GUIStyle style, Rect position, UGUIContent content, bool on)
-        {
-            //Universe.Log($"Internal_DrawUGUI on = {on}");
-            var rectTransform = UIFactory.CreateUIObject("uGUIObject", UGUIUtility.s_ActiveUGUI.ContentHolder).GetComponent<RectTransform>();
-
-            var bgSprite = style.GetBackgroundSprite(null);
-            if (bgSprite != null)
-            {
-                var background = rectTransform.gameObject.AddComponent<Image>();
-                background.sprite = bgSprite;
-                background.type = Image.Type.Sliced;
-            }
-
-            if (content.text != null)
-            {
-                Text text = UIFactory.CreateLabel(rectTransform.gameObject, "text", content.text);
-                text.horizontalOverflow = HorizontalWrapMode.Overflow;
-                text.verticalOverflow = VerticalWrapMode.Overflow;
-                text.rectTransform.anchorMin = Vector2.zero;
-                text.rectTransform.anchorMax = Vector2.one;
-                text.rectTransform.offsetMin = new Vector2(style.margin.left, style.margin.bottom);
-                text.rectTransform.offsetMax = new Vector2(-style.margin.right, -style.margin.top);
-                style.ApplyTo(text);
-            }
-
-            if (content.image != null)
-            {
-                // TODO
-            }
-
-            UGUIUtility.SetRect(rectTransform, position);
-        }
-        */
-
-
-        private static MethodInfo s_Internal_CreateSprite;
         private static Sprite Internal_GetBackgroundSprite(GUIStyle style, GUIStyleState state, Sprite currentSprite)
         {
             Texture2D texture = state.background;
             if (texture == null) return null;
 
-            Rect rect = new(0f, 0f, texture.width, texture.height);
-            Vector2 pivot = Vector2.zero;
             Vector4 border = new(
                 style.border.right,
                 style.border.left,
@@ -204,6 +195,19 @@ namespace UniverseLib.UGUI
                 style.border.top
             );
 
+            if (s_StyleStateSprites.TryGetValue(state, out Sprite specifiedSprite) && specifiedSprite.texture == texture)
+            {
+                return specifiedSprite;
+            }
+
+            int key = new SpriteCacheKey(texture, border).GetHashCode();
+            if (s_SpriteCache.ContainsKey(key)) 
+            {
+                return s_SpriteCache[key] as Sprite;
+            }
+
+            Rect rect = new(0f, 0f, texture.width, texture.height);
+            Vector2 pivot = Vector2.zero;
             if (currentSprite != null
                 && currentSprite.texture == texture
                 && currentSprite.rect == rect
@@ -212,16 +216,8 @@ namespace UniverseLib.UGUI
                 return currentSprite;
             }
 
-            if (s_Internal_CreateSprite == null)
-            {
-                s_Internal_CreateSprite = AccessTools.DeclaredMethod(typeof(TextureHelper), "Internal_CreateSprite",
-                    new System.Type[] { typeof(Texture2D), typeof(Rect), typeof(Vector2), typeof(float), typeof(uint), typeof(Vector4) }
-                );
-            }
-
-            Sprite sprite = s_Internal_CreateSprite.Invoke(TextureHelper.Instance, new object[] {
-                state.background, rect, pivot, (float)100, (uint)0, border
-            }) as Sprite;
+            Sprite sprite = TextureHelper.CreateSprite(state.background, rect, pivot, 100, 0, border);
+            s_SpriteCache.Add(key, sprite);
 
             //Universe.Log($"Created background sprite: rect = {rect}; border = {border}");
 

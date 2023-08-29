@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using UniverseLib.UI;
 
-namespace UniverseLib.UGUI
+namespace UniverseLib.UGUI.ImplicitTypes
 {
     internal class ReadOnlyRef<T>
     {

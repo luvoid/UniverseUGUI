@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using UniverseLib.UGUI.ImplicitTypes;
 using UniverseLib.UI;
 
 namespace UniverseLib.UGUI.Models
@@ -11,13 +12,13 @@ namespace UniverseLib.UGUI.Models
             : base(name, parent, position)
         { }
 
-        protected override void ApplyStyle(GUIStyle style)
+        protected override void ApplyStyle(UGUIStyle style)
         {
             base.ApplyStyle(style);
             ApplySelectableStyle(style);
         }
 
-        protected virtual void ApplySelectableStyle(GUIStyle style)
+        protected virtual void ApplySelectableStyle(UGUIStyle style)
         {
             style.ApplyToSelectable(Component);
         }

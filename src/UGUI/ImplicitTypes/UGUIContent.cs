@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using UnityEngine;
 
-namespace UniverseLib.UGUI
+namespace UniverseLib.UGUI.ImplicitTypes
 {
     public class UGUIContent : GUIContent
     {
