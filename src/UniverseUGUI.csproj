@@ -175,7 +175,7 @@ UniverseLib is a library for making plugins which target IL2CPP and Mono Unity g
 				<CreateProperty Value="@(AssemblyBuildVersion)">
 						<Output TaskParameter="Value" PropertyName="AssemblyBuildVersion" />
 				</CreateProperty>
-				<CreateProperty Value="@(AssemblyBuildVersion)-preview">
+				<CreateProperty Value="$(AssemblyBuildVersion)-preview">
 						<Output TaskParameter="Value" PropertyName="PackageVersion" />
 				</CreateProperty>
 		</Target>
