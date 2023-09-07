@@ -2,8 +2,11 @@
 
 namespace UniverseLib.UI.Styles
 {
+    public interface IReadOnlyButtonStyle : IReadOnlyControlStyle
+    { }
+
     [System.Serializable]
-    public sealed class ButtonStyle : ControlStyle<ButtonStyle, ReadOnlyButtonStyle>
+    public sealed class ButtonStyle : ControlStyle<ButtonStyle, ReadOnlyButtonStyle>, IReadOnlyButtonStyle
     {
         /// <inheritdoc/>
         public ButtonStyle() : base() { }
@@ -18,7 +21,7 @@ namespace UniverseLib.UI.Styles
         }
     }
 
-    public class ReadOnlyButtonStyle : ReadOnlyControlStyle<ButtonStyle, ReadOnlyButtonStyle>
+    public class ReadOnlyButtonStyle : ReadOnlyControlStyle<ButtonStyle, ReadOnlyButtonStyle>, IReadOnlyButtonStyle
     {
         protected override ButtonStyle WrappedStyle { get; }
 

@@ -32,6 +32,7 @@ namespace UniverseLib.UI.Styles
         {
             image.sprite = Sprite;
             image.color = Color;
+            image.type = Image.Type.Sliced;
         }
 
         void IComponentStyle.ApplyTo(UIBehaviour component)

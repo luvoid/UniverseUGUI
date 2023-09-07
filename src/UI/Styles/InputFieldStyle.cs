@@ -2,8 +2,13 @@
 
 namespace UniverseLib.UI.Styles
 {
+    public interface IReadOnlyInputFieldStyle : IReadOnlyControlStyle
+    {
+
+    }
+
     [System.Serializable]
-    public sealed class InputFieldStyle : ControlStyle<InputFieldStyle, ReadOnlyInputFieldStyle>
+    public sealed class InputFieldStyle : ControlStyle<InputFieldStyle, ReadOnlyInputFieldStyle>, IReadOnlyInputFieldStyle
     {
         /// <inheritdoc/>
         public InputFieldStyle() : base() { }
@@ -18,7 +23,7 @@ namespace UniverseLib.UI.Styles
         }
     }
 
-    public sealed class ReadOnlyInputFieldStyle : ReadOnlyControlStyle<InputFieldStyle, ReadOnlyInputFieldStyle>
+    public sealed class ReadOnlyInputFieldStyle : ReadOnlyControlStyle<InputFieldStyle, ReadOnlyInputFieldStyle>, IReadOnlyInputFieldStyle
     {
         public ReadOnlyInputFieldStyle(InputFieldStyle toWrap) : base(toWrap)
         {

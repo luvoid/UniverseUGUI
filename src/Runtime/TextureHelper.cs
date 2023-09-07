@@ -18,7 +18,7 @@ namespace UniverseLib.Runtime
 
         static TextureHelper()
         {
-			Universe.InitSetup(); // Required before using TextureHelper
+			Universe.InitialSetup(); // Required before using TextureHelper
 		}
 
 		public TextureHelper()

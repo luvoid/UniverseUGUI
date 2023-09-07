@@ -206,9 +206,13 @@ namespace UniverseLib.UI
 
         private static void CreateRootCanvas()
         {
-            CanvasRoot = new GameObject("UniverseLibCanvas");
+            CanvasRoot = new GameObject($"{Universe.NAME}Canvas");
             UnityEngine.Object.DontDestroyOnLoad(CanvasRoot);
+#if !UNITY_EDITOR
             CanvasRoot.hideFlags |= HideFlags.HideAndDontSave;
+#else
+            CanvasRoot.hideFlags |= HideFlags.DontSaveInBuild | HideFlags.DontUnloadUnusedAsset | HideFlags.NotEditable;
+#endif
             CanvasRoot.layer = 5;
             CanvasRoot.transform.position = new Vector3(0f, 0f, 1f);
 
@@ -270,16 +274,24 @@ namespace UniverseLib.UI
             // Bundle loaded
 
             ConsoleFont = UIBundle.LoadAsset<Font>("CONSOLA");
-            ConsoleFont.hideFlags = HideFlags.HideAndDontSave;
             UnityEngine.Object.DontDestroyOnLoad(ConsoleFont);
 
             DefaultFont = UIBundle.LoadAsset<Font>("arial");
-            DefaultFont.hideFlags = HideFlags.HideAndDontSave;
             UnityEngine.Object.DontDestroyOnLoad(DefaultFont);
 
             BackupShader = UIBundle.LoadAsset<Shader>("DefaultUI");
-            BackupShader.hideFlags = HideFlags.HideAndDontSave;
             UnityEngine.Object.DontDestroyOnLoad(BackupShader);
+
+#if !UNITY_EDITOR
+            ConsoleFont.hideFlags = HideFlags.HideAndDontSave;
+            DefaultFont.hideFlags = HideFlags.HideAndDontSave;
+            BackupShader.hideFlags = HideFlags.HideAndDontSave;
+#else
+            ConsoleFont.hideFlags = HideFlags.DontSaveInBuild | HideFlags.DontUnloadUnusedAsset | HideFlags.NotEditable;
+            DefaultFont.hideFlags = HideFlags.DontSaveInBuild | HideFlags.DontUnloadUnusedAsset | HideFlags.NotEditable;
+            BackupShader.hideFlags = HideFlags.DontSaveInBuild | HideFlags.DontUnloadUnusedAsset | HideFlags.NotEditable;
+#endif
+
             // Fix for games which don't ship with 'UI/Default' shader.
             if (Graphic.defaultGraphicMaterial.shader?.name != "UI/Default")
             {

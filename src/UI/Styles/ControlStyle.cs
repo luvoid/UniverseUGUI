@@ -41,6 +41,6 @@ namespace UniverseLib.UI.Styles
         /// <inheritdoc/>
         internal ReadOnlyControlStyle(T toWrap) : base(toWrap) { }
 
-        public IReadOnlySelectableComponentStyle Background => WrappedStyle.Background;
+        public new IReadOnlySelectableComponentStyle Background => WrappedStyle.Background;
     }
 }

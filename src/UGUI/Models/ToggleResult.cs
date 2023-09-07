@@ -58,8 +58,9 @@ namespace UniverseLib.UGUI.Models
                     bgTransform.anchorMin = new Vector2(0, 1);
                     bgTransform.anchorMax = new Vector2(0, 1);
                     bgTransform.pivot = new Vector2(0, 1);
-                    bgTransform.anchoredPosition = new Vector2(-style.overflow.left, style.overflow.top);
+                    bgTransform.anchoredPosition = new Vector2(toggleStyle.LayoutGroup.Padding.x, -toggleStyle.LayoutGroup.Padding.z);
                     bgTransform.sizeDelta = toggleStyle.CheckboxSize;
+                    SetOffsets(TextComponent.gameObject, style.padding, new Vector2(toggleStyle.CheckboxSize.x + toggleStyle.LayoutGroup.Spacing.x, 0));
                 }
                 bgTransform.GetComponent<LayoutGroup>().padding.Set(toggleStyle.CheckboxPadding);
             }

@@ -6,6 +6,7 @@ using UniverseLib.UGUI.ImplicitTypes;
 using UniverseLib.UI;
 using UniverseLib.UI.Models;
 using UniverseLib.UI.Panels;
+using UniverseLib.UI.Styles;
 using BaseUniverseLib = UniverseLib;
 
 namespace UniverseLib.UGUI.Models
@@ -57,7 +58,21 @@ namespace UniverseLib.UGUI.Models
 
             if (contentRoot != null)
             {
-                SetOffsets(contentRoot, style.padding);
+                if (style.InternalStyle is IReadOnlyWindowStyle windowStyle)
+                {
+                    var titleTransform = TextComponent.transform.TryCast<RectTransform>();
+                    titleTransform.anchorMin = new Vector2(0, 1);
+                    titleTransform.anchorMax = new Vector2(1, 1);
+                    titleTransform.pivot = new Vector2(0, 1);
+                    titleTransform.anchoredPosition = new Vector2(0, 0);
+                    titleTransform.sizeDelta = new Vector2(0, windowStyle.TitlebarHeight);
+
+                    SetOffsets(contentRoot, style.padding, new Vector2(0, windowStyle.TitlebarHeight));
+                }
+                else
+                {
+                    SetOffsets(contentRoot, style.padding);
+                }
             }
 
             //style.AddStyleComponentTo(GameObject);

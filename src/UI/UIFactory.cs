@@ -13,7 +13,7 @@ namespace UniverseLib.UI
     /// <summary>
     /// Helper class to create Unity uGUI UI objects at runtime, as well as use some custom UniverseLib UI classes such as ScrollPool, InputFieldScroller and AutoSliderScrollbar.
     /// </summary>
-    public static partial class UIFactory
+    public sealed partial class UIFactory
     {
         internal static Vector2 largeElementSize = new(100, 30);
         internal static Vector2 smallElementSize = new(25, 25);
@@ -22,6 +22,7 @@ namespace UniverseLib.UI
         /// <summary>
         /// Create a simple UI object with a RectTransform. <paramref name="parent"/> can be null.
         /// </summary>
+        [Obsolete($"Use {nameof(CreateUIObject)}(GameObject, string, Vector2) or {nameof(Create)}.{nameof(UIObject)}(...) instead.")]
         public static GameObject CreateUIObject(string name, GameObject parent, Vector2 sizeDelta = default)
         {
             //if (!parent)
@@ -33,7 +34,11 @@ namespace UniverseLib.UI
             GameObject obj = new(name)
             {
                 layer = 5,
+#if !UNITY_EDITOR
                 hideFlags = HideFlags.HideAndDontSave,
+#else
+                hideFlags = HideFlags.DontSaveInBuild | HideFlags.DontUnloadUnusedAsset,
+#endif
             };
 
             if (parent)
@@ -146,7 +151,7 @@ namespace UniverseLib.UI
 
             return group;
         }
-        
+
         #endregion
 
 
@@ -161,6 +166,7 @@ namespace UniverseLib.UI
         /// <param name="bgColor">The background color of your panel. Defaults to dark grey if null.</param>
         /// <param name="contentHolder">The GameObject which you should add your actual content on to.</param>
         /// <returns>The base panel GameObject (not for adding content to).</returns>
+        [Obsolete($"Use {nameof(Create)}.{nameof(Panel)}(...) instead.")]
         public static GameObject CreatePanel(string name, GameObject parent, out GameObject contentHolder, Color? bgColor = null)
         {
             GameObject panelObj = CreateUIObject(name, parent);
@@ -265,6 +271,7 @@ namespace UniverseLib.UI
         /// <param name="supportRichText">Should the Text support rich text? (Can be changed afterwards)</param>
         /// <param name="fontSize">The default font size</param>
         /// <returns>Your new Text component</returns>
+        [Obsolete($"Use {nameof(Create)}.{nameof(Label)}(...) instead.")]
         public static Text CreateLabel(GameObject parent, string name, string defaultText, TextAnchor alignment = TextAnchor.MiddleLeft,
             Color color = default, bool supportRichText = true, int fontSize = 14)
         {
@@ -290,6 +297,7 @@ namespace UniverseLib.UI
         /// <param name="text">The default button text</param>
         /// <param name="normalColor">The base color for your button, with the highlighted and pressed colors generated from this.</param>
         /// <returns>A ButtonRef wrapper for your Button component.</returns>
+        [Obsolete($"Use {nameof(Create)}.{nameof(Button)}(...) instead.")]
         public static ButtonRef CreateButton(GameObject parent, string name, string text, Color? normalColor = null)
         {
             normalColor ??= new Color(0.25f, 0.25f, 0.25f);
@@ -306,6 +314,7 @@ namespace UniverseLib.UI
         /// <param name="text">The default button text</param>
         /// <param name="colors">The ColorBlock used for your Button component</param>
         /// <returns>A ButtonRef wrapper for your Button component.</returns>
+        [Obsolete($"Use {nameof(Create)}.{nameof(Button)}(...) instead.")]
         public static ButtonRef CreateButton(GameObject parent, string name, string text, ColorBlock colors)
         {
             GameObject buttonObj = CreateUIObject(name, parent, smallElementSize);
@@ -456,6 +465,7 @@ namespace UniverseLib.UI
         /// <param name="checkWidth">The width of your checkbox</param>
         /// <param name="checkHeight">The height of your checkbox</param>
         /// <returns>The root GameObject for your Toggle control</returns>
+        [Obsolete($"Use {nameof(Create)}.{nameof(Toggle)}(...) instead.")]
         public static GameObject CreateToggle(GameObject parent, string name, out Toggle toggle, out Text text, Color bgColor = default, 
             int checkWidth = 20, int checkHeight = 20)
         {
@@ -509,6 +519,7 @@ namespace UniverseLib.UI
         /// <param name="name">The GameObject name of your InputField</param>
         /// <param name="placeHolderText">The placeholder text for your InputField component</param>
         /// <returns>An InputFieldRef wrapper for your InputField</returns>
+        [Obsolete($"Use {nameof(Create)}.{nameof(InputField)}(...) instead.")]
         public static InputFieldRef CreateInputField(GameObject parent, string name, string placeHolderText)
         {
             GameObject mainObj = CreateUIObject(name, parent);
@@ -521,7 +532,7 @@ namespace UniverseLib.UI
             Navigation nav = inputField.navigation;
             nav.mode = Navigation.Mode.None;
             inputField.navigation = nav;
-            inputField.lineType = InputField.LineType.SingleLine;
+            inputField.lineType = UnityEngine.UI.InputField.LineType.SingleLine;
             inputField.interactable = true;
             inputField.transition = Selectable.Transition.ColorTint;
             inputField.targetGraphic = mainImage;
@@ -587,6 +598,7 @@ namespace UniverseLib.UI
         /// <param name="onValueChanged">Invoked when your Dropdown value is changed</param>
         /// <param name="defaultOptions">Optional default options for the dropdown</param>
         /// <returns>The root GameObject for your Dropdown control</returns>
+        [Obsolete($"Use {nameof(Create)}.{nameof(Dropdown)}(...) instead.")]
         public static GameObject CreateDropdown(GameObject parent, string name, out Dropdown dropdown, string defaultItemText, int itemFontSize,
             Action<int> onValueChanged, string[] defaultOptions = null)
         {
@@ -991,7 +1003,7 @@ namespace UniverseLib.UI
             textComp.alignment = TextAnchor.UpperLeft;
             textComp.fontSize = fontSize;
             textComp.horizontalOverflow = HorizontalWrapMode.Wrap;
-            inputField.Component.lineType = InputField.LineType.MultiLineNewline;
+            inputField.Component.lineType = UnityEngine.UI.InputField.LineType.MultiLineNewline;
             inputField.Component.targetGraphic.color = color;
             inputField.PlaceholderText.alignment = TextAnchor.UpperLeft;
             inputField.PlaceholderText.fontSize = fontSize;
@@ -1005,7 +1017,7 @@ namespace UniverseLib.UI
             contentRect.anchorMax = new Vector2(1, 1);
             contentRect.offsetMin = new Vector2(2, 0);
             contentRect.offsetMax = new Vector2(2, 0);
-            inputField.Component.lineType = InputField.LineType.MultiLineNewline;
+            inputField.Component.lineType = UnityEngine.UI.InputField.LineType.MultiLineNewline;
             inputField.Component.targetGraphic.color = color;
 
             // Slider

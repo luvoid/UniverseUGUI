@@ -8,7 +8,7 @@ using UnityEngine.Events;
 namespace UniverseLib.UGUI
 {
     /// <summary>
-    /// An implementatio of <see cref="IUniversalUGUIBehaviour"/> using a <see cref="MonoBehaviour"/>
+    /// An implementation of <see cref="IUniversalUGUIBehaviour"/> using a <see cref="MonoBehaviour"/>
     /// </summary>
     internal class UGUIMonoBehaviour : MonoBehaviour, IUniversalUGUIBehaviour
     {

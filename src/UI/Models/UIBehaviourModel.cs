@@ -19,23 +19,25 @@ namespace UniverseLib.UI.Models
             if (!Instances.Any())
                 return;
 
-            try
+            for (int i = Instances.Count - 1; i >= 0; i--)
             {
-                for (int i = Instances.Count - 1; i >= 0; i--)
+                UIBehaviourModel instance = Instances[i];
+                if (instance == null || !instance.UIRoot)
                 {
-                    UIBehaviourModel instance = Instances[i];
-                    if (instance == null || !instance.UIRoot)
-                    {
-                        Instances.RemoveAt(i);
-                        continue;
-                    }
-                    if (instance.Enabled)
-                        instance.Update();
+                    Instances.RemoveAt(i);
+                    continue;
                 }
-            }
-            catch (Exception ex)
-            {
-                Universe.Log(ex);
+                if (instance.Enabled)
+                {
+                    try
+                    {
+                        instance.Update();
+                    }
+                    catch (Exception ex)
+                    {
+                        Universe.Logger.LogException(ex, instance.UIRoot);
+                    }
+                }
             }
         }
         

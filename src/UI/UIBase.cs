@@ -106,7 +106,7 @@ namespace UniverseLib.UI
             }
             catch (Exception ex)
             {
-                Universe.LogWarning($"Exception invoking update method for {ID}: {ex}");
+                Universe.Logger.LogException($"Exception invoking update method for {ID}", ex, RootObject);
             }
         }
     }

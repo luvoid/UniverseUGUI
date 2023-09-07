@@ -10,8 +10,10 @@ namespace UniverseLib.UI.Models
     /// <summary>
     /// A simple helper class to handle a button's OnClick more effectively, along with some helpers.
     /// </summary>
-    public class ButtonRef
+    public class ButtonRef : IButtonRef
     {
+        Action IButtonRef.OnClick { get => OnClick; set => OnClick = value; }
+
         /// <summary>
         /// Invoked when the Button is clicked.
         /// </summary>

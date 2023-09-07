@@ -59,7 +59,7 @@ namespace UniverseLib.UGUI
             }
             catch (Exception ex)
             {
-                Universe.LogError($"Exception invoking early update method for {ID}: {ex}");
+                Universe.Logger.LogException($"Exception invoking early update method for {ID}", ex);
             }
 
             while (newUGUIObjects.Count > 0)
@@ -112,8 +112,23 @@ namespace UniverseLib.UGUI
             catch (Exception ex)
             {
                 if (!UGUIUtility.EndUGUIFromException(ex))
-                    Universe.LogError($"Exception invoking OnUGUI / OnUGUIStart for {ID} {uGUIObject}: {ex}");
+                    Universe.Logger.LogException(
+                        $"Exception invoking OnUGUI / OnUGUIStart for {ID} {uGUIObject}", 
+                        ex, GetBestLogContext(uGUIObject)
+                    );
             }
+        }
+
+        private UnityEngine.Object GetBestLogContext(IUniversalUGUIObject uGUIObject)
+        {
+            if (uGUIObject is UGUIWrapperObject wrapper)
+            {
+                if (wrapper.behaviour is MonoBehaviour monoBehaviour)
+                {
+                    return monoBehaviour;
+                }
+            }
+            return uGUIObject.ContentRoot;
         }
     }
 }

@@ -25,9 +25,13 @@ namespace UniverseLib
             ClassInjector.RegisterTypeInIl2Cpp<UniversalBehaviour>();
 #endif
 
-            GameObject obj = new("UniverseLibBehaviour");
+            GameObject obj = new($"{Universe.NAME}Behaviour");
             GameObject.DontDestroyOnLoad(obj);
+#if !UNITY_EDITOR
             obj.hideFlags |= HideFlags.HideAndDontSave;
+#else
+            obj.hideFlags |= HideFlags.DontSaveInBuild | HideFlags.DontUnloadUnusedAsset | HideFlags.NotEditable;
+#endif
             Instance = obj.AddComponent<UniversalBehaviour>();
         }
 

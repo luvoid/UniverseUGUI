@@ -38,11 +38,11 @@ namespace UniverseLib.UGUI.Models
         /// <summary>
         /// Not implemented.
         /// </summary>
-        [System.Obsolete("Not implemented.")]
+        [System.Obsolete("Not implemented.", true)]
         [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
         public sealed override void ConstructUI(GameObject parent)
         {
-            throw new System.InvalidOperationException("Not implemented.");
+            throw new System.NotImplementedException();
         }
 
         protected abstract void ApplyStyle(UGUIStyle style);

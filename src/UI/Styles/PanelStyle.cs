@@ -54,6 +54,6 @@ namespace UniverseLib.UI.Styles
         }
 
         public bool UseBackground => WrappedStyle.UseBackground;
-        public IReadOnlyImageComponentStyle Background => ((IReadOnlyUIObjectStyle<IReadOnlyImageComponentStyle, Image>)WrappedStyle).Background;
+        public new IReadOnlyImageComponentStyle Background => ((IReadOnlyUIObjectStyle<IReadOnlyImageComponentStyle, Image>)WrappedStyle).Background;
     }
 }

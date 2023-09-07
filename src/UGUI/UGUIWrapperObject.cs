@@ -13,7 +13,7 @@ namespace UniverseLib.UGUI
     internal class UGUIWrapperObject : IUniversalUGUIObject
     {
         private readonly UGUIBase owner;
-        private readonly IUniversalUGUIBehaviour behaviour;
+        public readonly IUniversalUGUIBehaviour behaviour;
         private readonly GameObject contentRoot;
         private readonly Action postUGUI;
 

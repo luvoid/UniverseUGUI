@@ -20,7 +20,7 @@ namespace UniverseLib
 
         static RuntimeHelper()
         {
-			Universe.InitSetup(); // Required before using RuntimeHelper
+			Universe.InitialSetup(); // Required before using RuntimeHelper
 		}
 
         internal static void Init()

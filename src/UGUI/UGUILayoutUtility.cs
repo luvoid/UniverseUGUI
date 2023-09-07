@@ -253,11 +253,11 @@ namespace UniverseLib.UGUI
 
         internal static UGUILayoutGroup topLevel => current.topLevel;
 
-        public static Rect GetRect(GUIContent content, UGUIStyle style) 
+        public static Rect GetRect(UGUIContent content, UGUIStyle style) 
             => DoGetRect(content, style, null);
 
         public static Rect GetRect(
-          GUIContent content,
+          UGUIContent content,
           UGUIStyle style,
           params GUILayoutOption[] options)
         {
@@ -265,7 +265,7 @@ namespace UniverseLib.UGUI
         }
 
         private static Rect DoGetRect(
-          GUIContent content,
+          UGUIContent content,
           UGUIStyle style,
           GUILayoutOption[] options)
         {
@@ -275,7 +275,7 @@ namespace UniverseLib.UGUI
                 case EventType.Layout:
                     if (style.isHeightDependantOnWidth)
                     {
-                        current.topLevel.Add(new GUIWordWrapSizer(style.InternalGUIStyle, content, options));
+                        current.topLevel.Add(new GUIWordWrapSizer(style.InternalGUIStyle, GUIContent.Temp(content.text, content.image), options));
                     }
                     else
                     {
@@ -295,7 +295,7 @@ namespace UniverseLib.UGUI
                                 }
                             }
                         }
-                        Vector2 size = style.CalcSizeWithConstraints(content, constraints);
+                        Vector2 size = style.CalcSizeWithConstraints(GUIContent.Temp(content.text, content.image), constraints);
                         current.topLevel.Add(new GUILayoutEntry(size.x, size.x, size.y, size.y, style.InternalGUIStyle, options));
                     }
                     return kDummyRect;

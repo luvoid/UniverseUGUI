@@ -313,8 +313,8 @@ namespace UniverseLib.UI.Panels
 
             if (mousePos.x < 0 || mousePos.y < 0 || mousePos.x > screenDimensions.x || mousePos.y > screenDimensions.y)
                 return;
-        
-            lastResizePos = mousePos;
+
+            Vector2 resizePos = mousePos;
         
             float diffX = (float)((decimal)diff.x / (decimal)screenDimensions.x);
             float diffY = (float)((decimal)diff.y / (decimal)screenDimensions.y);
@@ -342,12 +342,16 @@ namespace UniverseLib.UI.Panels
             {
                 Rect.anchorMin = new Vector2(prevMin.x, Rect.anchorMin.y);
                 Rect.anchorMax = new Vector2(prevMax.x, Rect.anchorMax.y);
+                resizePos.x = lastResizePos.x;
             }
             if (Rect.rect.height < UIPanel.MinHeight)
             {
                 Rect.anchorMin = new Vector2(Rect.anchorMin.x, prevMin.y);
                 Rect.anchorMax = new Vector2(Rect.anchorMax.x, prevMax.y);
+                resizePos.y = lastResizePos.y;
             }
+
+            lastResizePos = resizePos;
         }
         
         public virtual void OnEndResize()

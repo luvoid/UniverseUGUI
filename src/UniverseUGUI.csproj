@@ -14,7 +14,7 @@
 				<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 				<AllowedReferenceRelatedFileExtensions>none</AllowedReferenceRelatedFileExtensions>
 				<CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
-				<Configurations>Release_Mono;Release_IL2CPP_Unhollower;Release_IL2CPP_Interop</Configurations>
+				<Configurations>Debug_UnityEditorLegacy;Release_Mono;Release_IL2CPP_Unhollower;Release_IL2CPP_Interop;Debug_UnityEditorLegacy</Configurations>
 				<RootNamespace>UniverseLib</RootNamespace>
 				<Title>UniverseUGUI</Title>
 				<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
@@ -35,6 +35,14 @@
 				<TargetFramework>net35</TargetFramework>
 				<DefineConstants>MONO</DefineConstants>
 		</PropertyGroup>
+		<PropertyGroup Condition=" '$(Configuration)' == 'Debug_UnityEditorLegacy' ">
+				<TargetConfigurationSuffix>UnityEditor.Legacy</TargetConfigurationSuffix>
+				<TargetFramework>net35</TargetFramework>
+				<DefineConstants>DEBUG,MONO,UNITY_EDITOR,UNITY_5</DefineConstants>
+				<DebugSymbols>true</DebugSymbols>
+				<DebugType>portable</DebugType>
+				<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+		</PropertyGroup>
 		<PropertyGroup>
 				<OutputPath>..\Release\UniverseLib.$(TargetConfigurationSuffix)\</OutputPath>
 				<AssemblyName>UniverseLib.$(TargetConfigurationSuffix)</AssemblyName>
@@ -49,13 +57,21 @@ The goal is to allow easy porting of IMGUI plugins to UGUI.
 
 UniverseLib is a library for making plugins which target IL2CPP and Mono Unity games, with a focus on UI-driven plugins.</Description>
 		</PropertyGroup>
+		<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_UnityEditorLegacy|AnyCPU'">
+		  <DebugType>full</DebugType>
+		</PropertyGroup>
 		<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_Mono|AnyCPU'" />
 		<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_IL2CPP_Unhollower|AnyCPU'" />
 		<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_IL2CPP_Interop|AnyCPU'" />
 		<!-- NuGet -->
 		<ItemGroup>
+			<PackageReference Include="UniverseLib.Analyzers" Version="1.0.4" IncludeAssets="compile" />
+		</ItemGroup>
+		<ItemGroup Condition="'$(Configuration)' != 'Debug_UnityEditorLegacy'">
 				<PackageReference Include="HarmonyX" Version="2.5.2" IncludeAssets="compile" />
-				<PackageReference Include="UniverseLib.Analyzers" Version="1.0.4" IncludeAssets="compile" />
+		</ItemGroup>
+		<ItemGroup Condition="'$(Configuration)' == 'Debug_UnityEditorLegacy'">
+      <PackageReference Include="Lib.Harmony" Version="2.2.2" />
 		</ItemGroup>
 		<ItemGroup Condition="'$(Configuration)' == 'Release_IL2CPP_Unhollower'">
 				<PackageReference Include="Il2CppAssemblyUnhollower.BaseLib" Version="0.4.22" IncludeAssets="compile" />
@@ -65,6 +81,16 @@ UniverseLib is a library for making plugins which target IL2CPP and Mono Unity g
 				<PackageReference Include="Il2CppInterop.Runtime" Version="1.0.0" />
 		</ItemGroup>
 		<!-- Assembly References -->
+		<ItemGroup Condition="'$(Configuration)' == 'Debug_UnityEditorLegacy'">
+			<Reference Include="UnityEngine">
+				<HintPath>..\lib\mono\UnityEngine_publicized.dll</HintPath>
+				<Private>False</Private>
+			</Reference>
+			<Reference Include="UnityEngine.UI">
+				<HintPath>..\lib\mono\UnityEngine.UI_publicized.dll</HintPath>
+				<Private>False</Private>
+			</Reference>
+		</ItemGroup>
 		<ItemGroup Condition="'$(Configuration)' == 'Release_Mono'">
 				<Reference Include="UnityEngine">
 						<HintPath>..\lib\mono\UnityEngine_publicized.dll</HintPath>
@@ -179,6 +205,9 @@ UniverseLib is a library for making plugins which target IL2CPP and Mono Unity g
 						<Output TaskParameter="Value" PropertyName="PackageVersion" />
 				</CreateProperty>
 		</Target>
+		<Target Name="CreateMonoDebugSymbols" AfterTargets="build" Condition="'$(Configuration)' == 'Debug_UnityEditorLegacy'">
+      <Exec Command="for /f &quot;usebackq delims=|&quot; %25%25f in (`dir /b *.dll`) do &quot;$(ProjectDir)..\lib\pdb2mdb.exe&quot; %25%25f" WorkingDirectory="$(OutputPath)" />
+    </Target>
 		<Target Name="CopyNuget" AfterTargets="build">
 				<!-- if IL2CPP Unhollower -->
 				<Message Text="Copying IL2CPP Unhollower files..." Importance="high" Condition="'$(Configuration)' == 'Release_IL2CPP_Unhollower'" />

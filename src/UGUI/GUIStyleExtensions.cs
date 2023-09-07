@@ -37,13 +37,13 @@ namespace UniverseLib.UGUI
             Rect rect = new(0f, 0f, sprite.texture.width, sprite.texture.height);
             if (sprite.rect != rect)
             {
-                Universe.LogWarning("Attempting to set a multi-sprite texture to a GUIStyle. It may not display correctly in IMGUI.");
+                Universe.Logger.LogWarning("Attempting to set a multi-sprite texture to a GUIStyle. It may not display correctly in IMGUI.");
             }
 
             int key = new SpriteCacheKey(sprite.texture, sprite.border).GetHashCode();
             if (s_SpriteCache.ContainsKey(key) && !s_SpriteCache.ContainsValue(sprite))
             {
-                Universe.LogWarning("Attempt to set sprite to style that has the same texture and border as a different sprite that was previously set. This leades to undefined behavior.");
+                Universe.Logger.LogWarning("Attempt to set sprite to style that has the same texture and border as a different sprite that was previously set. This leades to undefined behavior.");
             }
 
             s_SpriteCache[key] = sprite;

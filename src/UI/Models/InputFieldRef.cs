@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
@@ -10,7 +11,7 @@ namespace UniverseLib.UI.Models
     /// <summary>
     /// A simple wrapper class for working with InputFields, with some helpers and performance improvements.
     /// </summary>
-    public class InputFieldRef : UIModel
+    public class InputFieldRef : UIModel, IInputFieldRef
     {
         // Static
 
@@ -73,7 +74,7 @@ namespace UniverseLib.UI.Models
         /// A reference to the InputField's cachedInputTextGenerator.
         /// </summary>
         public TextGenerator TextGenerator => Component.cachedInputTextGenerator;
-        
+
         /// <summary>
         /// Returns true if the InputField's vertex count has reached the <see cref="UniversalUI.MAX_TEXT_VERTS"/> limit.
         /// </summary>
@@ -96,6 +97,7 @@ namespace UniverseLib.UI.Models
         /// <summary>
         /// Not implemented.
         /// </summary>
+        [Obsolete("Not implemented.", true)]
         public override void ConstructUI(GameObject parent) => throw new NotImplementedException();
     }
 }

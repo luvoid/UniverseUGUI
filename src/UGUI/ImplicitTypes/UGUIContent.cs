@@ -7,44 +7,53 @@ using UnityEngine;
 
 namespace UniverseLib.UGUI.ImplicitTypes
 {
-    public class UGUIContent : GUIContent
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles",
+        Justification = "Unity's naming style must be preserved for backwards compatibility with IMGUI users.")]
+    public ref struct UGUIContent
     {
-        internal static readonly new UGUIContent none;
+        //internal GUIContent GUIContent = null;
+
+        public string text = string.Empty;
+        public Texture image = null;
+        public string tooltip = string.Empty;
+        public int hash
+        {
+            get
+            {
+                int result = 0;
+                if (!string.IsNullOrEmpty(text))
+                {
+                    result = text.GetHashCode() * 37;
+                }
+                return result;
+            }
+        }
 
         public UGUIContent()
         { }
 
-        public UGUIContent(string text)
-            : base(text)
-        { }
+        public UGUIContent(string text, Texture image = null, string tooltip = "")
+        {
+            this.text = text;
+            this.image = image;
+            this.tooltip = tooltip;
+        }
 
-        public UGUIContent(Texture image)
-            : base(image)
-        { }
-
-        public UGUIContent(string text, Texture image)
-            : base(text, image)
-        { }
+        public UGUIContent(Texture image, string tooltip = "")
+        {
+            this.image = image;
+            this.tooltip = tooltip;
+        }
 
         public UGUIContent(string text, string tooltip)
-            : base(text, tooltip)
-        { }
-
-        public UGUIContent(Texture image, string tooltip)
-            : base(image, tooltip)
-        { }
-
-        public UGUIContent(string text, Texture image, string tooltip)
-            : base(text, image, tooltip)
-        { }
-
-        public UGUIContent(GUIContent src)
-            : base(src)
-        { }
-
-        public static implicit operator UGUIContent(string label)
         {
-            return new UGUIContent(label);
+            this.text = text;
+            this.tooltip = tooltip;
+        }
+
+        public static implicit operator UGUIContent(string text)
+        {
+            return new UGUIContent(text);
         }
 
         public static implicit operator UGUIContent(Texture image)
@@ -52,24 +61,24 @@ namespace UniverseLib.UGUI.ImplicitTypes
             return new UGUIContent(image);
         }
 
-        public static UGUIContent[] Cast(string[] labels)
-        {
-            UGUIContent[] uiContents = new UGUIContent[labels.Length];
-            for (int i = 0; i < labels.Length; i++)
-            {
-                uiContents[i] = labels[i];
-            }
-            return uiContents;
-        }
-
-        public static UGUIContent[] Cast(Texture[] images)
-        {
-            UGUIContent[] uiContents = new UGUIContent[images.Length];
-            for (int i = 0; i < images.Length; i++)
-            {
-                uiContents[i] = images[i];
-            }
-            return uiContents;
-        }
+        //public static UGUIContent[] Cast(string[] labels)
+        //{
+        //    UGUIContent[] uiContents = new UGUIContent[labels.Length];
+        //    for (int i = 0; i < labels.Length; i++)
+        //    {
+        //        uiContents[i] = labels[i];
+        //    }
+        //    return uiContents;
+        //}
+        //
+        //public static UGUIContent[] Cast(Texture[] images)
+        //{
+        //    UGUIContent[] uiContents = new UGUIContent[images.Length];
+        //    for (int i = 0; i < images.Length; i++)
+        //    {
+        //        uiContents[i] = images[i];
+        //    }
+        //    return uiContents;
+        //}
     }
 }

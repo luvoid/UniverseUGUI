@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -25,8 +26,8 @@ namespace UniverseLib.UI.Styles
 
         public TextAnchor Alignment = TextAnchor.MiddleCenter;
 
-        public HorizontalWrapMode HorizontalOverflow = HorizontalWrapMode.Wrap;
-        public VerticalWrapMode VerticalOverflow = VerticalWrapMode.Truncate;
+        public HorizontalWrapMode HorizontalOverflow = HorizontalWrapMode.Overflow;
+        public VerticalWrapMode VerticalOverflow = VerticalWrapMode.Overflow;
 
         public Color Color = Color.white;
 
@@ -34,6 +35,8 @@ namespace UniverseLib.UI.Styles
 
         public void ApplyTo(Text component)
         {
+            if (Font == null) throw new InvalidOperationException("Font is null. (Did you forget to use style.GetTextStyle().ApplyTo() instead of style.Text.ApplyTo()?)");
+
             component.font               = Font;
             component.fontStyle          = FontStyle;
             component.fontSize           = FontSize;
@@ -49,6 +52,7 @@ namespace UniverseLib.UI.Styles
         {
             if (component is Text text)
             {
+
                 ApplyTo(text);
             }
         }

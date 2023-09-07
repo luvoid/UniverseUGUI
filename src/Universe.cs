@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using Microsoft.SqlServer.Server;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -6,6 +7,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
+using UnityEngine.Networking;
 using UniverseLib.Config;
 using UniverseLib.Input;
 using UniverseLib.Runtime;
@@ -32,7 +34,7 @@ namespace UniverseLib
         }
 
         public const string NAME = "UniverseUGUI";
-        public const string VERSION = "1.6.1";
+        public const string VERSION = "1.6.3";
         public const string AUTHOR = "luvoid";
         public const string GUID = "luvoid.universeugui";
 
@@ -52,15 +54,26 @@ namespace UniverseLib
         static float startupDelay;
         static event Action OnInitialized;
 
-        static Action<string, LogType> logHandler;
+        static bool hasLogHandler;
+        internal static UniverseLogger Logger = new UniverseLogger(new UniverseLogHandler(new DebugLogHandler(), true));
+        internal static UniverseLogger Debug  = new UniverseLogger(Logger.logHandler);
+
+
+        /// <inheritdoc cref="Init(Action, ILogHandler)"/>
+        [Obsolete($"Use Universe.Init(Action, ILogHandler) instead.")]
+        public static void Init(Action onInitialized = null, Action<string, LogType> logHandler = null)
+            => Init(1f, onInitialized, logHandler, default);
+
+        /// <inheritdoc cref="Init(float, Action, ILogHandler, UniverseLibConfig)"/>
+        [Obsolete($"Use Universe.Init(float, Action, ILogHandler, UniverseLibConfig) instead.")]
+        public static void Init(float startupDelay, Action onInitialized, Action<string, LogType> logHandler, UniverseLibConfig config)
+            => Init(startupDelay, onInitialized, new LegacyLogHandler(logHandler), config);
 
         /// <summary>
         /// Initialize UniverseLib with default settings, if you don't require any finer control over the startup process.
         /// </summary>
-        /// <param name="onInitialized">Invoked after the <c>startupDelay</c>and after UniverseLib has finished initializing.</param>
-        /// <param name="logHandler">Should be used for printing UniverseLib's own internal logs. Your listener will only be used if no listener has 
-        /// yet been provided to handle it. It is not required to implement this but it may be useful to diagnose internal errors.</param>
-        public static void Init(Action onInitialized = null, Action<string, LogType> logHandler = null)
+        /// <inheritdoc cref="Init(float, Action, ILogHandler, UniverseLibConfig)"/>
+        public static void Init(Action onInitialized = null, ILogHandler logHandler = null)
             => Init(1f, onInitialized, logHandler, default);
 
         /// <summary>
@@ -72,7 +85,7 @@ namespace UniverseLib
         /// <param name="logHandler">Should be used for printing UniverseLib's own internal logs. Your listener will only be used if no listener has 
         /// yet been provided to handle it. It is not required to implement this but it may be useful to diagnose internal errors.</param>
         /// <param name="config">Can be used to set certain values of UniverseLib's configuration. Null config values will be ignored.</param>
-        public static void Init(float startupDelay, Action onInitialized, Action<string, LogType> logHandler, UniverseLibConfig config)
+        public static void Init(float startupDelay, Action onInitialized, ILogHandler logHandler, UniverseLibConfig config)
         {
             // If already finished intializing, just return (and invoke onInitialized if supplied)
             if (CurrentGlobalState == GlobalState.SetupCompleted)
@@ -89,37 +102,41 @@ namespace UniverseLib
 
             OnInitialized += onInitialized;
 
-            if (logHandler != null && Universe.logHandler == null)
-                Universe.logHandler = logHandler;
+            if (logHandler != null && !hasLogHandler)
+            {
+                Logger.logHandler = Debug.logHandler = new UniverseLogHandler(logHandler, false);
+                hasLogHandler = true;
+            }
 
             if (CurrentGlobalState == GlobalState.WaitingToSetup)
             {
                 CurrentGlobalState = GlobalState.SettingUp;
-                Log($"{NAME} {VERSION} initializing...");
+                Debug.Log($"{NAME} {VERSION} initializing...");
 
                 // Run immediate setups which don't require any delay
+                InitialSetup();
 
                 // Begin the startup delay coroutine
                 RuntimeHelper.Instance.Internal_StartCoroutine(SetupCoroutine());
 
-                Log($"Finished UniverseLib initial setup.");
+                Debug.Log($"Finished {NAME} initial setup.");
             }
         }
 
-		private static bool _didInitSetup = false;
+		private static bool _didInitialSetup = false;
 		/// <summary>
 		/// Run immediate setups which don't require any delays.
 		/// This will not fully initialize until <see cref="Init"/> is called.
 		/// </summary>
-		internal static void InitSetup()
+		internal static void InitialSetup()
 		{
-            if (_didInitSetup) return;
+            if (_didInitialSetup) return;
 
 			UniversalBehaviour.Setup();
 			ReflectionUtility.Init();
 			RuntimeHelper.Init();
 
-			_didInitSetup = true;
+			_didInitialSetup = true;
 		}
 
         internal static void Update()
@@ -142,7 +159,7 @@ namespace UniverseLib
             InputManager.Init();
             UniversalUI.Init();
 
-            Log($"{NAME} {VERSION} initialized.");
+            Logger.Log($"{NAME} {VERSION} initialized.");
             CurrentGlobalState = GlobalState.SetupCompleted;
 
             InvokeOnInitialized(OnInitialized);
@@ -161,7 +178,7 @@ namespace UniverseLib
                 }
                 catch (Exception ex)
                 {
-                    LogWarning($"Exception invoking onInitialized callback! {ex}");
+                    Logger.LogException($"Exception invoking onInitialized callback!", ex);
                 }
             }
         }
@@ -169,20 +186,22 @@ namespace UniverseLib
         // UniverseLib internal logging. These are assumed to be handled by a logHandler supplied to Init().
         // Not for external use.
 
+        [Obsolete]
         internal static void Log(object message)
             => Log(message, LogType.Log);
 
+        [Obsolete]
         internal static void LogWarning(object message)
             => Log(message, LogType.Warning);
 
+        [Obsolete]
         internal static void LogError(object message)
             => Log(message, LogType.Error);
 
+        [Obsolete]
         static void Log(object message, LogType logType)
         {
-            if (logHandler == null)
-                return;
-            logHandler($"[UniverseLib] {message?.ToString() ?? string.Empty}", logType);
+            Debug.Log(logType, message);
         }
 
         // Patching helpers
@@ -237,7 +256,7 @@ namespace UniverseLib
             }
             catch (Exception ex)
             {
-                LogWarning($"\t Exception patching {type.FullName}.{methodName}: {ex}");
+                Debug.LogWarning($"\t Exception patching {type.FullName}.{methodName}: {ex}");
                 return false;
             }
         }

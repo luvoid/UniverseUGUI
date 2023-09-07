@@ -78,11 +78,11 @@ namespace UniverseLib.UI.Panels
 
         public virtual void SetDefaultSizeAndPosition()
         {
-            Rect.localPosition = DefaultPosition;
-            Rect.pivot = new Vector2(0f, 1f);
-
             Rect.anchorMin = DefaultAnchorMin;
             Rect.anchorMax = DefaultAnchorMax;
+
+            Rect.pivot = new Vector2(0f, 1f);
+            Rect.anchoredPosition = DefaultPosition;
 
             LayoutRebuilder.ForceRebuildLayoutImmediate(this.Rect);
 
@@ -123,6 +123,35 @@ namespace UniverseLib.UI.Panels
 
         protected abstract void ConstructPanelContent();
 
+        protected virtual GameObject CreateTitleBar(GameObject contentRoot)
+        {
+            // Title bar
+            var titleBar = UIFactory.CreateHorizontalGroup(
+                contentRoot, "TitleBar", false, true, true, true, 2,
+                new Vector4(2, 2, 2, 2), new Color(0.06f, 0.06f, 0.06f)
+            );
+            UIFactory.SetLayoutElement(titleBar, minHeight: 25, flexibleHeight: 0);
+
+            // Title text
+            Text titleTxt = UIFactory.CreateLabel(titleBar, "Title", Name, TextAnchor.MiddleLeft);
+            UIFactory.SetLayoutElement(titleTxt.gameObject, 50, 25, 9999, 0);
+
+            return titleBar;
+        }
+
+        protected virtual IButtonRef CreateCloseButton(GameObject titleBar)
+        {
+            GameObject closeHolder = UIFactory.CreateUIObject("CloseHolder", titleBar);
+            UIFactory.SetLayoutElement(closeHolder, minHeight: 25, flexibleHeight: 0, minWidth: 30, flexibleWidth: 9999);
+            UIFactory.SetLayoutGroup<HorizontalLayoutGroup>(closeHolder, false, false, true, true, 3, childAlignment: TextAnchor.MiddleRight);
+
+            ButtonRef closeBtn = UIFactory.CreateButton(closeHolder, "CloseButton", "—");
+            UIFactory.SetLayoutElement(closeBtn.Component.gameObject, minHeight: 25, minWidth: 25, flexibleWidth: 0);
+            RuntimeHelper.SetColorBlock(closeBtn.Component, new Color(0.33f, 0.32f, 0.31f));
+
+            return closeBtn;
+        }
+
         protected virtual PanelDragger CreatePanelDragger() => new(this);
 
         public virtual void ConstructUI()
@@ -136,24 +165,10 @@ namespace UniverseLib.UI.Panels
             UIFactory.SetLayoutElement(ContentRoot, 0, 0, flexibleWidth: 9999, flexibleHeight: 9999);
 
             // Title bar
-            TitleBar = UIFactory.CreateHorizontalGroup(ContentRoot, "TitleBar", false, true, true, true, 2,
-                new Vector4(2, 2, 2, 2), new Color(0.06f, 0.06f, 0.06f));
-            UIFactory.SetLayoutElement(TitleBar, minHeight: 25, flexibleHeight: 0);
-
-
-            // Title text
-
-            Text titleTxt = UIFactory.CreateLabel(TitleBar, "TitleBar", Name, TextAnchor.MiddleLeft);
-            UIFactory.SetLayoutElement(titleTxt.gameObject, 50, 25, 9999, 0);
+            TitleBar = CreateTitleBar(ContentRoot);
 
             // close button
-
-            GameObject closeHolder = UIFactory.CreateUIObject("CloseHolder", TitleBar);
-            UIFactory.SetLayoutElement(closeHolder, minHeight: 25, flexibleHeight: 0, minWidth: 30, flexibleWidth: 9999);
-            UIFactory.SetLayoutGroup<HorizontalLayoutGroup>(closeHolder, false, false, true, true, 3, childAlignment: TextAnchor.MiddleRight);
-            ButtonRef closeBtn = UIFactory.CreateButton(closeHolder, "CloseButton", "—");
-            UIFactory.SetLayoutElement(closeBtn.Component.gameObject, minHeight: 25, minWidth: 25, flexibleWidth: 0);
-            RuntimeHelper.SetColorBlock(closeBtn.Component, new Color(0.33f, 0.32f, 0.31f));
+            IButtonRef closeBtn = CreateCloseButton(TitleBar);
 
             closeBtn.OnClick += () =>
             {
@@ -171,7 +186,14 @@ namespace UniverseLib.UI.Panels
 
             // content (abstract)
 
-            ConstructPanelContent();
+            try
+            {
+                ConstructPanelContent();
+            }
+            catch (Exception ex)
+            {
+                Universe.Logger.LogException(ex, uiRoot);
+            }
             SetDefaultSizeAndPosition();
 
             RuntimeHelper.StartCoroutine(LateSetupCoroutine());

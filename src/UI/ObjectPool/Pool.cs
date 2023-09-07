@@ -105,7 +105,11 @@ namespace UniverseLib.UI.ObjectPool
 
             InactiveHolder = new GameObject($"PoolHolder_{typeof(T).Name}");
             InactiveHolder.transform.parent = UniversalUI.PoolHolder.transform;
+#if !UNITY_EDITOR
             InactiveHolder.hideFlags |= HideFlags.HideAndDontSave;
+#else
+            InactiveHolder.hideFlags |= HideFlags.DontSaveInBuild | HideFlags.DontUnloadUnusedAsset | HideFlags.NotEditable;
+#endif
             InactiveHolder.SetActive(false);
 
             // Create an instance (just the C# class, not content) to grab the default height

@@ -5,6 +5,9 @@ using UniverseLib.UGUI.ImplicitTypes;
 using UniverseLib.UI;
 using UniverseLib.UI.Models;
 
+#pragma warning disable CS0660 // Type defines operator == or operator != but does not override Object.Equals(object o)
+#pragma warning disable CS0661 // Type defines operator == or operator != but does not override Object.GetHashCode()
+
 namespace UniverseLib.UGUI.Models
 {
     public sealed class TextFieldResult : UGUISelectableModel<InputField>
@@ -65,3 +68,6 @@ namespace UniverseLib.UGUI.Models
         #endregion
     }
 }
+
+#pragma warning restore CS0661 // Type defines operator == or operator != but does not override Object.GetHashCode()
+#pragma warning restore CS0660 // Type defines operator == or operator != but does not override Object.Equals(object o)

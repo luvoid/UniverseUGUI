@@ -131,7 +131,7 @@ namespace UniverseLib.UGUI
             int controlID = UGUIUtility.GetControlID(FocusType.Keyboard);
             //UGUIContent.Temp(text);
             //UGUIContent content = UGUIUtility.keyboardControl == controlID ? UGUIContent.Temp(text + Input.compositionString) : UGUIContent.Temp(text);
-            Rect rect = UGUILayoutUtility.GetRect(GUIContent.Temp(text), style, options);
+            Rect rect = UGUILayoutUtility.GetRect(text, style, options);
             //if (UGUIUtility.keyboardControl == controlID)
             //    content = UGUIContent.Temp(text);
 

@@ -29,6 +29,9 @@ namespace UniverseLib.UI.Models
 
         public abstract void ConstructUI(GameObject parent);
 
+        /// <summary>
+        /// Toggle the <see cref="UIModel"/> to be active / inacive.
+        /// </summary>
         public virtual void Toggle() => SetActive(!Enabled);
 
         public virtual void SetActive(bool active)

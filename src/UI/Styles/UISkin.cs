@@ -7,18 +7,19 @@ namespace UniverseLib.UI.Styles
     {
         public string                  Name                { get; }
         public TextComponentStyle      Text                { get; }
-        public ReadOnlyPanelStyle      Box                 { get; }
+        public ReadOnlyPanelStyle      Panel               { get; }
         public ReadOnlyButtonStyle     Button              { get; }
         public ReadOnlyToggleStyle     Toggle              { get; }
         public ReadOnlyPanelStyle      Label               { get; }
         public ReadOnlyInputFieldStyle InputField          { get; }
         public ReadOnlyInputFieldStyle ScrollInputField    { get; }
-        public ReadOnlyPanelStyle      Window              { get; }
+        public ReadOnlyWindowStyle     Window              { get; }
         public ReadOnlySliderStyle     HorizontalSlider    { get; }
         public ReadOnlySliderStyle     VerticalSlider      { get; }
         public ReadOnlyScrollbarStyle  HorizontalScrollbar { get; }
         public ReadOnlyScrollbarStyle  VerticalScrollbar   { get; }
         public ReadOnlyPanelStyle      ScrollView          { get; }
+        public ReadOnlyDropdownStyle   Dropdown            { get; }
     }
 
     [System.Serializable]
@@ -30,34 +31,36 @@ namespace UniverseLib.UI.Styles
         /// The default text style.
         /// </summary>
         public TextComponentStyle Text               ;
-        public PanelStyle         Box                ;
+        public PanelStyle         Panel              ;
         public ButtonStyle        Button             ;
         public ToggleStyle        Toggle             ;
         public PanelStyle         Label              ;
         public InputFieldStyle    InputField         ;
         public InputFieldStyle    ScrollInputField   ;
-        public PanelStyle         Window             ;
+        public WindowStyle        Window             ;
         public SliderStyle        HorizontalSlider   ;
         public SliderStyle        VerticalSlider     ;
         public ScrollbarStyle     HorizontalScrollbar;
         public ScrollbarStyle     VerticalScrollbar  ;
         public PanelStyle         ScrollView         ;
+        public DropdownStyle      Dropdown           ;
 
         
         string                  IReadOnlyUISkin.Name                => Name;
         TextComponentStyle      IReadOnlyUISkin.Text                => Text;
-        ReadOnlyPanelStyle      IReadOnlyUISkin.Box                 => Box                ?.AsReadOnly();
+        ReadOnlyPanelStyle      IReadOnlyUISkin.Panel               => Panel              ?.AsReadOnly();
         ReadOnlyButtonStyle     IReadOnlyUISkin.Button              => Button             ?.AsReadOnly();
         ReadOnlyToggleStyle     IReadOnlyUISkin.Toggle              => Toggle             ?.AsReadOnly();
         ReadOnlyPanelStyle      IReadOnlyUISkin.Label               => Label              ?.AsReadOnly();
         ReadOnlyInputFieldStyle IReadOnlyUISkin.InputField          => InputField         ?.AsReadOnly();
         ReadOnlyInputFieldStyle IReadOnlyUISkin.ScrollInputField    => ScrollInputField   ?.AsReadOnly();
-        ReadOnlyPanelStyle      IReadOnlyUISkin.Window              => Window             ?.AsReadOnly();
+        ReadOnlyWindowStyle     IReadOnlyUISkin.Window              => Window             ?.AsReadOnly();
         ReadOnlySliderStyle     IReadOnlyUISkin.HorizontalSlider    => HorizontalSlider   ?.AsReadOnly();
         ReadOnlySliderStyle     IReadOnlyUISkin.VerticalSlider      => VerticalSlider     ?.AsReadOnly();
         ReadOnlyScrollbarStyle  IReadOnlyUISkin.HorizontalScrollbar => HorizontalScrollbar?.AsReadOnly();
         ReadOnlyScrollbarStyle  IReadOnlyUISkin.VerticalScrollbar   => VerticalScrollbar  ?.AsReadOnly();
         ReadOnlyPanelStyle      IReadOnlyUISkin.ScrollView          => ScrollView         ?.AsReadOnly();
+        ReadOnlyDropdownStyle   IReadOnlyUISkin.Dropdown            => Dropdown           ?.AsReadOnly();
 
         public UISkin() { }
 
@@ -69,7 +72,7 @@ namespace UniverseLib.UI.Styles
         {
             Name                = toCopy.Name + "Copy";
             Text                = toCopy.Text;
-            Box                 = toCopy.Box                ?.DeepCopy();
+            Panel               = toCopy.Panel              ?.DeepCopy();
             Button              = toCopy.Button             ?.DeepCopy();
             Toggle              = toCopy.Toggle             ?.DeepCopy();
             Label               = toCopy.Label              ?.DeepCopy();
@@ -81,15 +84,14 @@ namespace UniverseLib.UI.Styles
             HorizontalScrollbar = toCopy.HorizontalScrollbar?.DeepCopy();
             VerticalScrollbar   = toCopy.VerticalScrollbar  ?.DeepCopy();
             ScrollView          = toCopy.ScrollView         ?.DeepCopy();
+            Dropdown            = toCopy.Dropdown           ?.DeepCopy();
         }
-            
+        
 
-
-
-        public static ReadOnlyUISkin Default = new UISkin()
+        public static readonly ReadOnlyUISkin Default = new UISkin()
         {
             Name = "DefaultUISkin",
-            Box                 = new() { Name = nameof(Box                ), },
+            Panel               = new() { Name = nameof(Panel              ), },
             Button              = new() { Name = nameof(Button             ), },
             Toggle              = new() 
             { 
@@ -107,8 +109,10 @@ namespace UniverseLib.UI.Styles
             VerticalSlider      = new() { Name = nameof(VerticalSlider     ), },
             HorizontalScrollbar = new() { Name = nameof(HorizontalScrollbar), },
             VerticalScrollbar   = new() { Name = nameof(VerticalScrollbar  ), },
-            ScrollView          = new() { Name = nameof(ScrollView         ), }
+            ScrollView          = new() { Name = nameof(ScrollView         ), },
+            Dropdown            = new() { Name = nameof(Dropdown           ), Text = new() { Alignment = TextAnchor.MiddleLeft }, },
         }.AsReadOnly();
+
 
         /// <summary>
         /// Returns a deep copy of the skin and its styles.
@@ -117,6 +121,7 @@ namespace UniverseLib.UI.Styles
         {
             return new UISkin(this);
         }
+
 
         /// <summary>
         /// Returns a shallow copy of the skin.
@@ -127,7 +132,7 @@ namespace UniverseLib.UI.Styles
             {
                 Name = Name + "Copy",
                 Text = Text,
-                Box                 = Box                ,
+                Panel                 = Panel                ,
                 Button              = Button             ,
                 Toggle              = Toggle             ,
                 Label               = Label              ,
@@ -139,6 +144,7 @@ namespace UniverseLib.UI.Styles
                 HorizontalScrollbar = HorizontalScrollbar,
                 VerticalScrollbar   = VerticalScrollbar  ,
                 ScrollView          = ScrollView         ,
+                Dropdown            = Dropdown           ,
             };
         }
 
@@ -169,7 +175,7 @@ namespace UniverseLib.UI.Styles
 
         public TextComponentStyle Text => ((IReadOnlyUISkin)skin).Text;
 
-        public ReadOnlyPanelStyle Box => ((IReadOnlyUISkin)skin).Box;
+        public ReadOnlyPanelStyle Panel => ((IReadOnlyUISkin)skin).Panel;
 
         public ReadOnlyButtonStyle Button => ((IReadOnlyUISkin)skin).Button;
 
@@ -181,7 +187,7 @@ namespace UniverseLib.UI.Styles
 
         public ReadOnlyInputFieldStyle ScrollInputField => ((IReadOnlyUISkin)skin).ScrollInputField;
 
-        public ReadOnlyPanelStyle Window => ((IReadOnlyUISkin)skin).Window;
+        public ReadOnlyWindowStyle Window => ((IReadOnlyUISkin)skin).Window;
 
         public ReadOnlySliderStyle HorizontalSlider => ((IReadOnlyUISkin)skin).HorizontalSlider;
 
@@ -192,6 +198,8 @@ namespace UniverseLib.UI.Styles
         public ReadOnlyScrollbarStyle VerticalScrollbar => ((IReadOnlyUISkin)skin).VerticalScrollbar;
 
         public ReadOnlyPanelStyle ScrollView => ((IReadOnlyUISkin)skin).ScrollView;
+
+        public ReadOnlyDropdownStyle Dropdown => ((IReadOnlyUISkin)skin).Dropdown;
 
         public UISkin DeepCopy()
         {

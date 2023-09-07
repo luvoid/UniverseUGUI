@@ -75,9 +75,9 @@ namespace UniverseLib.UGUI.ImplicitTypes
                 guiStyle.fontStyle = textStyle.FontStyle;
                 guiStyle.alignment = textStyle.Alignment;
                 guiStyle.wordWrap = textStyle.HorizontalOverflow == HorizontalWrapMode.Wrap;
-                guiStyle.padding = _padding.Set(style.Padding);
+                guiStyle.padding = _padding.Set(style.LayoutGroup.Padding);
                 guiStyle.overflow = _overflow.Set(style.Overflow);
-                guiStyle.contentOffset = style.ContentOffset;
+                guiStyle.contentOffset = style.LabelOffset;
             }
 
             internal override void ApplyToText(Text text, UGUISkin fallbackSkin = null)
@@ -105,9 +105,9 @@ namespace UniverseLib.UGUI.ImplicitTypes
             private readonly RectOffset _padding = new();
             private readonly RectOffset _overflow = new();
 
-            internal override RectOffset padding       => _padding.Set(style.Padding);
+            internal override RectOffset padding       => _padding.Set(style.LayoutGroup.Padding);
             internal override RectOffset overflow      => _overflow.Set(style.Overflow);
-            internal override Vector2    contentOffset => style.ContentOffset;
+            internal override Vector2    contentOffset => style.LabelOffset;
             internal override Color      textColor     => style.GetTextStyle().Color;
             internal override bool isHeightDependantOnWidth => false;
         }
