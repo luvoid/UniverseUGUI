@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using UniverseLib.UGUI;
+using UniverseLib.Utility;
 
 namespace UniverseLib.UI.Styles
 {

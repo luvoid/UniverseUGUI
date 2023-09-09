@@ -2,7 +2,6 @@
 using UnityEngine;
 using UniverseLib.UI.Components;
 using UniverseLib.UI.Styles;
-using UniverseLib.UGUI;
 using UniverseLib.Utility;
 
 namespace UniverseLib.UI

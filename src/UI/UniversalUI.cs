@@ -11,7 +11,6 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using UniverseLib.Config;
 using UniverseLib.Input;
-using UniverseLib.UGUI;
 using UniverseLib.UI.Models;
 using UniverseLib.UI.Panels;
 using UniverseLib.Utility;
@@ -82,52 +81,6 @@ namespace UniverseLib.UI
         {
             return (T)Activator.CreateInstance(typeof(T), new object[] { id, updateMethod });
         }
-
-                /// <summary>
-        /// Create and register a <typeparamref name="T"/> with the provided ID, and optional update method.<br />
-        /// You can use this to register a custom <see cref="UGUIBase"/> type instead of the default type.
-        /// </summary>
-        /// <param name="earlyUpdateMethod">An optional method to receive Update calls with, invoked when your UI is displayed.</param>
-        /// <param name="behaviours"><see cref="IUniversalUGUIBehaviour"/>s to be registered to the newly created <see cref="UGUIBase"/>.</param>
-        /// <returns>Your newly created <typeparamref name="T"/>, if successful.</returns>
-        /// <inheritdoc cref="RegisterUI"/>
-        public static UGUIBase RegisterUGUI(string id, Action earlyUpdateMethod = null, params IUniversalUGUIBehaviour[] behaviours)
-        {
-            return new UGUIBase(id, earlyUpdateMethod, behaviours);
-        }
-
-        /// <inheritdoc cref="RegisterUGUI"/>
-        public static UGUIBase RegisterUGUI(string id, params IUniversalUGUIBehaviour[] behaviours)
-            => RegisterUGUI(id, null, behaviours);
-
-        /// <summary>
-        /// Create and register a <typeparamref name="T"/> with the provided ID, and optional update method.<br />
-        /// You can use this to register a custom <see cref="UGUIBase"/> type instead of the default type.
-        /// </summary>
-        /// <returns>Your newly created <typeparamref name="T"/>, if successful.</returns>
-        /// <inheritdoc cref="RegisterUGUI"/>
-        public static T RegisterUGUI<T>(string id, Action earlyUpdateMethod = null, params IUniversalUGUIBehaviour[] behaviours)
-            where T : UGUIBase
-        {
-            return (T)Activator.CreateInstance(typeof(T), id, earlyUpdateMethod, behaviours);
-        }
-
-        /// <inheritdoc cref="RegisterUGUI{T}"/>
-        public static T RegisterUGUI<T>(string id, params IUniversalUGUIBehaviour[] behaviours) where T : UGUIBase
-            => RegisterUGUI<T>(id, null, behaviours);
-
-        ///// <inheritdoc cref="RegisterUI"/>
-        //public static UGUIBase RegisterUGUI(string id, params IUniversalUGUIBehaviour[] behaviours)
-        //{
-        //    return RegisterUGUI(id, null, behaviours);
-        //}
-        //
-        ///// <inheritdoc cref="RegisterUI{T}"/>
-        //public static T RegisterUGUI<T>(string id, params IUniversalUGUIBehaviour[] behaviours)
-        //    where T : UGUIBase
-        //{
-        //    return RegisterUGUI<T>(id, null, behaviours);
-        //}
 
         /// <summary>
         /// Sets the <see cref="UIBase"/> with the corresponding <paramref name="id"/> to be active or disabled.

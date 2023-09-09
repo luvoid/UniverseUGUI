@@ -133,5 +133,33 @@ namespace UniverseLib.Utility
 
             return onEndEdit.GetValue(_this, null).TryCast<UnityEvent<string>>();
         }
+
+
+        /// <summary>
+        /// Get a new <see cref="RectOffset"/> where all the values have been multiplied by -1.
+        /// </summary>
+        public static RectOffset Negative(this RectOffset rectOffset)
+        {
+            return new RectOffset(
+                -rectOffset.left,
+                -rectOffset.right,
+                -rectOffset.top,
+                -rectOffset.bottom
+            );
+        }
+
+        /// <summary>
+        /// Set the values of a <see cref="RectOffset"/> with a <see cref="Vector4"/>.
+        /// </summary>
+        /// <param name="offsets">(left, right, top, bottom)</param>
+        public static RectOffset Set(this RectOffset rectOffset, Vector4 offsets)
+        {
+            rectOffset.left   = (int)offsets.x;
+            rectOffset.right  = (int)offsets.y;
+            rectOffset.top    = (int)offsets.z;
+            rectOffset.bottom = (int)offsets.w;
+
+            return rectOffset;
+        }
     }
 }
