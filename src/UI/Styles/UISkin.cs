@@ -7,10 +7,11 @@ namespace UniverseLib.UI.Styles
     {
         public string                  Name                { get; }
         public TextComponentStyle      Text                { get; }
-        public ReadOnlyPanelStyle      Panel               { get; }
+        public LayoutGroupStyle        LayoutGroup         { get; }
+        public ReadOnlyFrameStyle      Frame               { get; }
         public ReadOnlyButtonStyle     Button              { get; }
         public ReadOnlyToggleStyle     Toggle              { get; }
-        public ReadOnlyPanelStyle      Label               { get; }
+        public ReadOnlyFrameStyle      Label               { get; }
         public ReadOnlyInputFieldStyle InputField          { get; }
         public ReadOnlyInputFieldStyle ScrollInputField    { get; }
         public ReadOnlyWindowStyle     Window              { get; }
@@ -18,7 +19,7 @@ namespace UniverseLib.UI.Styles
         public ReadOnlySliderStyle     VerticalSlider      { get; }
         public ReadOnlyScrollbarStyle  HorizontalScrollbar { get; }
         public ReadOnlyScrollbarStyle  VerticalScrollbar   { get; }
-        public ReadOnlyPanelStyle      ScrollView          { get; }
+        public ReadOnlyFrameStyle      ScrollView          { get; }
         public ReadOnlyDropdownStyle   Dropdown            { get; }
     }
 
@@ -31,10 +32,11 @@ namespace UniverseLib.UI.Styles
         /// The default text style.
         /// </summary>
         public TextComponentStyle Text               ;
-        public PanelStyle         Panel              ;
+        public LayoutGroupStyle   LayoutGroup        ;
+        public FrameStyle         Frame              ;
         public ButtonStyle        Button             ;
         public ToggleStyle        Toggle             ;
-        public PanelStyle         Label              ;
+        public FrameStyle         Label              ;
         public InputFieldStyle    InputField         ;
         public InputFieldStyle    ScrollInputField   ;
         public WindowStyle        Window             ;
@@ -42,16 +44,17 @@ namespace UniverseLib.UI.Styles
         public SliderStyle        VerticalSlider     ;
         public ScrollbarStyle     HorizontalScrollbar;
         public ScrollbarStyle     VerticalScrollbar  ;
-        public PanelStyle         ScrollView         ;
+        public FrameStyle         ScrollView         ;
         public DropdownStyle      Dropdown           ;
 
         
         string                  IReadOnlyUISkin.Name                => Name;
         TextComponentStyle      IReadOnlyUISkin.Text                => Text;
-        ReadOnlyPanelStyle      IReadOnlyUISkin.Panel               => Panel              ?.AsReadOnly();
+        LayoutGroupStyle        IReadOnlyUISkin.LayoutGroup         => LayoutGroup;
+        ReadOnlyFrameStyle      IReadOnlyUISkin.Frame               => Frame              ?.AsReadOnly();
         ReadOnlyButtonStyle     IReadOnlyUISkin.Button              => Button             ?.AsReadOnly();
         ReadOnlyToggleStyle     IReadOnlyUISkin.Toggle              => Toggle             ?.AsReadOnly();
-        ReadOnlyPanelStyle      IReadOnlyUISkin.Label               => Label              ?.AsReadOnly();
+        ReadOnlyFrameStyle      IReadOnlyUISkin.Label               => Label              ?.AsReadOnly();
         ReadOnlyInputFieldStyle IReadOnlyUISkin.InputField          => InputField         ?.AsReadOnly();
         ReadOnlyInputFieldStyle IReadOnlyUISkin.ScrollInputField    => ScrollInputField   ?.AsReadOnly();
         ReadOnlyWindowStyle     IReadOnlyUISkin.Window              => Window             ?.AsReadOnly();
@@ -59,7 +62,7 @@ namespace UniverseLib.UI.Styles
         ReadOnlySliderStyle     IReadOnlyUISkin.VerticalSlider      => VerticalSlider     ?.AsReadOnly();
         ReadOnlyScrollbarStyle  IReadOnlyUISkin.HorizontalScrollbar => HorizontalScrollbar?.AsReadOnly();
         ReadOnlyScrollbarStyle  IReadOnlyUISkin.VerticalScrollbar   => VerticalScrollbar  ?.AsReadOnly();
-        ReadOnlyPanelStyle      IReadOnlyUISkin.ScrollView          => ScrollView         ?.AsReadOnly();
+        ReadOnlyFrameStyle      IReadOnlyUISkin.ScrollView          => ScrollView         ?.AsReadOnly();
         ReadOnlyDropdownStyle   IReadOnlyUISkin.Dropdown            => Dropdown           ?.AsReadOnly();
 
         public UISkin() { }
@@ -72,7 +75,8 @@ namespace UniverseLib.UI.Styles
         {
             Name                = toCopy.Name + "Copy";
             Text                = toCopy.Text;
-            Panel               = toCopy.Panel              ?.DeepCopy();
+            LayoutGroup         = toCopy.LayoutGroup;
+            Frame               = toCopy.Frame              ?.DeepCopy();
             Button              = toCopy.Button             ?.DeepCopy();
             Toggle              = toCopy.Toggle             ?.DeepCopy();
             Label               = toCopy.Label              ?.DeepCopy();
@@ -91,7 +95,7 @@ namespace UniverseLib.UI.Styles
         public static readonly ReadOnlyUISkin Default = new UISkin()
         {
             Name = "DefaultUISkin",
-            Panel               = new() { Name = nameof(Panel              ), },
+            Frame               = new() { Name = nameof(Frame              ), },
             Button              = new() { Name = nameof(Button             ), },
             Toggle              = new() 
             { 
@@ -132,7 +136,8 @@ namespace UniverseLib.UI.Styles
             {
                 Name = Name + "Copy",
                 Text = Text,
-                Panel                 = Panel                ,
+                LayoutGroup = LayoutGroup,
+                Frame               = Frame              ,
                 Button              = Button             ,
                 Toggle              = Toggle             ,
                 Label               = Label              ,
@@ -175,13 +180,15 @@ namespace UniverseLib.UI.Styles
 
         public TextComponentStyle Text => ((IReadOnlyUISkin)skin).Text;
 
-        public ReadOnlyPanelStyle Panel => ((IReadOnlyUISkin)skin).Panel;
+        public LayoutGroupStyle LayoutGroup => ((IReadOnlyUISkin)skin).LayoutGroup;
+
+        public ReadOnlyFrameStyle Frame => ((IReadOnlyUISkin)skin).Frame;
 
         public ReadOnlyButtonStyle Button => ((IReadOnlyUISkin)skin).Button;
 
         public ReadOnlyToggleStyle Toggle => ((IReadOnlyUISkin)skin).Toggle;
 
-        public ReadOnlyPanelStyle Label => ((IReadOnlyUISkin)skin).Label;
+        public ReadOnlyFrameStyle Label => ((IReadOnlyUISkin)skin).Label;
 
         public ReadOnlyInputFieldStyle InputField => ((IReadOnlyUISkin)skin).InputField;
 
@@ -197,9 +204,10 @@ namespace UniverseLib.UI.Styles
 
         public ReadOnlyScrollbarStyle VerticalScrollbar => ((IReadOnlyUISkin)skin).VerticalScrollbar;
 
-        public ReadOnlyPanelStyle ScrollView => ((IReadOnlyUISkin)skin).ScrollView;
+        public ReadOnlyFrameStyle ScrollView => ((IReadOnlyUISkin)skin).ScrollView;
 
         public ReadOnlyDropdownStyle Dropdown => ((IReadOnlyUISkin)skin).Dropdown;
+
 
         public UISkin DeepCopy()
         {

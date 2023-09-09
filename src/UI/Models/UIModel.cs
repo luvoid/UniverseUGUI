@@ -27,7 +27,11 @@ namespace UniverseLib.UI.Models
 
         public event Action<bool> OnToggleEnabled;
 
-        public abstract void ConstructUI(GameObject parent);
+        /// <summary>
+        /// Most inheritors don't implement this. Use a more specific method.
+        /// </summary>
+        [System.Obsolete("Most inheritors don't implement this. Use a more specific method.", true)]
+        public virtual void ConstructUI(GameObject parent) => throw new System.NotImplementedException();
 
         /// <summary>
         /// Toggle the <see cref="UIModel"/> to be active / inacive.

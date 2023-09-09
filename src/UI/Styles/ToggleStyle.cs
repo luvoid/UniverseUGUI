@@ -48,7 +48,8 @@ namespace UniverseLib.UI.Styles
             Checkmark = new ImageComponentStyle();
         }
 
-        private ToggleStyle(ToggleStyle toCopy)
+        /// <inheritdoc cref="ControlStyle{T0, T1}(IReadOnlyControlStyle)"/>
+        public ToggleStyle(IReadOnlyToggleStyle toCopy)
             : base(toCopy)
         {
             Checkmark = toCopy.Checkmark.Copy();

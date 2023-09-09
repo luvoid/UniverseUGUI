@@ -1,7 +1,7 @@
 ﻿
 namespace UniverseLib.UI.Styles
 {
-    internal interface IReadOnlySliderStyle : IReadOnlyControlStyle
+    public interface IReadOnlySliderStyle : IReadOnlyControlStyle
     { }
 
     [System.Serializable]
@@ -11,7 +11,8 @@ namespace UniverseLib.UI.Styles
         public SliderStyle() : base()
         { }
 
-        private SliderStyle(SliderStyle toCopy)
+        /// <inheritdoc cref="ControlStyle{T0, T1}(IReadOnlyControlStyle)"/>
+        public SliderStyle(IReadOnlySliderStyle toCopy)
             : base(toCopy)
         { }
 

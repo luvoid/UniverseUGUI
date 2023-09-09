@@ -11,7 +11,8 @@ namespace UniverseLib.UI.Styles
         /// <inheritdoc/>
         public ButtonStyle() : base() { }
 
-        internal ButtonStyle(ButtonStyle toCopy)
+        /// <inheritdoc cref="ControlStyle{T0, T1}(IReadOnlyControlStyle)"/>
+        public ButtonStyle(ButtonStyle toCopy)
             : base(toCopy)
         { }
 

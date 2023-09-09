@@ -5,7 +5,7 @@ using UniverseLib.UI.Styles;
 
 namespace UniverseLib.UI.Models.Styled
 {
-    public class StyledLabel : StyledComponent<Text, IReadOnlyPanelStyle>
+    public class StyledLabel : StyledComponent<Text, IReadOnlyFrameStyle>
     {
         public sealed override Text Component { get; }
         public sealed override Image Background { get; }
@@ -19,7 +19,7 @@ namespace UniverseLib.UI.Models.Styled
             UIFactory.SetLayoutAutoSize(UIRoot);
         }
 
-        public override void ApplyStyle(IReadOnlyPanelStyle style, IReadOnlyUISkin fallbackSkin = null)
+        public override void ApplyStyle(IReadOnlyFrameStyle style, IReadOnlyUISkin fallbackSkin = null)
         {
             Background.enabled = style.UseBackground;
             style.Background?.ApplyTo(Background);

@@ -9,7 +9,7 @@ using UniverseLib.Input;
 namespace UniverseLib.UI.Panels
 {
     /// <summary>
-    /// Handles updating, dragging and resizing all <see cref="PanelBase"/>s for the parent <see cref="UIBase"/>.
+    /// Handles updating, dragging and resizing all <see cref="Panel"/>s for the parent <see cref="UIBase"/>.
     /// </summary>
     public class PanelManager
     {
@@ -89,8 +89,8 @@ namespace UniverseLib.UI.Panels
         /// <summary>Invoked when the user clicks outside of all panels.</summary>
         public event Action OnClickedOutsidePanels;
 
-        protected readonly List<PanelBase> panelInstances = new();
-        protected readonly Dictionary<int, PanelBase> transformIDToUIPanel = new();
+        protected readonly List<Panel> panelInstances = new();
+        protected readonly Dictionary<int, Panel> transformIDToUIPanel = new();
         protected readonly List<PanelDragger> draggerInstances = new();
 
         public PanelManager(UIBase owner)
@@ -133,7 +133,7 @@ namespace UniverseLib.UI.Panels
         protected virtual bool MouseInTargetDisplay => true;
 
         // invoked from UIPanel ctor
-        internal protected virtual void AddPanel(PanelBase panel)
+        internal protected virtual void AddPanel(Panel panel)
         {
             allDraggers.Add(panel.Dragger);
             this.draggerInstances.Add(panel.Dragger);
@@ -143,7 +143,7 @@ namespace UniverseLib.UI.Panels
         }
 
         // invoked from UIPanel.Destroy
-        internal protected virtual void RemovePanel(PanelBase panel)
+        internal protected virtual void RemovePanel(Panel panel)
         {
             allDraggers.Remove(panel.Dragger);
             this.draggerInstances.Remove(panel.Dragger);
@@ -184,7 +184,7 @@ namespace UniverseLib.UI.Panels
                 {
                     // make sure this is a real recognized panel
                     Transform transform = PanelHolder.transform.GetChild(i);
-                    if (!transformIDToUIPanel.TryGetValue(transform.GetInstanceID(), out PanelBase panel))
+                    if (!transformIDToUIPanel.TryGetValue(transform.GetInstanceID(), out Panel panel))
                         continue;
 
                     // check if our mouse is clicking inside the panel

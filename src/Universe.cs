@@ -1,13 +1,9 @@
 ﻿using HarmonyLib;
-using Microsoft.SqlServer.Server;
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Reflection;
 using UnityEngine;
-using UnityEngine.Networking;
 using UniverseLib.Config;
 using UniverseLib.Input;
 using UniverseLib.Runtime;
@@ -34,7 +30,7 @@ namespace UniverseLib
         }
 
         public const string NAME = "UniverseUGUI";
-        public const string VERSION = "1.6.3";
+        public const string VERSION = "1.6.4";
         public const string AUTHOR = "luvoid";
         public const string GUID = "luvoid.universeugui";
 

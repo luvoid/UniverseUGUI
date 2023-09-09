@@ -13,7 +13,8 @@ namespace UniverseLib.UI.Styles
         /// <inheritdoc/>
         public InputFieldStyle() : base() { }
 
-        private InputFieldStyle(InputFieldStyle toCopy)
+        /// <inheritdoc cref="ControlStyle{T0, T1}(IReadOnlyControlStyle)"/>
+        public InputFieldStyle(IReadOnlyInputFieldStyle toCopy)
             : base(toCopy)
         { }
 

@@ -16,7 +16,7 @@ namespace UniverseLib.UI.Panels
 
         // Instance
 
-        public PanelBase UIPanel { get; private set; }
+        public Panel UIPanel { get; private set; }
         public bool AllowDragAndResize => UIPanel.CanDragAndResize;
         
         public RectTransform Rect { get; set; }
@@ -37,7 +37,7 @@ namespace UniverseLib.UI.Panels
         private ResizeTypes lastResizeHoverType;
         private Rect totalResizeRect;
 
-        public PanelDragger(PanelBase uiPanel)
+        public PanelDragger(Panel uiPanel)
         {
             this.UIPanel = uiPanel;
             this.DragableArea = uiPanel.TitleBar.GetComponent<RectTransform>();

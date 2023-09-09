@@ -63,7 +63,7 @@ namespace UniverseLib.UGUI
             }
             internal override string    Name      => skin.Name            ;
             internal override Font      Font      => skin.Text.Font       ;
-            internal override UGUIStyle Box       => skin.Panel             ;
+            internal override UGUIStyle Box       => skin.Frame             ;
             internal override UGUIStyle Button    => skin.Button          ;
             internal override UGUIStyle Toggle    => skin.Toggle          ;
             internal override UGUIStyle Label     => skin.Label           ;

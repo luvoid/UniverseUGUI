@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -22,6 +23,7 @@ namespace UniverseLib.UI
         /// <summary>
         /// Create a simple UI object with a RectTransform. <paramref name="parent"/> can be null.
         /// </summary>
+        [Browsable(false), EditorBrowsable(EditorBrowsableState.Never)]
         [Obsolete($"Use {nameof(CreateUIObject)}(GameObject, string, Vector2) or {nameof(Create)}.{nameof(UIObject)}(...) instead.")]
         public static GameObject CreateUIObject(string name, GameObject parent, Vector2 sizeDelta = default)
         {
@@ -107,10 +109,11 @@ namespace UniverseLib.UI
         /// <summary>
         /// Get and/or Add a HorizontalOrVerticalLayoutGroup (must pick one) to the GameObject, and set the values on it.
         /// </summary>
+        //[Obsolete($"Use {nameof(SetLayoutGroup)}(GameObject, bool?, bool?, bool?, bool?, int?, Vector4?, TextAnchor?) instead.")]
         public static T SetLayoutGroup<T>(GameObject gameObject, bool? forceWidth = null, bool? forceHeight = null,
             bool? childControlWidth = null, bool? childControlHeight = null, int? spacing = null, int? padTop = null,
             int? padBottom = null, int? padLeft = null, int? padRight = null, TextAnchor? childAlignment = null)
-            where T : HorizontalOrVerticalLayoutGroup
+            where T : HorizontalOrVerticalLayoutGroup, new()
         {
             T group = gameObject.GetComponent<T>();
             if (!group)
@@ -123,6 +126,7 @@ namespace UniverseLib.UI
         /// <summary>
         /// Set the values on a HorizontalOrVerticalLayoutGroup.
         /// </summary>
+        //[Obsolete($"Use {nameof(SetLayoutGroup)}(T, bool?, bool?, bool?, bool?, int?, Vector4?, TextAnchor?) instead.")]
         public static T SetLayoutGroup<T>(T group, bool? forceWidth = null, bool? forceHeight = null,
             bool? childControlWidth = null, bool? childControlHeight = null, int? spacing = null, int? padTop = null,
             int? padBottom = null, int? padLeft = null, int? padRight = null, TextAnchor? childAlignment = null)
@@ -166,7 +170,8 @@ namespace UniverseLib.UI
         /// <param name="bgColor">The background color of your panel. Defaults to dark grey if null.</param>
         /// <param name="contentHolder">The GameObject which you should add your actual content on to.</param>
         /// <returns>The base panel GameObject (not for adding content to).</returns>
-        [Obsolete($"Use {nameof(Create)}.{nameof(Panel)}(...) instead.")]
+        [Browsable(false), EditorBrowsable(EditorBrowsableState.Never)]
+        [Obsolete($"Use {nameof(Create)}.{nameof(Frame)}(...) instead.")]
         public static GameObject CreatePanel(string name, GameObject parent, out GameObject contentHolder, Color? bgColor = null)
         {
             GameObject panelObj = CreateUIObject(name, parent);
@@ -197,6 +202,8 @@ namespace UniverseLib.UI
         /// <summary>
         /// Create a VerticalLayoutGroup object with an Image component. Use SetLayoutGroup to create one without an image.
         /// </summary>
+        [Browsable(false), EditorBrowsable(EditorBrowsableState.Never)]
+        [Obsolete($"Use {nameof(Create)}.{nameof(VerticalFrame)}(...) instead.")]
         public static GameObject CreateVerticalGroup(GameObject parent, string name, bool forceWidth, bool forceHeight,
             bool childControlWidth, bool childControlHeight, int spacing = 0, Vector4 padding = default, Color bgColor = default,
             TextAnchor? childAlignment = null)
@@ -217,6 +224,8 @@ namespace UniverseLib.UI
         /// <summary>
         /// Create a HorizontalLayoutGroup object with an Image component. Use SetLayoutGroup to create one without an image.
         /// </summary>
+        [Browsable(false), EditorBrowsable(EditorBrowsableState.Never)]
+        [Obsolete($"Use {nameof(Create)}.{nameof(HorizontalFrame)}(...) instead.")]
         public static GameObject CreateHorizontalGroup(GameObject parent, string name, bool forceExpandWidth, bool forceExpandHeight,
             bool childControlWidth, bool childControlHeight, int spacing = 0, Vector4 padding = default, Color bgColor = default,
             TextAnchor? childAlignment = null)
@@ -237,6 +246,8 @@ namespace UniverseLib.UI
         /// <summary>
         /// Create a GridLayoutGroup object with an Image component. 
         /// </summary>
+        [Browsable(false), EditorBrowsable(EditorBrowsableState.Never)]
+        [Obsolete($"Use {nameof(Create)}.{nameof(GridFrame)}(...) instead.")]
         public static GameObject CreateGridGroup(GameObject parent, string name, Vector2 cellSize, Vector2 spacing, Color bgColor = default)
         {
             GameObject groupObj = CreateUIObject(name, parent);
@@ -271,6 +282,7 @@ namespace UniverseLib.UI
         /// <param name="supportRichText">Should the Text support rich text? (Can be changed afterwards)</param>
         /// <param name="fontSize">The default font size</param>
         /// <returns>Your new Text component</returns>
+        [Browsable(false), EditorBrowsable(EditorBrowsableState.Never)]
         [Obsolete($"Use {nameof(Create)}.{nameof(Label)}(...) instead.")]
         public static Text CreateLabel(GameObject parent, string name, string defaultText, TextAnchor alignment = TextAnchor.MiddleLeft,
             Color color = default, bool supportRichText = true, int fontSize = 14)
@@ -297,6 +309,7 @@ namespace UniverseLib.UI
         /// <param name="text">The default button text</param>
         /// <param name="normalColor">The base color for your button, with the highlighted and pressed colors generated from this.</param>
         /// <returns>A ButtonRef wrapper for your Button component.</returns>
+        [Browsable(false), EditorBrowsable(EditorBrowsableState.Never)]
         [Obsolete($"Use {nameof(Create)}.{nameof(Button)}(...) instead.")]
         public static ButtonRef CreateButton(GameObject parent, string name, string text, Color? normalColor = null)
         {
@@ -314,6 +327,7 @@ namespace UniverseLib.UI
         /// <param name="text">The default button text</param>
         /// <param name="colors">The ColorBlock used for your Button component</param>
         /// <returns>A ButtonRef wrapper for your Button component.</returns>
+        [Browsable(false), EditorBrowsable(EditorBrowsableState.Never)]
         [Obsolete($"Use {nameof(Create)}.{nameof(Button)}(...) instead.")]
         public static ButtonRef CreateButton(GameObject parent, string name, string text, ColorBlock colors)
         {
@@ -465,6 +479,7 @@ namespace UniverseLib.UI
         /// <param name="checkWidth">The width of your checkbox</param>
         /// <param name="checkHeight">The height of your checkbox</param>
         /// <returns>The root GameObject for your Toggle control</returns>
+        [Browsable(false), EditorBrowsable(EditorBrowsableState.Never)]
         [Obsolete($"Use {nameof(Create)}.{nameof(Toggle)}(...) instead.")]
         public static GameObject CreateToggle(GameObject parent, string name, out Toggle toggle, out Text text, Color bgColor = default, 
             int checkWidth = 20, int checkHeight = 20)
@@ -519,6 +534,7 @@ namespace UniverseLib.UI
         /// <param name="name">The GameObject name of your InputField</param>
         /// <param name="placeHolderText">The placeholder text for your InputField component</param>
         /// <returns>An InputFieldRef wrapper for your InputField</returns>
+        [Browsable(false), EditorBrowsable(EditorBrowsableState.Never)]
         [Obsolete($"Use {nameof(Create)}.{nameof(InputField)}(...) instead.")]
         public static InputFieldRef CreateInputField(GameObject parent, string name, string placeHolderText)
         {
@@ -598,6 +614,7 @@ namespace UniverseLib.UI
         /// <param name="onValueChanged">Invoked when your Dropdown value is changed</param>
         /// <param name="defaultOptions">Optional default options for the dropdown</param>
         /// <returns>The root GameObject for your Dropdown control</returns>
+        [Browsable(false), EditorBrowsable(EditorBrowsableState.Never)]
         [Obsolete($"Use {nameof(Create)}.{nameof(Dropdown)}(...) instead.")]
         public static GameObject CreateDropdown(GameObject parent, string name, out Dropdown dropdown, string defaultItemText, int itemFontSize,
             Action<int> onValueChanged, string[] defaultOptions = null)

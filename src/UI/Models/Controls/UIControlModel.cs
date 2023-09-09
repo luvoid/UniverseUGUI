@@ -19,16 +19,6 @@ namespace UniverseLib.UI.Models.Controls
             listenForUpdate?.AddListener(() => UpdateControlValue());
         }
 
-        /// <summary>
-        /// Not implemented.
-        /// </summary>
-        /// <exception cref="System.NotImplementedException"></exception>
-        [System.Obsolete("Not implemented.", true)]
-        public sealed override void ConstructUI(GameObject parent)
-        {
-            throw new System.NotImplementedException();
-        }
-
         public override void Update()
         {
             if (!didStart)

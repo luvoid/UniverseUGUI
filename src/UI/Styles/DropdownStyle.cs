@@ -10,7 +10,7 @@ namespace UniverseLib.UI.Styles
     {
         public IReadOnlyImageComponentStyle Arrow { get; }
         public ReadOnlyToggleStyle Item { get; }
-        public ReadOnlyPanelStyle Viewport { get; }
+        public ReadOnlyFrameStyle Viewport { get; }
         public ReadOnlyScrollbarStyle Scrollbar { get; }
     }
 
@@ -25,19 +25,19 @@ namespace UniverseLib.UI.Styles
 
         public ImageComponentStyle Arrow;
         public ToggleStyle Item;
-        public PanelStyle Viewport;
+        public FrameStyle Viewport;
         public ScrollbarStyle Scrollbar;
 
         IReadOnlyImageComponentStyle IReadOnlyDropdownStyle.Arrow => Arrow;
         ReadOnlyToggleStyle IReadOnlyDropdownStyle.Item => Item.AsReadOnly();
-        ReadOnlyPanelStyle IReadOnlyDropdownStyle.Viewport => Viewport.AsReadOnly();
+        ReadOnlyFrameStyle IReadOnlyDropdownStyle.Viewport => Viewport.AsReadOnly();
         ReadOnlyScrollbarStyle IReadOnlyDropdownStyle.Scrollbar => Scrollbar.AsReadOnly();
 
         /// <summary>
         /// Creates a new instance with 
         /// <br/> a new <see cref="ImageComponentStyle"/> using <see cref="DefaultArrow"/> for the Arrow,
         /// <br/> a new <see cref="ToggleStyle"/> for the Item,
-        /// <br/> a new <see cref="PanelStyle"/> for the Viewport,
+        /// <br/> a new <see cref="FrameStyle"/> for the Viewport,
         /// <br/> and a new <see cref="ScrollbarStyle"/> for the Scrollbar.
         /// </summary>
         public DropdownStyle()
@@ -48,12 +48,13 @@ namespace UniverseLib.UI.Styles
             Scrollbar = new();
         }
 
-        private DropdownStyle(DropdownStyle toCopy) : base(toCopy)
+        /// <inheritdoc cref="ControlStyle{T0, T1}(IReadOnlyControlStyle)"/>
+        public DropdownStyle(IReadOnlyDropdownStyle toCopy) : base(toCopy)
         {
-            Arrow     = toCopy.Arrow;
-            Item      = toCopy.Item;
-            Viewport  = toCopy.Viewport;
-            Scrollbar = toCopy.Scrollbar;
+            Arrow     = toCopy.Arrow.Copy();
+            Item      = toCopy.Item.DeepCopy();
+            Viewport  = toCopy.Viewport.DeepCopy();
+            Scrollbar = toCopy.Scrollbar.DeepCopy();
         }
 
         public override DropdownStyle DeepCopy()
@@ -74,7 +75,7 @@ namespace UniverseLib.UI.Styles
         public IReadOnlyImageComponentStyle Arrow => ((IReadOnlyDropdownStyle)WrappedStyle).Arrow;
 
         public ReadOnlyToggleStyle Item => ((IReadOnlyDropdownStyle)WrappedStyle).Item;
-        public ReadOnlyPanelStyle Viewport => ((IReadOnlyDropdownStyle)WrappedStyle).Viewport;
+        public ReadOnlyFrameStyle Viewport => ((IReadOnlyDropdownStyle)WrappedStyle).Viewport;
         public ReadOnlyScrollbarStyle Scrollbar => ((IReadOnlyDropdownStyle)WrappedStyle).Scrollbar;
 
     }

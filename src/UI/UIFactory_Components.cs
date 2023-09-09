@@ -24,9 +24,9 @@ namespace UniverseLib.UI
         /// <param name="text">The default text of the label</param>
         /// <param name="style">The style to use when creating the label. Defaults to <see cref="UISkin.Default"/>'s Label</param>
         /// <returns>A <see cref="StyledLabel"/> wrapper for your <see cref="Text"/> component.</returns>
-        public StyledLabel Label(GameObject parent, string name, string text, IReadOnlyPanelStyle style = null)
+        public StyledLabel Label(GameObject parent, string name, string text, IReadOnlyFrameStyle style = null)
         {
-            style ??= (IReadOnlyPanelStyle)Skin?.Label ?? UISkin.Default.Label;
+            style ??= (IReadOnlyFrameStyle)Skin?.Label ?? UISkin.Default.Label;
 
             StyledLabel label = new(parent, name, text);
             label.ApplyStyle(style, Skin);

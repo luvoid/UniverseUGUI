@@ -21,15 +21,32 @@ namespace UniverseLib.UI.Styles
 
     public struct LayoutGroupStyle : IComponentStyle<LayoutGroup>, IComponentStyle<HorizontalOrVerticalLayoutGroup>, IComponentStyle<HorizontalLayoutGroup>, IComponentStyle<VerticalLayoutGroup>, IComponentStyle<GridLayoutGroup>
     {
-        public Vector4 Padding = Vector2.zero;
-        public Vector2 Spacing = Vector2.zero;
-        public TextAnchor ChildAlignment = TextAnchor.UpperLeft;
-        public RectSizeBool ChildControl = new RectSizeBool(true, true);
-        public RectSizeBool ChildForceExpand = new RectSizeBool(false, false);
+        public Vector4 Padding;
+        public Vector2 Spacing;
+        public TextAnchor ChildAlignment;
+        public RectSizeBool ChildControl;
+        public RectSizeBool ChildForceExpand;
 
-        public LayoutGroupStyle() { }
+        public LayoutGroupStyle()
+        {
+            Padding          = Vector2.zero;
+            Spacing          = Vector2.zero;
+            ChildAlignment   = TextAnchor.UpperLeft;
+            ChildControl     = new RectSizeBool(true, true);
+            ChildForceExpand = new RectSizeBool(false, false);
+        }
 
-
+        /// <summary>
+        /// Create a copy of the LayoutGroupStyle.
+        /// </summary>
+        public LayoutGroupStyle(LayoutGroupStyle toCopy)
+        {
+            Padding          = toCopy.Padding         ;
+            Spacing          = toCopy.Spacing         ;
+            ChildAlignment   = toCopy.ChildAlignment  ;
+            ChildControl     = toCopy.ChildControl    ;
+            ChildForceExpand = toCopy.ChildForceExpand;
+        }
 
         public void ApplyTo(UIBehaviour component)
         {

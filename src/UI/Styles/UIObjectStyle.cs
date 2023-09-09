@@ -145,7 +145,10 @@ namespace UniverseLib.UI.Styles
             Background = new TBackgroundStyle();
         }
 
-        internal UIObjectStyle(UIObjectStyle<TBackgroundStyle, TReadOnlyBackgroundStyle, TBackgroundComponent> toCopy)
+        /// <summary>
+        /// Creates a deep copy of the style <paramref name="toCopy"/>.
+        /// </summary>
+        internal UIObjectStyle(IReadOnlyUIObjectStyle<TReadOnlyBackgroundStyle, TBackgroundComponent> toCopy)
         {
             Name = toCopy.Name + "Copy";
             Text = toCopy.Text;

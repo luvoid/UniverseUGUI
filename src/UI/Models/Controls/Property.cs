@@ -15,7 +15,7 @@ namespace UniverseLib.UI.Models.Controls
 
         internal Property(GameObject parent, string propertyName)
         {
-            GameObject = UIFactory.CreateUIObject(propertyName, parent);
+            GameObject = UIFactory.CreateUIObject(parent, propertyName);
             Label = new StyledLabel(GameObject, "Label", propertyName);
 
             RectTransform labelTransform = Label.UIRoot.transform.TryCast<RectTransform>();

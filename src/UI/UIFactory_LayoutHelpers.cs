@@ -2,6 +2,8 @@
 using UnityEngine;
 using UniverseLib.UI.Components;
 using UniverseLib.UI.Styles;
+using UniverseLib.UGUI;
+using UniverseLib.Utility;
 
 namespace UniverseLib.UI
 {
@@ -21,29 +23,101 @@ namespace UniverseLib.UI
             return layout;
         }
 
+        /// <inheritdoc cref="SetLayoutGroup_(GameObject, bool?, bool?, bool?, bool?, int?, Vector4?, TextAnchor?)"/>
+        public static T SetLayoutGroup<T>(GameObject gameObject, Vector4 padding,
+            bool? forceWidth = null, bool? forceHeight = null, bool? childControlWidth = null, bool? childControlHeight = null,
+            int? spacing = null, TextAnchor? childAlignment = null)
+            where T : HorizontalOrVerticalLayoutGroup, new()
+        {
+            return SetLayoutGroup_<T>(gameObject,
+                forceWidth, forceHeight, childControlWidth, childControlHeight, 
+                spacing, padding, childAlignment);
+        }
+
         /// <summary>
         /// Get and/or Add a <see cref="HorizontalOrVerticalLayoutGroup"/> (must pick one) to the <paramref name="gameObject"/>, and set the values on it.
         /// </summary>
         /// <param name="padding">(left, right, top, bottom)</param>
-        public static T SetLayoutGroup<T>(GameObject gameObject, Vector4 padding, bool? forceWidth = null, bool? forceHeight = null,
-            bool? childControlWidth = null, bool? childControlHeight = null, int? spacing = null, 
-            TextAnchor? childAlignment = null)
+        // Ideally, this would replace the old SetLayoutGroup one day.
+        internal static T SetLayoutGroup_<T>(GameObject gameObject, 
+            bool? forceWidth = null, bool? forceHeight = null, bool? childControlWidth = null, bool? childControlHeight = null,
+            int? spacing = null, Vector4? padding = null, TextAnchor? childAlignment = null)
             where T : HorizontalOrVerticalLayoutGroup, new()
         {
-            return SetLayoutGroup<T>(gameObject, forceWidth, forceHeight, childControlWidth, childControlHeight, spacing,
-                (int)padding.z, (int)padding.w, (int)padding.x, (int)padding.y, childAlignment);
+            T group = gameObject.GetComponent<T>();
+            if (group.IsNullOrDestroyed())
+                group = gameObject.AddComponent<T>();
+
+            return SetLayoutGroup_<T>(group,
+                forceWidth, forceHeight, childControlWidth, childControlHeight,
+                spacing, padding, childAlignment);
+        }
+
+        /// <inheritdoc cref="SetLayoutGroup_{T}(T, bool?, bool?, bool?, bool?, int?, Vector4?, TextAnchor?)"/>
+        public static T SetLayoutGroup<T>(T group, Vector4 padding,
+           bool? forceWidth = null, bool? forceHeight = null, bool? childControlWidth = null, bool? childControlHeight = null,
+           int? spacing = null, TextAnchor? childAlignment = null)
+           where T : HorizontalOrVerticalLayoutGroup
+        {
+            return SetLayoutGroup_<T>(group,
+                forceWidth, forceHeight, childControlWidth, childControlHeight,
+                spacing, padding, childAlignment);
         }
 
         /// <summary>
         /// Set the values on a <see cref="HorizontalOrVerticalLayoutGroup"/>.
         /// </summary>
         /// <param name="padding">(left, right, top, bottom)</param>
-        public static T SetLayoutGroup<T>(T group, Vector4 padding, bool? forceWidth = null, bool? forceHeight = null,
-            bool? childControlWidth = null, bool? childControlHeight = null, int? spacing = null, TextAnchor? childAlignment = null)
-            where T : HorizontalOrVerticalLayoutGroup, new()
+        // Ideally, this would replace the old SetLayoutGroup one day.
+        internal static T SetLayoutGroup_<T>(T group,
+            bool? forceWidth = null, bool? forceHeight = null, bool? childControlWidth = null, bool? childControlHeight = null, 
+            int? spacing = null, Vector4? padding = null, TextAnchor? childAlignment = null)
+            where T : HorizontalOrVerticalLayoutGroup
         {
-            return SetLayoutGroup(group, forceWidth, forceHeight, childControlWidth, childControlHeight, spacing,
-                (int)padding.z, (int)padding.w, (int)padding.x, (int)padding.y, childAlignment);
+            if (forceWidth.HasValue)
+                group.childForceExpandWidth = forceWidth.Value;
+            if (forceHeight.HasValue)
+                group.childForceExpandHeight = forceHeight.Value;
+            if (childControlWidth.HasValue)
+                group.SetChildControlWidth(childControlWidth.Value);
+            if (childControlHeight.HasValue)
+                group.SetChildControlHeight(childControlHeight.Value);
+            if (spacing.HasValue)
+                group.spacing = spacing.Value;
+            if (padding.HasValue)
+                group.padding.Set(padding.Value);
+            if (childAlignment.HasValue)
+                group.childAlignment = childAlignment.Value;
+            return group;
+        }
+
+        public static T SetLayoutGroup<T>(GameObject gameObject,
+            Vector2? cellSize = null, Vector2? spacing = null, Vector4? padding = null,
+            TextAnchor? childAlignment = null)
+            where T : GridLayoutGroup
+        {
+            T group = gameObject.GetComponent<T>();
+            if (group.IsNullOrDestroyed())
+                group = gameObject.AddComponent<T>();
+
+            return SetLayoutGroup(group, cellSize, spacing, padding, childAlignment);
+        }
+
+
+        public static T SetLayoutGroup<T>(T group, Vector2? cellSize = null, 
+            Vector2? spacing = null, Vector4? padding = null,
+            TextAnchor? childAlignment = null)
+            where T : GridLayoutGroup
+        {
+            if (cellSize.HasValue)
+                group.cellSize = cellSize.Value;
+            if (spacing.HasValue)
+                group.spacing = spacing.Value;
+            if (padding.HasValue)
+                group.padding.Set(padding.Value);
+            if (childAlignment.HasValue)
+                group.childAlignment = childAlignment.Value;
+            return group;
         }
 
         /// <summary>
@@ -92,6 +166,21 @@ namespace UniverseLib.UI
                 layoutAutoSize.ChildControlWidth = childControlHeight.Value;
 
             return layoutAutoSize;
+        }
+
+
+        /// <summary>
+        /// Change the <paramref name="gameObject"/>'s <see cref="RectTransform"/> anchors and offsets to fill the entire parent
+        /// with the given padding and position offset.
+        /// </summary>
+        /// <param name="padding">(left, right, top, bottom)</param>
+        public static void SetOffsets(GameObject gameObject, Vector4 padding, Vector2 positionOffset = default)
+        {
+            RectTransform rectTransform = gameObject.transform.TryCast<RectTransform>();
+            rectTransform.anchorMin = Vector2.zero;
+            rectTransform.anchorMax = Vector2.one;
+            rectTransform.offsetMin = new Vector2( padding.x,  padding.w) + positionOffset;
+            rectTransform.offsetMax = new Vector2(-padding.y, -padding.z) + positionOffset;
         }
     }
 }

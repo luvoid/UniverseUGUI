@@ -1,12 +1,8 @@
-﻿using UnityEngine.Events;
-using UnityEngine;
-using UniverseLib.Utility;
+﻿using UnityEngine;
+using UnityEngine.Events;
 using UniverseLib.UI.Models.Controls;
 using UniverseLib.UI.Styles;
-using UnityEngine.UI;
-using System.Xml.Linq;
-using Mono.Cecil.Rocks;
-using Microsoft.Cci;
+using UniverseLib.Utility;
 
 namespace UniverseLib.UI
 {
@@ -45,7 +41,7 @@ namespace UniverseLib.UI
 
         public Property<BoolControl> BoolProperty(GameObject parent, string propertyName, Getter<bool> get,
             Setter<bool> set = null, UnityEvent listenForUpdate = null,
-            IReadOnlyToggleStyle toggleStyle = null, IReadOnlyPanelStyle labelStyle = null)
+            IReadOnlyToggleStyle toggleStyle = null, IReadOnlyFrameStyle labelStyle = null)
         {
             toggleStyle ??= (IReadOnlyToggleStyle)Skin?.Toggle ?? UISkin.Default.Toggle;
 
@@ -85,7 +81,7 @@ namespace UniverseLib.UI
 
         public Property<BoolControl> BoolProperty(GameObject parent, string propertyName, RefGetter<bool> refGet,
             System.Action onSet = null, UnityEvent listenForUpdate = null, 
-            IReadOnlyToggleStyle toggleStyle = null, IReadOnlyPanelStyle labelStyle = null)
+            IReadOnlyToggleStyle toggleStyle = null, IReadOnlyFrameStyle labelStyle = null)
         {
             return BoolProperty(
                 parent,
@@ -121,7 +117,7 @@ namespace UniverseLib.UI
         public Property<StringControl> StringProperty(GameObject parent, string propertyName, Getter<string> get,
             Setter<string> set = null, UnityEvent listenForUpdate = null,
             ControlCallbackMode callbackMode = ControlCallbackMode.OnValueChenged,
-            IReadOnlyInputFieldStyle inputFieldStyle = null, IReadOnlyPanelStyle labelStyle = null)
+            IReadOnlyInputFieldStyle inputFieldStyle = null, IReadOnlyFrameStyle labelStyle = null)
         {
             inputFieldStyle ??= (IReadOnlyInputFieldStyle)Skin?.InputField ?? UISkin.Default.InputField;
 
@@ -151,7 +147,7 @@ namespace UniverseLib.UI
         public Property<StringControl> StringProperty(GameObject parent, string propertyName, RefGetter<string> refGet,
             System.Action onSet = null, UnityEvent listenForUpdate = null, 
             ControlCallbackMode callbackMode = ControlCallbackMode.OnValueChenged,
-            IReadOnlyInputFieldStyle inputFieldStyle = null, IReadOnlyPanelStyle labelStyle = null)
+            IReadOnlyInputFieldStyle inputFieldStyle = null, IReadOnlyFrameStyle labelStyle = null)
         {
             return StringProperty(
                 parent,
@@ -195,13 +191,13 @@ namespace UniverseLib.UI
         public Property<ParsedControl<T, ParserDefault>> ParsedProperty<T>(GameObject parent, string propertyName, Getter<T> get,
             Setter<T> set = null, UnityEvent listenForUpdate = null,
             ControlCallbackMode callbackMode = ControlCallbackMode.OnEndEdit,
-            IReadOnlyInputFieldStyle inputFieldStyle = null, IReadOnlyPanelStyle labelStyle = null)
+            IReadOnlyInputFieldStyle inputFieldStyle = null, IReadOnlyFrameStyle labelStyle = null)
             => ParsedProperty<T, ParserDefault>(parent, propertyName, get, set, listenForUpdate, callbackMode, inputFieldStyle, labelStyle);
 
         public Property<ParsedControl<T, TParser>> ParsedProperty<T, TParser>(GameObject parent, string propertyName, Getter<T> get,
             Setter<T> set = null, UnityEvent listenForUpdate = null,
             ControlCallbackMode callbackMode = ControlCallbackMode.OnEndEdit,
-            IReadOnlyInputFieldStyle inputFieldStyle = null, IReadOnlyPanelStyle labelStyle = null)
+            IReadOnlyInputFieldStyle inputFieldStyle = null, IReadOnlyFrameStyle labelStyle = null)
             where TParser : Parser, new()
         {
             inputFieldStyle ??= (IReadOnlyInputFieldStyle)Skin?.InputField ?? UISkin.Default.InputField;
@@ -215,14 +211,14 @@ namespace UniverseLib.UI
 #if !(UNITY_EDITOR && UNITY_5)
         public ParsedControl<T, ParserDefault> ParsedControl<T>(GameObject parent, string name, RefGetter<T> refGet,
             System.Action onSet = null, UnityEvent listenForUpdate = null,
-            ControlCallbackMode callbackMode = ControlCallbackMode.OnValueChenged,
+            ControlCallbackMode callbackMode = ControlCallbackMode.OnEndEdit,
             IReadOnlyInputFieldStyle style = null)
             => ParsedControl<T, ParserDefault>(parent, name, refGet, onSet, listenForUpdate, callbackMode, style);
 
 
         public ParsedControl<T, TParser> ParsedControl<T, TParser>(GameObject parent, string name, RefGetter<T> refGet,
             System.Action onSet = null, UnityEvent listenForUpdate = null,
-            ControlCallbackMode callbackMode = ControlCallbackMode.OnValueChenged,
+            ControlCallbackMode callbackMode = ControlCallbackMode.OnEndEdit,
             IReadOnlyInputFieldStyle style = null)
             where TParser : Parser, new()
         {
@@ -239,14 +235,14 @@ namespace UniverseLib.UI
 
         public Property<ParsedControl<T, ParserDefault>> ParsedProperty<T>(GameObject parent, string name, RefGetter<T> refGet,
             System.Action onSet = null, UnityEvent listenForUpdate = null,
-            ControlCallbackMode callbackMode = ControlCallbackMode.OnValueChenged,
-            IReadOnlyInputFieldStyle inputFieldStyle = null, IReadOnlyPanelStyle labelStyle = null)
+            ControlCallbackMode callbackMode = ControlCallbackMode.OnEndEdit,
+            IReadOnlyInputFieldStyle inputFieldStyle = null, IReadOnlyFrameStyle labelStyle = null)
             => ParsedProperty<T, ParserDefault>(parent, name, refGet, onSet, listenForUpdate, callbackMode, inputFieldStyle, labelStyle);
 
         public Property<ParsedControl<T, TParser>> ParsedProperty<T, TParser>(GameObject parent, string name, RefGetter<T> refGet,
             System.Action onSet = null, UnityEvent listenForUpdate = null,
-            ControlCallbackMode callbackMode = ControlCallbackMode.OnValueChenged,
-            IReadOnlyInputFieldStyle inputFieldStyle = null, IReadOnlyPanelStyle labelStyle = null)
+            ControlCallbackMode callbackMode = ControlCallbackMode.OnEndEdit,
+            IReadOnlyInputFieldStyle inputFieldStyle = null, IReadOnlyFrameStyle labelStyle = null)
             where TParser : Parser, new()
         {
             return ParsedProperty<T, TParser>(
@@ -283,7 +279,7 @@ namespace UniverseLib.UI
 
         public Property<EnumControl<T>> EnumProperty<T>(GameObject parent, string propertyName, Getter<T> get,
             Setter<T> set = null, UnityEvent listenForUpdate = null,
-            IReadOnlyDropdownStyle dropdownStyle = null, IReadOnlyPanelStyle labelStyle = null)
+            IReadOnlyDropdownStyle dropdownStyle = null, IReadOnlyFrameStyle labelStyle = null)
             where T : System.Enum
         {
             dropdownStyle ??= (IReadOnlyDropdownStyle)Skin?.Dropdown ?? UISkin.Default.Dropdown;
@@ -312,7 +308,7 @@ namespace UniverseLib.UI
 
         public Property<EnumControl<T>> EnumProperty<T>(GameObject parent, string propertyName, RefGetter<T> refGet,
             System.Action onSet = null, UnityEvent listenForUpdate = null,
-            IReadOnlyDropdownStyle dropdownStyle = null, IReadOnlyPanelStyle labelStyle = null)
+            IReadOnlyDropdownStyle dropdownStyle = null, IReadOnlyFrameStyle labelStyle = null)
             where T : System.Enum
         {
             return EnumProperty(
@@ -331,10 +327,10 @@ namespace UniverseLib.UI
 
 
         public Property<T> Property<T>(GameObject parent, string propertyName, T control,
-            IReadOnlyPanelStyle style = null)
+            IReadOnlyFrameStyle style = null)
             where T : UIControlModel
         {
-            style ??= (IReadOnlyPanelStyle)Skin?.Label ?? UISkin.Default.Label;
+            style ??= (IReadOnlyFrameStyle)Skin?.Label ?? UISkin.Default.Label;
 
             Property<T> property = new Property<T>(parent, propertyName, control);
             property.Label.ApplyStyle(style);

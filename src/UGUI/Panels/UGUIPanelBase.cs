@@ -13,7 +13,7 @@ namespace UniverseLib.UGUI.Panels
     public abstract class UGUIPanelBase : PanelBase, IUniversalUGUIObject
     {
         private UGUISkin _skin = null;
-        public UGUISkin Skin { get => _skin ?? Owner.Skin ?? UGUIUtility.GetDefaultSkin(); set => _skin = value; }
+        public new UGUISkin Skin { get => _skin ?? Owner.Skin ?? UGUIUtility.GetDefaultSkin(); set => _skin = value; }
         public new UGUIBase Owner => base.Owner as UGUIBase;
         public virtual bool UseUGUILayout { get; set; } = true;
         public GameObject UGUIContentRoot { get; protected set; }
