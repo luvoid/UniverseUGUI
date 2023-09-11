@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
-using UniverseLib.UI.Models.Controls;
+using UniverseLib.UI.Controls;
 using UniverseLib.UI.Styles;
 using UniverseLib.Utility;
 
@@ -166,13 +166,13 @@ namespace UniverseLib.UI
 
 
         #region ParsedControl
-        public ParsedControl<T, ParserDefault> ParsedControl<T>(GameObject parent, string name, Getter<T> get,
+        public ParsedControl<T> ParsedControl<T>(GameObject parent, string name, Getter<T> get,
             Setter<T> set = null, UnityEvent listenForUpdate = null,
             ControlCallbackMode callbackMode = ControlCallbackMode.OnEndEdit,
             IReadOnlyInputFieldStyle style = null)
             => ParsedControl<T, ParserDefault>(parent, name, get, set, listenForUpdate, callbackMode, style);
 
-        public ParsedControl<T, TParser> ParsedControl<T, TParser>(GameObject parent, string name, Getter<T> get,
+        public ParsedControl<T> ParsedControl<T, TParser>(GameObject parent, string name, Getter<T> get,
             Setter<T> set = null, UnityEvent listenForUpdate = null,
             ControlCallbackMode callbackMode = ControlCallbackMode.OnEndEdit,
             IReadOnlyInputFieldStyle style = null)
@@ -188,13 +188,13 @@ namespace UniverseLib.UI
             return parsedControl;
         }
 
-        public Property<ParsedControl<T, ParserDefault>> ParsedProperty<T>(GameObject parent, string propertyName, Getter<T> get,
+        public Property<ParsedControl<T>> ParsedProperty<T>(GameObject parent, string propertyName, Getter<T> get,
             Setter<T> set = null, UnityEvent listenForUpdate = null,
             ControlCallbackMode callbackMode = ControlCallbackMode.OnEndEdit,
             IReadOnlyInputFieldStyle inputFieldStyle = null, IReadOnlyFrameStyle labelStyle = null)
             => ParsedProperty<T, ParserDefault>(parent, propertyName, get, set, listenForUpdate, callbackMode, inputFieldStyle, labelStyle);
 
-        public Property<ParsedControl<T, TParser>> ParsedProperty<T, TParser>(GameObject parent, string propertyName, Getter<T> get,
+        public Property<ParsedControl<T>> ParsedProperty<T, TParser>(GameObject parent, string propertyName, Getter<T> get,
             Setter<T> set = null, UnityEvent listenForUpdate = null,
             ControlCallbackMode callbackMode = ControlCallbackMode.OnEndEdit,
             IReadOnlyInputFieldStyle inputFieldStyle = null, IReadOnlyFrameStyle labelStyle = null)
@@ -205,18 +205,18 @@ namespace UniverseLib.UI
             ParsedControl<T, TParser> control = new(parent, "Control", get, set, listenForUpdate, callbackMode);
             control.ApplyStyle(inputFieldStyle, Skin);
 
-            return Property(parent, propertyName, control, labelStyle);
+            return Property<ParsedControl<T>>(parent, propertyName, control, labelStyle);
         }
 
 #if !(UNITY_EDITOR && UNITY_5)
-        public ParsedControl<T, ParserDefault> ParsedControl<T>(GameObject parent, string name, RefGetter<T> refGet,
+        public ParsedControl<T> ParsedControl<T>(GameObject parent, string name, RefGetter<T> refGet,
             System.Action onSet = null, UnityEvent listenForUpdate = null,
             ControlCallbackMode callbackMode = ControlCallbackMode.OnEndEdit,
             IReadOnlyInputFieldStyle style = null)
             => ParsedControl<T, ParserDefault>(parent, name, refGet, onSet, listenForUpdate, callbackMode, style);
 
 
-        public ParsedControl<T, TParser> ParsedControl<T, TParser>(GameObject parent, string name, RefGetter<T> refGet,
+        public ParsedControl<T> ParsedControl<T, TParser>(GameObject parent, string name, RefGetter<T> refGet,
             System.Action onSet = null, UnityEvent listenForUpdate = null,
             ControlCallbackMode callbackMode = ControlCallbackMode.OnEndEdit,
             IReadOnlyInputFieldStyle style = null)
@@ -233,13 +233,13 @@ namespace UniverseLib.UI
             );
         }
 
-        public Property<ParsedControl<T, ParserDefault>> ParsedProperty<T>(GameObject parent, string name, RefGetter<T> refGet,
+        public Property<ParsedControl<T>> ParsedProperty<T>(GameObject parent, string name, RefGetter<T> refGet,
             System.Action onSet = null, UnityEvent listenForUpdate = null,
             ControlCallbackMode callbackMode = ControlCallbackMode.OnEndEdit,
             IReadOnlyInputFieldStyle inputFieldStyle = null, IReadOnlyFrameStyle labelStyle = null)
             => ParsedProperty<T, ParserDefault>(parent, name, refGet, onSet, listenForUpdate, callbackMode, inputFieldStyle, labelStyle);
 
-        public Property<ParsedControl<T, TParser>> ParsedProperty<T, TParser>(GameObject parent, string name, RefGetter<T> refGet,
+        public Property<ParsedControl<T>> ParsedProperty<T, TParser>(GameObject parent, string name, RefGetter<T> refGet,
             System.Action onSet = null, UnityEvent listenForUpdate = null,
             ControlCallbackMode callbackMode = ControlCallbackMode.OnEndEdit,
             IReadOnlyInputFieldStyle inputFieldStyle = null, IReadOnlyFrameStyle labelStyle = null)

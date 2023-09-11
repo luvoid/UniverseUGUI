@@ -3,19 +3,19 @@ using UnityEngine.UI;
 using UniverseLib.UI.Components;
 using UniverseLib.UI.Styles;
 
-namespace UniverseLib.UI.Models.Styled
+namespace UniverseLib.UI.Models
 {
-    public class StyledLabel : StyledComponent<Text, IReadOnlyFrameStyle>
+    public class LabelModel : StyledComponentModel<Text, IReadOnlyFrameStyle>
     {
         public sealed override Text Component { get; }
         public sealed override Image Background { get; }
 
         public string Text { get => Component.text; set => Component.text = value; }
 
-        public StyledLabel(GameObject parent, string name, string text) : base(parent, name)
+        public LabelModel(GameObject parent, string name, string text) : base(parent, name)
         {
-            Component = UIFactory.CreateLabel(UIRoot, name, text);
-            Background = UIFactory.CreateUIObject("Background", UIRoot).AddComponent<Image>();
+            Component = UIFactory.CreateLabel(UIRoot, "Text", text);
+            Background = UIFactory.CreateUIObject(UIRoot, "Background").AddComponent<Image>();
             UIFactory.SetLayoutAutoSize(UIRoot);
         }
 
@@ -23,10 +23,10 @@ namespace UniverseLib.UI.Models.Styled
         {
             Background.enabled = style.UseBackground;
             style.Background?.ApplyTo(Background);
-            SetOffsets(Background.gameObject, -style.Overflow);
+            UIFactory.SetOffsets(Background.gameObject, -style.Overflow);
 
             style.GetTextStyle(fallbackSkin).ApplyTo(Component);
-            SetOffsets(GameObject, style.LayoutGroup.Padding, style.LabelOffset);
+            UIFactory.SetOffsets(Component.gameObject, style.LayoutGroup.Padding);
         }
     }
 }

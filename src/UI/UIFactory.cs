@@ -171,7 +171,7 @@ namespace UniverseLib.UI
         /// <param name="contentHolder">The GameObject which you should add your actual content on to.</param>
         /// <returns>The base panel GameObject (not for adding content to).</returns>
         [Browsable(false), EditorBrowsable(EditorBrowsableState.Never)]
-        [Obsolete($"Use {nameof(Create)}.{nameof(Frame)}(...) instead.")]
+        [Obsolete($"Use {nameof(Create)}.{nameof(AutoFrame)}(...) instead.")]
         public static GameObject CreatePanel(string name, GameObject parent, out GameObject contentHolder, Color? bgColor = null)
         {
             GameObject panelObj = CreateUIObject(name, parent);

@@ -22,10 +22,10 @@ namespace UniverseLib.UI
             return layout;
         }
 
-        /// <inheritdoc cref="SetLayoutGroup_(GameObject, bool?, bool?, bool?, bool?, int?, Vector4?, TextAnchor?)"/>
+        /// <inheritdoc cref="SetLayoutGroup_(GameObject, bool?, bool?, bool?, bool?, float?, Vector4?, TextAnchor?)"/>
         public static T SetLayoutGroup<T>(GameObject gameObject, Vector4 padding,
             bool? forceWidth = null, bool? forceHeight = null, bool? childControlWidth = null, bool? childControlHeight = null,
-            int? spacing = null, TextAnchor? childAlignment = null)
+            float? spacing = null, TextAnchor? childAlignment = null)
             where T : HorizontalOrVerticalLayoutGroup, new()
         {
             return SetLayoutGroup_<T>(gameObject,
@@ -40,7 +40,7 @@ namespace UniverseLib.UI
         // Ideally, this would replace the old SetLayoutGroup one day.
         internal static T SetLayoutGroup_<T>(GameObject gameObject, 
             bool? forceWidth = null, bool? forceHeight = null, bool? childControlWidth = null, bool? childControlHeight = null,
-            int? spacing = null, Vector4? padding = null, TextAnchor? childAlignment = null)
+            float? spacing = null, Vector4? padding = null, TextAnchor? childAlignment = null)
             where T : HorizontalOrVerticalLayoutGroup, new()
         {
             T group = gameObject.GetComponent<T>();
@@ -52,10 +52,10 @@ namespace UniverseLib.UI
                 spacing, padding, childAlignment);
         }
 
-        /// <inheritdoc cref="SetLayoutGroup_{T}(T, bool?, bool?, bool?, bool?, int?, Vector4?, TextAnchor?)"/>
+        /// <inheritdoc cref="SetLayoutGroup_{T}(T, bool?, bool?, bool?, bool?, float?, Vector4?, TextAnchor?)"/>
         public static T SetLayoutGroup<T>(T group, Vector4 padding,
            bool? forceWidth = null, bool? forceHeight = null, bool? childControlWidth = null, bool? childControlHeight = null,
-           int? spacing = null, TextAnchor? childAlignment = null)
+           float? spacing = null, TextAnchor? childAlignment = null)
            where T : HorizontalOrVerticalLayoutGroup
         {
             return SetLayoutGroup_<T>(group,
@@ -70,7 +70,7 @@ namespace UniverseLib.UI
         // Ideally, this would replace the old SetLayoutGroup one day.
         internal static T SetLayoutGroup_<T>(T group,
             bool? forceWidth = null, bool? forceHeight = null, bool? childControlWidth = null, bool? childControlHeight = null, 
-            int? spacing = null, Vector4? padding = null, TextAnchor? childAlignment = null)
+            float? spacing = null, Vector4? padding = null, TextAnchor? childAlignment = null)
             where T : HorizontalOrVerticalLayoutGroup
         {
             if (forceWidth.HasValue)

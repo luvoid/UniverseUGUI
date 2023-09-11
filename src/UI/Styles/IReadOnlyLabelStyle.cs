@@ -10,7 +10,6 @@ namespace UniverseLib.UI.Styles
         /// If null, will use the <see cref="UISkin"/>'s Text style.
         /// </summary>
         public TextComponentStyle Text { get; }
-        public Vector2 LabelOffset { get; }
         public TextComponentStyle GetTextStyle(IReadOnlyUISkin fallbackSkin = null, Font fallbackFont = null);
     }
 

@@ -9,6 +9,7 @@ namespace UniverseLib.UI.Styles
     public interface IReadOnlyDropdownStyle : IReadOnlyControlStyle
     {
         public IReadOnlyImageComponentStyle Arrow { get; }
+        public Vector2 ArrowSize { get; }
         public ReadOnlyToggleStyle Item { get; }
         public ReadOnlyFrameStyle Viewport { get; }
         public ReadOnlyScrollbarStyle Scrollbar { get; }
@@ -24,11 +25,13 @@ namespace UniverseLib.UI.Styles
         public static readonly Sprite DefaultArrow = new Sprite();
 
         public ImageComponentStyle Arrow;
+        public Vector2 ArrowSize;
         public ToggleStyle Item;
         public FrameStyle Viewport;
         public ScrollbarStyle Scrollbar;
 
         IReadOnlyImageComponentStyle IReadOnlyDropdownStyle.Arrow => Arrow;
+        Vector2 IReadOnlyDropdownStyle.ArrowSize => ArrowSize;
         ReadOnlyToggleStyle IReadOnlyDropdownStyle.Item => Item.AsReadOnly();
         ReadOnlyFrameStyle IReadOnlyDropdownStyle.Viewport => Viewport.AsReadOnly();
         ReadOnlyScrollbarStyle IReadOnlyDropdownStyle.Scrollbar => Scrollbar.AsReadOnly();
@@ -43,6 +46,7 @@ namespace UniverseLib.UI.Styles
         public DropdownStyle()
         {
             Arrow = new() { Sprite = DefaultArrow };
+            ArrowSize = new Vector2(20, 20);
             Item = new();
             Viewport = new();
             Scrollbar = new();
@@ -52,6 +56,7 @@ namespace UniverseLib.UI.Styles
         public DropdownStyle(IReadOnlyDropdownStyle toCopy) : base(toCopy)
         {
             Arrow     = toCopy.Arrow.Copy();
+            ArrowSize = toCopy.ArrowSize;
             Item      = toCopy.Item.DeepCopy();
             Viewport  = toCopy.Viewport.DeepCopy();
             Scrollbar = toCopy.Scrollbar.DeepCopy();
@@ -73,7 +78,7 @@ namespace UniverseLib.UI.Styles
         }
 
         public IReadOnlyImageComponentStyle Arrow => ((IReadOnlyDropdownStyle)WrappedStyle).Arrow;
-
+        public Vector2 ArrowSize => ((IReadOnlyDropdownStyle)WrappedStyle).ArrowSize;
         public ReadOnlyToggleStyle Item => ((IReadOnlyDropdownStyle)WrappedStyle).Item;
         public ReadOnlyFrameStyle Viewport => ((IReadOnlyDropdownStyle)WrappedStyle).Viewport;
         public ReadOnlyScrollbarStyle Scrollbar => ((IReadOnlyDropdownStyle)WrappedStyle).Scrollbar;

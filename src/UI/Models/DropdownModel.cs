@@ -4,9 +4,9 @@ using UnityEngine.Events;
 using UnityEngine.UI;
 using UniverseLib.UI.Styles;
 
-namespace UniverseLib.UI.Models.Styled
+namespace UniverseLib.UI.Models
 {
-    public class StyledDropdown : StyledSelectable<Dropdown, IReadOnlyDropdownStyle>
+    public class DropdownModel : StyledSelectableModel<Dropdown, IReadOnlyDropdownStyle>
     {
         public System.Action<int> OnValueChanged;
 
@@ -40,13 +40,13 @@ namespace UniverseLib.UI.Models.Styled
             return uiRoot;
         }
 
-        public StyledDropdown(GameObject parent, string name, int defaultValue = 0, IEnumerable<string> options = null) 
+        public DropdownModel(GameObject parent, string name, int defaultValue = 0, IEnumerable<string> options = null)
             : base(CreateUIRoot(parent, name, out Dropdown dropdown))
         {
             Component = dropdown;
             UIFactory.SetLayoutGroup<HorizontalLayoutGroup>(GameObject, forceWidth: false, forceHeight: false, childAlignment: TextAnchor.MiddleLeft);
 
-            Background = UIFactory.CreateUIObject("Background", UIRoot).AddComponent<Image>();
+            Background = UIFactory.CreateUIObject(UIRoot, "Background").AddComponent<Image>();
             Background.transform.SetAsFirstSibling();
             UIFactory.SetLayoutElement(Background.gameObject, ignoreLayout: true);
             Component.targetGraphic = Background;
@@ -56,8 +56,8 @@ namespace UniverseLib.UI.Models.Styled
 
             arrowText = UIRoot.transform.FindChild("Arrow").GetComponent<Text>();
             UIFactory.SetLayoutElement(arrowText.gameObject, preferredWidth: 20, preferredHeight: 20);
-            arrow = UIFactory.CreateUIObject("ArrowImage", arrowText.gameObject).AddComponent<Image>();
-            SetOffsets(arrow.gameObject, Vector4.zero);
+            arrow = UIFactory.CreateUIObject(arrowText.gameObject, "ArrowImage").AddComponent<Image>();
+            UIFactory.SetOffsets(arrow.gameObject, Vector4.zero);
 
             RectTransform arrowRect = arrowText.transform.TryCast<RectTransform>();
             arrowRect.anchorMin = new Vector2(1, 0.5f);
@@ -72,13 +72,13 @@ namespace UniverseLib.UI.Models.Styled
             scrollRect = template.GetComponent<ScrollRect>();
             var viewport = template.Find("Viewport");
             viewportMask = viewport.GetComponent<Image>();
-            viewportBackground = UIFactory.CreateUIObject("Viewport Background", template.gameObject).AddComponent<Image>();
+            viewportBackground = UIFactory.CreateUIObject(template.gameObject, "Viewport Background").AddComponent<Image>();
             viewportBackground.transform.SetAsFirstSibling();
 
             scrollbar = template.GetComponentInChildren<Scrollbar>();
 
             itemToggle = viewport.FindChild("Content").FindChild("Item").GetComponent<Toggle>();
-            itemCheckbox = UIFactory.CreateUIObject("Item Checkbox", itemToggle.gameObject);
+            itemCheckbox = UIFactory.CreateUIObject(itemToggle.gameObject, "Item Checkbox");
             itemCheckbox.transform.SetAsFirstSibling();
             itemBackground = itemToggle.transform.FindChild("Item Background").GetComponent<Image>();
             itemBackground.transform.SetParent(itemCheckbox.transform, false);
@@ -108,21 +108,24 @@ namespace UniverseLib.UI.Models.Styled
             UIFactory.SetLayoutGroup<HorizontalLayoutGroup>(GameObject, style.LayoutGroup.Padding);
 
             style.Background.ApplyTo(Background);
-            SetOffsets(Background.gameObject, -style.Overflow);
+            UIFactory.SetOffsets(Background.gameObject, -style.Overflow);
 
             var textStyle = style.GetTextStyle(fallbackSkin);
             textStyle.ApplyTo(label);
-            SetOffsets(label.gameObject, style.LayoutGroup.Padding, style.LabelOffset);
+            UIFactory.SetOffsets(label.gameObject, style.LayoutGroup.Padding);
 
             style.Viewport.Background.ApplyTo(viewportBackground);
             style.Viewport.Background.ApplyTo(viewportMask);
-            SetOffsets(viewportBackground.gameObject, -style.Viewport.Overflow);
-            SetOffsets(viewportMask.gameObject, -style.Viewport.Overflow);
+            UIFactory.SetOffsets(viewportBackground.gameObject, -style.Viewport.Overflow);
+            UIFactory.SetOffsets(viewportMask.gameObject, -style.Viewport.Overflow);
 
-            StyledToggle.ApplyStyle(
-                itemToggle, itemCheckbox, itemBackground, itemCheckmark, itemLabel, 
+            ToggleModel.ApplyStyle(
+                itemToggle, itemCheckbox, itemBackground, itemCheckmark, itemLabel,
                 style.Item, fallbackSkin
             );
+
+            UIFactory.SetLayoutElement(arrowText.gameObject,
+                preferredWidth: (int)style.ArrowSize.x, preferredHeight: (int)style.ArrowSize.y);
 
             if (style.Arrow.Sprite == DropdownStyle.DefaultArrow)
             {

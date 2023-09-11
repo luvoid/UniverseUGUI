@@ -2,12 +2,12 @@
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
-using UniverseLib.UI.Models.Styled;
+using UniverseLib.UI.Models;
 using UniverseLib.UI.Styles;
 using UniverseLib.Utility;
-using static UniverseLib.UI.Models.Controls.StringControl;
+using static UniverseLib.UI.Controls.StringControl;
 
-namespace UniverseLib.UI.Models.Controls
+namespace UniverseLib.UI.Controls
 {
     public enum ControlCallbackMode
     {
@@ -15,22 +15,22 @@ namespace UniverseLib.UI.Models.Controls
         OnEndEdit
     }
 
-    public class StringControl : UIControlModel<string, InputField>, IUIStyledModel<IReadOnlyInputFieldStyle>
+    public class StringControl : UIControlModel<string, InputField>, IStyledModel<IReadOnlyInputFieldStyle>
     {
 
         public override GameObject UIRoot => styledInputField.UIRoot;
         public override InputField Component => styledInputField.Component;
 
-        private readonly StyledInputField styledInputField;
+        private readonly InputFieldModel styledInputField;
 
         protected readonly ControlCallbackMode callbackMode;
 
         public StringControl(GameObject parent, string name, Getter<string> getter,
-            Setter<string> setter = null, UnityEvent listenForUpdate = null, 
+            Setter<string> setter = null, UnityEvent listenForUpdate = null,
             ControlCallbackMode callbackMode = ControlCallbackMode.OnValueChenged)
             : base(getter, setter, listenForUpdate)
         {
-            styledInputField = new StyledInputField(parent, name, null);
+            styledInputField = new InputFieldModel(parent, name, null);
             this.callbackMode = callbackMode;
         }
 

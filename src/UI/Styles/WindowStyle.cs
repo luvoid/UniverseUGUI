@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 namespace UniverseLib.UI.Styles
 {
-    public interface IReadOnlyWindowStyle : IReadOnlyUIObjectStyle<IReadOnlyImageComponentStyle, Image>
+    public interface IReadOnlyWindowStyle : IReadOnlyUIModelStyle<IReadOnlyImageComponentStyle, Image>
     {
         public IReadOnlyFrameStyle Titlebar { get; }
         public int TitlebarHeight { get; }
@@ -11,7 +11,7 @@ namespace UniverseLib.UI.Styles
 
     [System.Serializable]
     public sealed class WindowStyle
-        : UIObjectStyle<ImageComponentStyle, IReadOnlyImageComponentStyle, Image>,
+        : UIModelStyle<ImageComponentStyle, IReadOnlyImageComponentStyle, Image>,
           IReadOnlyWindowStyle,
           IDeepCopyable<WindowStyle>,
           IConvertibleToReadOnly<ReadOnlyWindowStyle>
@@ -28,7 +28,7 @@ namespace UniverseLib.UI.Styles
         /// </summary>
         public WindowStyle() : base() { }
 
-        /// <inheritdoc cref="UIObjectStyle{T0, T1, T2}(IReadOnlyUIObjectStyle{T1, T2})"/>
+        /// <inheritdoc cref="UIModelStyle{T0, T1, T2}(IReadOnlyUIModelStyle{T1, T2})"/>
         public WindowStyle(WindowStyle toCopy)
             : base(toCopy)
         {
@@ -56,7 +56,7 @@ namespace UniverseLib.UI.Styles
             WrappedStyle = toWrap;
         }
 
-        public new IReadOnlyImageComponentStyle Background => ((IReadOnlyUIObjectStyle<IReadOnlyImageComponentStyle, Image>)WrappedStyle).Background;
+        public new IReadOnlyImageComponentStyle Background => ((IReadOnlyUIModelStyle<IReadOnlyImageComponentStyle, Image>)WrappedStyle).Background;
 
         public IReadOnlyFrameStyle Titlebar => ((IReadOnlyWindowStyle)WrappedStyle).Titlebar;
 

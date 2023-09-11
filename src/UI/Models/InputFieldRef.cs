@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,7 +10,8 @@ namespace UniverseLib.UI.Models
     /// <summary>
     /// A simple wrapper class for working with InputFields, with some helpers and performance improvements.
     /// </summary>
-    public class InputFieldRef : UIModel, IInputFieldRef
+    [System.Obsolete($"Use {nameof(InputFieldModel)} instead."), Browsable(false)]
+    public class InputFieldRef : UIModel, IInputFieldModel
     {
         // Static
 

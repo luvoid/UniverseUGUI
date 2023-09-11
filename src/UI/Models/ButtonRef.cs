@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using UnityEngine;
@@ -10,9 +11,11 @@ namespace UniverseLib.UI.Models
     /// <summary>
     /// A simple helper class to handle a button's OnClick more effectively, along with some helpers.
     /// </summary>
-    public class ButtonRef : IButtonRef
+    [System.Obsolete($"Use {nameof(ButtonModel)} instead."), Browsable(false)]
+    public class ButtonRef : IButtonModel
     {
-        Action IButtonRef.OnClick { get => OnClick; set => OnClick = value; }
+        Action IButtonModel.OnClick { get => OnClick; set => OnClick = value; }
+        Text IButtonModel.Label => ButtonText;
 
         /// <summary>
         /// Invoked when the Button is clicked.

@@ -52,7 +52,7 @@
         <RepositoryUrl>https://github.com/luvoid/UniverseUGUI</RepositoryUrl>
         <PackageTags>UniverseLib; Unity; $(TargetConfigurationSuffix)</PackageTags>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
-        <Version>0.0.0-preview.0</Version>
+        <Version>0.0.0-alpha.0</Version>
         <Description>
             UniverseLib is a library for making plugins which target IL2CPP and Mono Unity games,
             with a focus on UI-driven plugins.
@@ -220,7 +220,7 @@
         </ItemGroup>
         <Message Text="BuiltAssemblyVersion: @(BuiltAssemblyVersion)" Importance="high" />
         <_EvaluatePackageVersion Version="$(Version)" BuiltAssemblyVersion="@(BuiltAssemblyVersion)">
-            <Output TaskParameter="EvaluatedVersion" PropertyName="PackageVersion"/>
+            <Output TaskParameter="EvaluatedVersion" PropertyName="PackageVersion" />
         </_EvaluatePackageVersion>
         <Message Text="PackageVersion: $(PackageVersion)" Importance="high" />    
     </Target>

@@ -3,12 +3,12 @@ using System.Collections.ObjectModel;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
-using UniverseLib.UI.Models.Styled;
+using UniverseLib.UI.Models;
 using UniverseLib.UI.Styles;
 
-namespace UniverseLib.UI.Models.Controls
+namespace UniverseLib.UI.Controls
 {
-    public class EnumControl<T> : UIControlModel<T, Dropdown>, IUIStyledModel<IReadOnlyDropdownStyle>
+    public class EnumControl<T> : UIControlModel<T, Dropdown>, IStyledModel<IReadOnlyDropdownStyle>
         where T : Enum
     {
         private static readonly ReadOnlyCollection<T> enumValues = new((T[])Enum.GetValues(typeof(T)));
@@ -19,13 +19,13 @@ namespace UniverseLib.UI.Models.Controls
 
         protected event Action<T> OnValueChanged;
 
-        private readonly StyledDropdown styledDropdown;
+        private readonly DropdownModel styledDropdown;
 
-        public EnumControl(GameObject parent, string name, Getter<T> getter, 
+        public EnumControl(GameObject parent, string name, Getter<T> getter,
             Setter<T> setter = null, UnityEvent listenForUpdate = null)
             : base(getter, setter, listenForUpdate)
         {
-            styledDropdown = new StyledDropdown(parent, name, 0, enumNames);
+            styledDropdown = new DropdownModel(parent, name, 0, enumNames);
             styledDropdown.OnValueChanged += OnComponentValueChanged;
         }
 

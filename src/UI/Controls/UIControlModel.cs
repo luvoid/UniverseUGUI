@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using UniverseLib.UI.Models;
 
-namespace UniverseLib.UI.Models.Controls
+namespace UniverseLib.UI.Controls
 {
     public abstract class UIControlModel : UIBehaviourModel
     {

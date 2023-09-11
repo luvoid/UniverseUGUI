@@ -3,14 +3,13 @@ using UnityEngine.UI;
 
 namespace UniverseLib.UI.Styles
 {
-    public interface IReadOnlyControlStyle : IReadOnlyUIObjectStyle<IReadOnlySelectableComponentStyle, Selectable>, IReadOnlyLabelStyle
+    public interface IReadOnlyControlStyle : IReadOnlyUIModelStyle<IReadOnlySelectableComponentStyle, Selectable>, IReadOnlyLabelStyle
     { }
 
     [System.Serializable]
     public abstract class ControlStyle<T, TReadOnly> 
-        : UIObjectStyle<SelectableComponentStyle, IReadOnlySelectableComponentStyle, Selectable>,
+        : UIModelStyle<SelectableComponentStyle, IReadOnlySelectableComponentStyle, Selectable>,
           IReadOnlyControlStyle,
-          IReadOnlyLabelStyle,
           IDeepCopyable<T>,
           IConvertibleToReadOnly<TReadOnly>
         where T : ControlStyle<T, TReadOnly>
@@ -24,10 +23,12 @@ namespace UniverseLib.UI.Styles
         internal ControlStyle() : base()
         { }
 
-        /// <inheritdoc cref="UIObjectStyle{T0, T1, T2}(IReadOnlyUIObjectStyle{T1, T2})"/>
+        /// <inheritdoc cref="UIModelStyle{T0, T1, T2}(IReadOnlyUIModelStyle{T1, T2})"/>
         internal ControlStyle(IReadOnlyControlStyle toCopy)
             : base(toCopy)
-        { }
+        {
+            Text = toCopy.Text;
+        }
 
         public TReadOnly AsReadOnly()
         {
@@ -40,14 +41,14 @@ namespace UniverseLib.UI.Styles
         public TextComponentStyle Text = new();
         string IReadOnlyLabelStyle.Name => Name;
         TextComponentStyle IReadOnlyLabelStyle.Text => Text;
-        Vector2 IReadOnlyLabelStyle.LabelOffset => Vector2.zero;
-        public void GetTextStyle(IReadOnlyUISkin fallbackSkin = null, Font fallbackFont = null)
+        public TextComponentStyle GetTextStyle(IReadOnlyUISkin fallbackSkin = null, Font fallbackFont = null)
             => LabelStyleHelper.GetTextStyle(this, fallbackSkin, fallbackFont);
     }
 
     public abstract class ReadOnlyControlStyle<T, TReadOnly>
         : ReadOnlyUIObjectStyle<T, TReadOnly>,
-          IReadOnlyUIObjectStyle<IReadOnlySelectableComponentStyle, Selectable>
+          IReadOnlyUIModelStyle<IReadOnlySelectableComponentStyle, Selectable>,
+          IReadOnlyLabelStyle
         where T : ControlStyle<T, TReadOnly>
         where TReadOnly : ReadOnlyControlStyle<T, TReadOnly>
     {
@@ -55,5 +56,8 @@ namespace UniverseLib.UI.Styles
         internal ReadOnlyControlStyle(T toWrap) : base(toWrap) { }
 
         public new IReadOnlySelectableComponentStyle Background => WrappedStyle.Background;
+        public TextComponentStyle Text => WrappedStyle.Text;
+        public TextComponentStyle GetTextStyle(IReadOnlyUISkin fallbackSkin, Font fallbackFont)
+            => WrappedStyle.GetTextStyle(fallbackSkin, fallbackFont);
     }
 }

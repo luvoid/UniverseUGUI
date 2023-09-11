@@ -2,7 +2,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UniverseLib.UI.Models;
-using UniverseLib.UI.Models.Styled;
 using UniverseLib.UI.Styles;
 
 namespace UniverseLib.UI.Panels
@@ -13,7 +12,8 @@ namespace UniverseLib.UI.Panels
 
         public abstract string Name { get; }
 
-        public abstract IReadOnlyUISkin Skin { get; }
+        public virtual IReadOnlyUISkin Skin => UISkin.Default;
+        public virtual IReadOnlyWindowStyle Style => Skin?.Window ?? UISkin.Default.Window;
 
         /// <summary>
         /// An instance of a <see cref="UIFactory"/> using the panel's Skin.
@@ -21,8 +21,8 @@ namespace UniverseLib.UI.Panels
         protected UIFactory Create => _skinnedFactory ??= UIFactory.CreateSkinnedFactory(Skin);
         private UIFactory _skinnedFactory;
 
-        public abstract int MinWidth { get; }
-        public abstract int MinHeight { get; }
+        public virtual Vector2 MinSize => new Vector2(LayoutUtility.GetMinSize(Rect, 0), LayoutUtility.GetMinSize(Rect, 1));
+        public virtual Vector2 PreferredSize => new Vector2(LayoutUtility.GetPreferredSize(Rect, 0), LayoutUtility.GetPreferredSize(Rect, 1));
         public abstract Vector2 DefaultAnchorMin { get; }
         public abstract Vector2 DefaultAnchorMax { get; }
         public virtual Vector2 DefaultPosition { get; }
@@ -89,10 +89,13 @@ namespace UniverseLib.UI.Panels
             Rect.anchorMin = DefaultAnchorMin;
             Rect.anchorMax = DefaultAnchorMax;
 
+            LayoutRebuilder.ForceRebuildLayoutImmediate(this.Rect);
+
             Rect.pivot = new Vector2(0f, 1f);
             Rect.anchoredPosition = DefaultPosition;
 
-            LayoutRebuilder.ForceRebuildLayoutImmediate(this.Rect);
+            Rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, PreferredSize.x);
+            Rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical  , PreferredSize.y);
 
             EnsureValidPosition();
             EnsureValidSize();
@@ -102,11 +105,11 @@ namespace UniverseLib.UI.Panels
 
         public virtual void EnsureValidSize()
         {
-            if (Rect.rect.width < MinWidth)
-                Rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, MinWidth);
+            if (Rect.rect.width < MinSize.x)
+                Rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, MinSize.x);
 
-            if (Rect.rect.height < MinHeight)
-                Rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, MinHeight);
+            if (Rect.rect.height < MinSize.y)
+                Rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, MinSize.y);
 
             Dragger.OnEndResize();
         }
@@ -131,10 +134,10 @@ namespace UniverseLib.UI.Panels
 
         protected abstract void ConstructPanelContent();
 
-        protected virtual GameObject CreateTitleBar(GameObject parent)
+        protected virtual GameObject CreateTitleBar(GameObject parent, out GameObject buttonHolder)
         {
             IReadOnlyUISkin skin = Skin ?? UISkin.Default;
-            IReadOnlyWindowStyle windowStyle = skin.Window ?? UISkin.Default.Window;
+            IReadOnlyWindowStyle windowStyle = Style ?? UISkin.Default.Window;
             IReadOnlyFrameStyle titlebarStyle = windowStyle.Titlebar ?? UISkin.Default.Window.Titlebar;
 
             // Title bar
@@ -143,28 +146,35 @@ namespace UniverseLib.UI.Panels
                 minHeight: windowStyle.TitlebarHeight, preferredHeight: windowStyle.TitlebarHeight, 
                 flexibleWidth: 1, flexibleHeight: 0);
 
+            buttonHolder = titleBar.ContentRoot;
+
             // Title text
             GameObject titleHolder = Create.HorizontalGroup(
-                titleBar.ContentRoot, "Title", false, false, true, true
+                titleBar.GameObject, "Title", true, true, true, true,
+                style: titlebarStyle.LayoutGroup
             );
-            UIFactory.SetLayoutElement(titleHolder.gameObject, ignoreLayout: true);
+            UIFactory.SetLayoutElement(titleHolder,
+                minHeight: windowStyle.TitlebarHeight, preferredHeight: windowStyle.TitlebarHeight,
+                flexibleWidth: 1, flexibleHeight: 0);
             UIFactory.SetOffsets(titleHolder.gameObject, Vector4.zero);
-
             Text titleTxt = Create.UIObject(titleHolder, "Label").AddComponent<Text>();
             titleTxt.text = Name;
             titlebarStyle.GetTextStyle(skin).ApplyTo(titleTxt);
 
+            buttonHolder.transform.SetAsLastSibling();
+
             return titleBar.GameObject;
         }
 
-        protected virtual IButtonRef CreateCloseButton(GameObject parent)
+        protected virtual IButtonModel CreateCloseButton(GameObject parent)
         {
             IReadOnlyUISkin skin = Skin ?? UISkin.Default;
-            IReadOnlyWindowStyle windowStyle = skin?.Window ?? UISkin.Default.Window;
+            IReadOnlyWindowStyle windowStyle = Style ?? UISkin.Default.Window;
 
-            StyledButton closeBtn = Create.Button(parent, "CloseButton", "—", skin.Button);
-            int btnHeight = Mathf.Min(windowStyle.TitlebarHeight, 25);
-            UIFactory.SetLayoutElement(closeBtn.Component.gameObject, btnHeight, btnHeight, flexibleWidth: 0);
+            ButtonModel closeBtn = Create.Button(parent, "CloseButton", "—", skin.Button);
+            int btnSqueeze = (int)windowStyle.Titlebar.LayoutGroup.Padding.z + (int)windowStyle.Titlebar.LayoutGroup.Padding.w;
+            int btnHeight = Mathf.Min(windowStyle.TitlebarHeight - btnSqueeze, 25);
+            UIFactory.SetLayoutElement(closeBtn.Component.gameObject, btnHeight, btnHeight, 0, 0, btnHeight, btnHeight);
 
             return closeBtn;
         }
@@ -185,7 +195,7 @@ namespace UniverseLib.UI.Panels
 
         public virtual void ConstructUI()
         {
-            IReadOnlyWindowStyle windowStyle = Skin?.Window ?? UISkin.Default.Window;
+            IReadOnlyWindowStyle windowStyle = Style ?? UISkin.Default.Window;
 
             // Create Core Canvas
             _uiRoot = Create.UIObject(Owner.Panels.PanelHolder, Name);
@@ -202,10 +212,10 @@ namespace UniverseLib.UI.Panels
             }
 
             // Title Bar (abstract)
-            TitleBar = CreateTitleBar(UIRoot);
+            TitleBar = CreateTitleBar(UIRoot, out GameObject buttonHolder);
 
             // Close Button (abstract)
-            IButtonRef closeBtn = CreateCloseButton(TitleBar);
+            IButtonModel closeBtn = CreateCloseButton(buttonHolder);
             closeBtn.OnClick += () =>
             {
                 OnClosePanelClicked();
@@ -289,7 +299,7 @@ namespace UniverseLib.UI.Panels
 
         private IEnumerator LateSetupCoroutine()
         {
-            yield return null;
+            yield return new WaitUntil(() => UIRoot == null || UIRoot.activeInHierarchy);
 
             LateConstructUI();
         }

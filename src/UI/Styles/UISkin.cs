@@ -108,7 +108,7 @@ namespace UniverseLib.UI.Styles
             Label               = new() { Name = nameof(Label              ), Text = new() { Alignment = TextAnchor.MiddleLeft }, UseBackground = false, },
             InputField          = new() { Name = nameof(InputField         ), Text = new() { Alignment = TextAnchor.MiddleLeft }, },
             ScrollInputField    = new() { Name = nameof(ScrollInputField   ), },
-            Window              = new() { Name = nameof(Window             ), Text = new() { Alignment = TextAnchor.MiddleLeft }, },
+            Window              = new() { Name = nameof(Window             ), },
             HorizontalSlider    = new() { Name = nameof(HorizontalSlider   ), },
             VerticalSlider      = new() { Name = nameof(VerticalSlider     ), },
             HorizontalScrollbar = new() { Name = nameof(HorizontalScrollbar), },

@@ -2,9 +2,9 @@
 using UnityEngine;
 using UniverseLib.UI.Styles;
 using UniverseLib.UI.Panels;
-using UniverseLib.UI.Models.Styled;
-using UniverseLib.UI.Models.Controls;
 using System.ComponentModel;
+using UniverseLib.UI.Components;
+using UniverseLib.UI.Models;
 
 namespace UniverseLib.UI
 {
@@ -56,12 +56,33 @@ namespace UniverseLib.UI
         /// <param name="parent">The parent GameObject to attach this to.</param>
         /// <param name="name">The name of the frame GameObject. Useful for debugging purposes.</param>
         /// <param name="style">The style to use when creating the frame. Defaults to <see cref="Skin"/>'s Frame.</param>
-        /// <returns>A <see cref="StyledFrame"/> wrapper for the base GameObject (not for adding content to) and the ContentRoot.</returns>
-        public StyledFrame Frame(GameObject parent, string name, IReadOnlyFrameStyle style = null)
+        /// <returns>A <see cref="FrameModel"/> wrapper for the base GameObject (not for adding content to) and the ContentRoot.</returns>
+        public FrameModel Frame(GameObject parent, string name, Vector2 sizeDelta = default, IReadOnlyFrameStyle style = null)
         {
             style ??= (IReadOnlyFrameStyle)Skin.Frame ?? UISkin.Default.Frame;
 
-            StyledFrame frame = new(parent, name);
+            FrameModel frame = new(parent, name, sizeDelta);
+            frame.ApplyStyle(style);
+
+            SetDefaultLayoutElement(frame.GameObject, style);
+
+            return frame;
+        }
+
+
+        /// <summary>
+        /// Create a styled UI Object with an <see cref="Image"/> component, and a ContentRoot with a <see cref="LayoutAutoSize"/> component.
+        /// <br/><br/>
+        /// The ContentRoot's offsets will be infulenced by the style's padding, but otherwise it's children will not be altered in any way.
+        /// You can manually place objects in this frame, and it will try to resize until all the children's ILayoutElements are satisfied.
+        /// </summary>
+        /// <returns>A <see cref="AutoFrameModel"/> wrapper for the base GameObject (not for adding content to) and the ContentRoot.</returns>
+        /// <inheritdoc cref="Frame"/>
+        public AutoFrameModel AutoFrame(GameObject parent, string name, IReadOnlyFrameStyle style = null)
+        {
+            style ??= (IReadOnlyFrameStyle)Skin.Frame ?? UISkin.Default.Frame;
+
+            AutoFrameModel frame = new(parent, name);
             frame.ApplyStyle(style);
 
             SetDefaultLayoutElement(frame.GameObject, style);
@@ -76,10 +97,10 @@ namespace UniverseLib.UI
         /// Create a new object with a <see cref="VerticalLayoutGroup"/> component.
         /// </summary>
         /// <param name="style">This is applied before the layout parameters. Defaults to <see cref="Skin"/>'s LayoutGroup.</param>
-        /// <inheritdoc cref="SetLayoutGroup_(GameObject, bool?, bool?, bool?, bool?, int?, Vector4?, TextAnchor?)"/>
+        /// <inheritdoc cref="SetLayoutGroup_(GameObject, bool?, bool?, bool?, bool?, float?, Vector4?, TextAnchor?)"/>
         public GameObject VerticalGroup(GameObject parent, string name,
             bool? forceWidth = null, bool? forceHeight = null, bool? childControlWidth = null, bool? childControlHeight = null,
-            int? spacing = null, Vector4? padding = null, TextAnchor? childAlignment = null,
+            float? spacing = null, Vector4? padding = null, TextAnchor? childAlignment = null,
             LayoutGroupStyle? style = null)
         {
             style ??= Skin.LayoutGroup;
@@ -94,21 +115,14 @@ namespace UniverseLib.UI
             return groupObj;
         }
 
-        public GameObject HorizontalGroup(GameObject parent, string name, LayoutGroupStyle style)
-        {
-            GameObject groupObj = Create.UIObject(parent, name);
-            SetLayoutGroup<HorizontalLayoutGroup>(groupObj, style);
-            return groupObj;
-        }
-
         /// <summary>
         /// Create a new object with a <see cref="HorizontalLayoutGroup"/> component.
         /// </summary>
         /// <param name="style">This is applied before the layout parameters. Defaults to <see cref="Skin"/>'s LayoutGroup.</param>
-        /// <inheritdoc cref="SetLayoutGroup_{T}(GameObject, bool?, bool?, bool?, bool?, int?, Vector4?, TextAnchor?)"/>
+        /// <inheritdoc cref="SetLayoutGroup_{T}(GameObject, bool?, bool?, bool?, bool?, float?, Vector4?, TextAnchor?)"/>
         public GameObject HorizontalGroup(GameObject parent, string name,
             bool? forceWidth = null, bool? forceHeight = null, bool? childControlWidth = null, bool? childControlHeight = null,
-            int? spacing = null, Vector4? padding = null, TextAnchor? childAlignment = null,
+            float? spacing = null, Vector4? padding = null, TextAnchor? childAlignment = null,
             LayoutGroupStyle? style = null)
         {
             style ??= Skin.LayoutGroup;
@@ -120,13 +134,6 @@ namespace UniverseLib.UI
             SetLayoutGroup_(layoutGroup, forceWidth, forceHeight, childControlWidth, childControlHeight,
                 spacing, padding, childAlignment);
 
-            return groupObj;
-        }
-
-        public GameObject GridGroup(GameObject parent, string name, LayoutGroupStyle style)
-        {
-            GameObject groupObj = Create.UIObject(parent, name);
-            SetLayoutGroup<GridLayoutGroup>(groupObj, style);
             return groupObj;
         }
 
@@ -160,11 +167,11 @@ namespace UniverseLib.UI
         /// Create a styled frame with a <see cref="VerticalLayoutGroup"/>.
         /// </summary>
         /// <param name="style">This is applied before the layout parameters.</param>
-        /// <returns>A <see cref="StyledLayoutFrame{T}"/> wrapper for the base GameObject (not for adding content to) and the ContentRoot with a <see cref="VerticalLayoutGroup"/>.</returns>
-        /// <inheritdoc cref="SetLayoutGroup_(GameObject, bool?, bool?, bool?, bool?, int?, Vector4?, TextAnchor?)"/>
-        public StyledLayoutFrame<VerticalLayoutGroup> VerticalFrame(GameObject parent, string name,
+        /// <returns>A <see cref="LayoutFrameModel{T}"/> wrapper for the base GameObject (not for adding content to) and the ContentRoot with a <see cref="VerticalLayoutGroup"/>.</returns>
+        /// <inheritdoc cref="SetLayoutGroup_(GameObject, bool?, bool?, bool?, bool?, float?, Vector4?, TextAnchor?)"/>
+        public LayoutFrameModel<VerticalLayoutGroup> VerticalFrame(GameObject parent, string name,
             bool? forceWidth = null, bool? forceHeight = null, bool? childControlWidth = null, bool? childControlHeight = null,
-            int? spacing = null, Vector4? padding = null, TextAnchor? childAlignment = null,
+            float? spacing = null, Vector4? padding = null, TextAnchor? childAlignment = null,
             IReadOnlyFrameStyle style = null)
         {
             var layoutFrame = LayoutFrame<VerticalLayoutGroup>(parent, name, style);
@@ -179,11 +186,11 @@ namespace UniverseLib.UI
         /// Create a styled frame with a <see cref="HorizontalLayoutGroup"/>.
         /// </summary>
         /// <param name="style">This is applied before the layout parameters.</param>
-        /// <returns>A <see cref="StyledLayoutFrame{T}"/> wrapper for the base GameObject (not for adding content to) and the ContentRoot with a <see cref="VerticalLayoutGroup"/>.</returns>
-        /// <inheritdoc cref="SetLayoutGroup_{T}(GameObject, bool?, bool?, bool?, bool?, int?, Vector4?, TextAnchor?)"/>
-        public StyledLayoutFrame<HorizontalLayoutGroup> HorizontalFrame(GameObject parent, string name,
+        /// <returns>A <see cref="LayoutFrameModel{T}"/> wrapper for the base GameObject (not for adding content to) and the ContentRoot with a <see cref="VerticalLayoutGroup"/>.</returns>
+        /// <inheritdoc cref="SetLayoutGroup_{T}(GameObject, bool?, bool?, bool?, bool?, float?, Vector4?, TextAnchor?)"/>
+        public LayoutFrameModel<HorizontalLayoutGroup> HorizontalFrame(GameObject parent, string name,
             bool? forceWidth = null, bool? forceHeight = null, bool? childControlWidth = null, bool? childControlHeight = null,
-            int? spacing = null, Vector4? padding = null, TextAnchor? childAlignment = null,
+            float? spacing = null, Vector4? padding = null, TextAnchor? childAlignment = null,
             IReadOnlyFrameStyle style = null)
         {
             var layoutFrame = LayoutFrame<HorizontalLayoutGroup>(parent, name, style);
@@ -194,21 +201,13 @@ namespace UniverseLib.UI
             return layoutFrame;
         }
 
-        public GameObject GridFrame(GameObject parent, string name, LayoutGroupStyle style)
-        {
-            GameObject groupObj = Create.UIObject(parent, name);
-            SetLayoutGroup<GridLayoutGroup>(groupObj, style);
-            return groupObj;
-        }
-
         /// <summary>
         /// Create a styled frame with a <see cref="GridLayoutGroup"/>.
         /// </summary>
         /// <param name="style">This is applied before the layout parameters.</param>
-        /// <returns>A <see cref="StyledLayoutFrame{T}"/> wrapper for the base GameObject (not for adding content to) and the ContentRoot with a <see cref="VerticalLayoutGroup"/>.</returns>
-        /// <inheritdoc cref="GridFrame(GameObject, string, LayoutGroupStyle)"/>
+        /// <returns>A <see cref="LayoutFrameModel{T}"/> wrapper for the base GameObject (not for adding content to) and the ContentRoot with a <see cref="VerticalLayoutGroup"/>.</returns>
         /// <inheritdoc cref="SetLayoutGroup{T}(T, Vector2?, Vector2?, Vector4?, TextAnchor?)"/>
-        public StyledLayoutFrame<GridLayoutGroup> GridFrame(GameObject parent, string name,
+        public LayoutFrameModel<GridLayoutGroup> GridFrame(GameObject parent, string name,
             Vector2? cellSize = null, Vector2? spacing = null, Vector4? padding = null,
             TextAnchor? childAlignment = null,
             IReadOnlyFrameStyle style = null)
@@ -224,14 +223,14 @@ namespace UniverseLib.UI
         /// Create a styled frame with a <typeparamref name="T"/>.
         /// </summary>
         /// <param name="style">This is applied before the layout parameters.</param>
-        /// <returns>A <see cref="StyledLayoutFrame{T}"/> wrapper for the base GameObject (not for adding content to) and the ContentRoot with a <typeparamref name="T"/>.</returns>
-        [EditorBrowsable(EditorBrowsableState.Advanced)]
-        public StyledLayoutFrame<T> LayoutFrame<T>(GameObject parent, string name, IReadOnlyFrameStyle style)
+        /// <returns>A <see cref="LayoutFrameModel{T}"/> wrapper for the base GameObject (not for adding content to) and the ContentRoot with a <typeparamref name="T"/>.</returns>
+        [Browsable(false), EditorBrowsable(EditorBrowsableState.Advanced)]
+        public LayoutFrameModel<T> LayoutFrame<T>(GameObject parent, string name, IReadOnlyFrameStyle style)
             where T : LayoutGroup, new()
         {
             style ??= (IReadOnlyFrameStyle)Skin?.Frame ?? UISkin.Default.Frame;
 
-            StyledLayoutFrame<T> layoutFrame = new(parent, name);
+            LayoutFrameModel<T> layoutFrame = new(parent, name);
             layoutFrame.ApplyStyle(style);
 
             SetDefaultLayoutElement(layoutFrame.GameObject, style);

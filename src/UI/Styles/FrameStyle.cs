@@ -3,14 +3,14 @@ using UnityEngine.UI;
 
 namespace UniverseLib.UI.Styles
 {
-    public interface IReadOnlyFrameStyle : IReadOnlyUIObjectStyle<IReadOnlyImageComponentStyle, Image>, IReadOnlyLabelStyle
+    public interface IReadOnlyFrameStyle : IReadOnlyUIModelStyle<IReadOnlyImageComponentStyle, Image>, IReadOnlyLabelStyle
     {
         public bool UseBackground { get; }
     }
 
     [System.Serializable]
     public sealed class FrameStyle
-        : UIObjectStyle<ImageComponentStyle, IReadOnlyImageComponentStyle, Image>,
+        : UIModelStyle<ImageComponentStyle, IReadOnlyImageComponentStyle, Image>,
           IReadOnlyFrameStyle,
           IDeepCopyable<FrameStyle>,
           IConvertibleToReadOnly<ReadOnlyFrameStyle>
@@ -28,11 +28,12 @@ namespace UniverseLib.UI.Styles
         /// </summary>
         public FrameStyle() : base() { }
 
-        /// <inheritdoc cref="UIObjectStyle{T0, T1, T2}(IReadOnlyUIObjectStyle{T1, T2})"/>
+        /// <inheritdoc cref="UIModelStyle{T0, T1, T2}(IReadOnlyUIModelStyle{T1, T2})"/>
         public FrameStyle(FrameStyle toCopy)
             : base(toCopy)
         {
             _useBackground = toCopy._useBackground;
+            Text = toCopy.Text;
         }
 
         public FrameStyle DeepCopy()
@@ -51,8 +52,7 @@ namespace UniverseLib.UI.Styles
         public TextComponentStyle Text = new();
         string IReadOnlyLabelStyle.Name => Name;
         TextComponentStyle IReadOnlyLabelStyle.Text => Text;
-        Vector2 IReadOnlyLabelStyle.LabelOffset => Vector2.zero;
-        public void GetTextStyle(IReadOnlyUISkin fallbackSkin = null, Font fallbackFont = null)
+        public TextComponentStyle GetTextStyle(IReadOnlyUISkin fallbackSkin = null, Font fallbackFont = null)
             => LabelStyleHelper.GetTextStyle(this, fallbackSkin, fallbackFont);
     }
 
@@ -67,6 +67,11 @@ namespace UniverseLib.UI.Styles
         }
 
         public bool UseBackground => WrappedStyle.UseBackground;
-        public new IReadOnlyImageComponentStyle Background => ((IReadOnlyUIObjectStyle<IReadOnlyImageComponentStyle, Image>)WrappedStyle).Background;
+        public new IReadOnlyImageComponentStyle Background => ((IReadOnlyUIModelStyle<IReadOnlyImageComponentStyle, Image>)WrappedStyle).Background;
+        public TextComponentStyle Text => ((IReadOnlyLabelStyle)WrappedStyle).Text;
+        public TextComponentStyle GetTextStyle(IReadOnlyUISkin fallbackSkin = null, Font fallbackFont = null)
+        {
+            return WrappedStyle.GetTextStyle(fallbackSkin, fallbackFont);
+        }
     }
 }

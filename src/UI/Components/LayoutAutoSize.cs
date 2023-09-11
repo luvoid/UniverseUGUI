@@ -12,7 +12,7 @@ namespace UniverseLib.UI.Components
     /// <summary>
     /// A <see cref="ILayoutElement"/> that defines its layout based on its children.
     /// This is similar to a <see cref="LayoutGroup"/>, except it does not control
-    /// the layout of the children.
+    /// the layout of the children. A <see cref="LayoutElement"/> can still override settings.
     /// </summary>
     /// <remarks>
     /// Like other <see cref="ILayoutElement"/> components, this wont be resized unless
@@ -31,6 +31,21 @@ namespace UniverseLib.UI.Components
         private Vector2 m_TotalMinSize       = Vector2.zero;
         private Vector2 m_TotalPreferredSize = Vector2.zero;
         private Vector2 m_TotalFlexibleSize  = Vector2.zero;
+
+        [System.NonSerialized]
+        private LayoutElement m_LayoutElement = null;
+        protected LayoutElement LayoutElement
+        {
+            get
+            {
+                if (m_LayoutElement == null)
+                {
+                    m_LayoutElement = GetComponent<LayoutElement>();
+                }
+
+                return m_LayoutElement;
+            }
+        }
 
 
         [System.NonSerialized]
@@ -51,12 +66,12 @@ namespace UniverseLib.UI.Components
             }
         }
 
-        public float minWidth        => m_TotalMinSize.x;
-        public float minHeight       => m_TotalMinSize.y;
-        public float preferredWidth  => m_TotalPreferredSize.x;
-        public float preferredHeight => m_TotalPreferredSize.y;
-        public float flexibleWidth   => m_TotalFlexibleSize.x;
-        public float flexibleHeight  => m_TotalFlexibleSize.y;
+        public float minWidth        => (LayoutElement?.minWidth        >= 0) ? -1 : m_TotalMinSize.x;
+        public float minHeight       => (LayoutElement?.minHeight       >= 0) ? -1 : m_TotalMinSize.y;
+        public float preferredWidth  => (LayoutElement?.preferredWidth  >= 0) ? -1 : m_TotalPreferredSize.x;
+        public float preferredHeight => (LayoutElement?.preferredHeight >= 0) ? -1 : m_TotalPreferredSize.y;
+        public float flexibleWidth   => (LayoutElement?.flexibleWidth   >= 0) ? -1 : m_TotalFlexibleSize.x;
+        public float flexibleHeight  => (LayoutElement?.flexibleHeight  >= 0) ? -1 : m_TotalFlexibleSize.y;
 
         public int layoutPriority { get { return 1; } }
 
